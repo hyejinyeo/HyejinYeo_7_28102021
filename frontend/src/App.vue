@@ -3,7 +3,7 @@
         <!-- HEADER -->
         <Navbar />
         <!-- MAIN -->
-        <v-main>
+        <v-main class="mx-2 mb-2">
             <router-view/>
         </v-main>
     </v-app>
