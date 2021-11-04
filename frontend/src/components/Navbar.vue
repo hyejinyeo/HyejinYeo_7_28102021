@@ -17,7 +17,7 @@
             </v-toolbar-title>
             <v-spacer></v-spacer>
             <v-avatar size="36" color="grey lighten-2">
-                <v-icon>mdi-account-circle-outline</v-icon>
+                <v-icon>$vuetify.icons.account</v-icon>
             </v-avatar>
         </v-toolbar>
 
@@ -42,9 +42,9 @@ export default {
         return {
             drawer: false,
             links: [
-                { icon: 'mdi-home-outline', text: 'ACCUEIL', route: '/' },
-                { icon: 'mdi-bell-outline', text: 'FIL D\'ACTUALITÉ', route: '/feed' },
-                { icon: 'mdi-comment-text-outline', text: 'DISCUSSIONS', route: '/chat' }
+                { icon: '$vuetify.icons.accueil', text: 'ACCUEIL', route: '/' },
+                { icon: '$vuetify.icons.feed', text: 'FIL D\'ACTUALITÉ', route: '/feed' },
+                { icon: '$vuetify.icons.chat', text: 'DISCUSSIONS', route: '/chat' }
             ]
         }
     }
