@@ -1,5 +1,5 @@
 <template>
-    <div class="feed mx-4 my-4">
+    <div class="feed">
         <h1 class="text-h6 mb-2">FIL D'ACTUALITÉ</h1>
         <v-container>
             <p>Writing area</p>

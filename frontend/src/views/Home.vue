@@ -1,6 +1,5 @@
 <template>
     <div class="home">
-        <!-- <h1 class="text-h6 mb-2">ACCUEIL</h1> -->
         <v-container>
             <v-layout row justify-center>
                 <v-flex xs12 md8 align-self-center>
@@ -10,39 +9,31 @@
                         :src="require('../assets/5267.jpg')"
                     />
                 </v-flex>
-                <v-flex xs12 md4>
-                    <h1>
-                        Welcome to the internal network service of Groupomania
-                    </h1>
-                    <p>
-                        Log in if you are already a member or Sign up
-                    </p>
-                    <v-btn rounded depressed large min-width="200" dark color="#005C68" class="mx-1">SE CONNECTER</v-btn>
-                    <v-btn rounded depressed large min-width="200" class="mx-1">S'INSCRIRE</v-btn>
+                <v-flex xs12 md4 align-self-center>
+                    <div v-if="userLogIn === false">
+                        <span>BIENVENUE SUR LE RÉSEAU SOCIAL DE GROUPOMANIA</span>
+                        <h1 class="teal--text text--darken-2">
+                            Partagez vos idées.
+                        </h1>
+                        <p class="d-none d-sm-flex">
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita magnam soluta aut blanditiis error, dolor debitis atque. Quo sunt non ipsam nobis nihil! Voluptatum a, quas assumenda ipsa natus nisi! Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ullam iure unde sequi ea natus commodi ad at veniam. Rerum modi temporibus voluptatem sapiente pariatur eveniet ratione velit harum sit. Vitae.
+                        </p><br>
+                        <div>
+                            <v-btn rounded depressed large min-width="200" color="#FFD7D7" class="mx-1 grey--text text--darken-2 font-weight-bold" 
+                                v-for="link in links" :key="link.text" router :to="link.route"
+                            >
+                                {{ link.text }}
+                            </v-btn>
+                        </div>
+                    </div>
+                    <div v-if="userLogIn === true">
+                        <h2>
+                            WELCOME BACK HYEJIN
+                        </h2>
+                    </div>
                 </v-flex>
             </v-layout>
-        </v-container>
-        
-        
-        <!-- <v-container>
-            <v-layout row justify-center>
-                <v-flex xs12 md6 align-self-center>
-                    <v-img
-                        alt="Groupomania Logo"
-                        contain
-                        :src="require('../assets/icon.png')"
-                        width="300px"
-                    />
-                </v-flex>
-                <v-flex xs12 md6>
-                    <h2>Bienvenue !</h2>           
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur, soluta. Laborum illum tempora error possimus, optio adipisci quaerat corporis quasi! Et deserunt distinctio molestiae dignissimos. Voluptatem quibusdam cum at cupiditate.</p>
-                </v-flex>
-
-            </v-layout>
-            
-        </v-container> -->
-        
+        </v-container>        
     </div>
 </template>
 
@@ -52,7 +43,25 @@ export default {
 
     components: {
        
+    },
+    data() {
+        return {
+            links: [
+                { text: 'SE CONNECTER', route: '/login' },
+                { text: 'S\'INSCRIRE', route: '/signup' }
+            ]
+        }
+    },
+    computed: {
+        userLogIn() {
+            return false;
+        }
     }
 }
 </script>
 
+<style lang="css" scoped>
+h1 {
+    font-size: 4em;
+}
+</style>

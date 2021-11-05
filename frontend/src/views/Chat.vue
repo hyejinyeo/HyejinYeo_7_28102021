@@ -1,5 +1,5 @@
 <template>
-    <div class="chat mx-4 my-4">
+    <div class="chat">
         <h1 class="text-h6 mb-2">DISCUSSIONS</h1>
         <v-container>
             <p>Désolé, cette page n'est pas encore disponible. Le service est en cours de développement.</p>

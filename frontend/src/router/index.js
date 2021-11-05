@@ -19,6 +19,16 @@ const routes = [
         path: '/chat',
         name: 'Chat',
         component: () => import('../views/Chat.vue')
+    },
+    {
+        path: '/login',
+        name: 'Login',
+        component: () => import('../components/Login.vue')
+    },
+    {
+        path: '/singup',
+        name: 'Signup',
+        component: () => import('../components/Signup.vue')
     }
 ]
 
