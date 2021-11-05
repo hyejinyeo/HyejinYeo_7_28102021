@@ -6,7 +6,7 @@
                     <v-img
                         alt="Illustration"
                         class="mb-5"
-                        :src="require('../assets/5267.jpg')"
+                        :src="require('../assets/illustration_communication.webp')"
                     />
                 </v-flex>
                 <v-flex xs12 md4 align-self-center>

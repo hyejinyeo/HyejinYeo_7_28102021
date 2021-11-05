@@ -10,7 +10,7 @@
                         class="shrink mr-2"
                         contain
                         to="/"
-                        :src="require('../assets/groupomania_logo_text.png')"
+                        :src="require('../assets/groupomania_logo_text.webp')"
                         width="210"
                     />
                 </router-link>

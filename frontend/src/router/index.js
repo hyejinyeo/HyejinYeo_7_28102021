@@ -26,10 +26,13 @@ const routes = [
         component: () => import('../components/Login.vue')
     },
     {
-        path: '/singup',
+        path: '/signup',
         name: 'Signup',
         component: () => import('../components/Signup.vue')
     }
+    // TO ADD 
+    // USER: Profil modification page (add photo, modify password, delete account)
+    // FEED: Writing area(CRUD), Feed cards looping through the data
 ]
 
 const router = new VueRouter({
