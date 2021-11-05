@@ -4,7 +4,7 @@
             <v-layout row justify-center>
                 <v-flex xs12 md8 align-self-center>
                     <v-img
-                        alt="Illustration"
+                        alt="Illustration_communication"
                         class="mb-5"
                         :src="require('../assets/illustration_communication.webp')"
                     />
@@ -18,13 +18,11 @@
                         <p class="d-none d-sm-flex">
                             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita magnam soluta aut blanditiis error, dolor debitis atque. Quo sunt non ipsam nobis nihil! Voluptatum a, quas assumenda ipsa natus nisi! Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ullam iure unde sequi ea natus commodi ad at veniam. Rerum modi temporibus voluptatem sapiente pariatur eveniet ratione velit harum sit. Vitae.
                         </p><br>
-                        <div>
-                            <v-btn rounded depressed large min-width="200" color="#FFD7D7" class="mx-1 grey--text text--darken-2 font-weight-bold" 
-                                v-for="link in links" :key="link.text" router :to="link.route"
-                            >
-                                {{ link.text }}
-                            </v-btn>
-                        </div>
+                        <v-btn rounded depressed large min-width="200" color="#FFD7D7" class="mx-auto grey--text text--darken-2 font-weight-bold" 
+                            v-for="link in links" :key="link.text" router :to="link.route"
+                        >
+                            {{ link.text }}
+                        </v-btn>
                     </div>
                     <div v-if="userLogIn === true">
                         <h2>

@@ -2,6 +2,11 @@
     <div class="chat">
         <h1 class="text-h6 mb-2">DISCUSSIONS</h1>
         <v-container>
+            <v-img
+                alt="Illustration_warning"
+                class="mb-5"
+                :src="require('../assets/illustration_warning.webp')"
+            />
             <p>Désolé, cette page n'est pas encore disponible. Le service est en cours de développement.</p>
             
             <v-btn depressed>CLICK ME</v-btn>
