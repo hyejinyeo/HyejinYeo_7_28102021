@@ -11,7 +11,8 @@
                         contain
                         to="/"
                         :src="require('../assets/groupomania_logo_text.webp')"
-                        width="210"
+                        width="200"
+                        max-width="60vw"
                     />
                 </router-link>
             </v-toolbar-title>
@@ -56,6 +57,6 @@ export default {
 }
 </script>
 
-<style>
+<style lang="css" scoped>
 
 </style>
