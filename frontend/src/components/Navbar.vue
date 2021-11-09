@@ -21,7 +21,7 @@
             </v-avatar>
         </v-toolbar>
 
-        <v-navigation-drawer temporary app v-model="drawer">
+        <v-navigation-drawer temporary app v-model="drawer" v-if="userLogIn === true">
             <v-list>
                 <v-list-item v-for="link in links" :key="link.text" router :to="link.route"> 
                     <v-list-item-action>
@@ -46,6 +46,11 @@ export default {
                 { icon: '$vuetify.icons.feed', text: 'FIL D\'ACTUALITÉ', route: '/feed' },
                 { icon: '$vuetify.icons.chat', text: 'DISCUSSIONS', route: '/chat' }
             ]
+        }
+    },
+    computed: {
+        userLogIn() {
+            return true;
         }
     }
 }
