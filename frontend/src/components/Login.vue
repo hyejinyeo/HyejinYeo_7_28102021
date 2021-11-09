@@ -20,12 +20,16 @@
                         <v-form >
                             <v-text-field
                                 label="e-mail"
+                                prepend-icon="$vuetify.icons.account"
                                 type="email"
                                 color="#005C68"
                             ></v-text-field>
                             <v-text-field
                                 label="mot de passe"
-                                type="password"
+                                prepend-icon="$vuetify.icons.lock"
+                                :append-icon="showPassword ? '$vuetify.icons.eyeon' : '$vuetify.icons.eyeoff'"
+                                @click:append="showPassword = !showPassword"
+                                :type="showPassword ? 'text' : 'password'"
                                 color="#005C68"
                             ></v-text-field>
                         </v-form>
@@ -54,10 +58,14 @@
 
 <script>
 export default {
-
+    data() {
+        return {
+            showPassword: false
+        }
+    }
 }
 </script>
 
 <style>
-
+/* DARK GREEN #005C68 */
 </style>
