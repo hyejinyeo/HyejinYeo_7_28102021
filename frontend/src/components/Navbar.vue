@@ -1,8 +1,11 @@
 <template>
     <nav>
         <v-toolbar app flat color="grey lighten-4">
+            <!-- LEFT: DROPDOWN MENU -->
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
             <v-spacer class="d-lg-none"></v-spacer>
+
+            <!-- LOGO -->
             <v-toolbar-title>
                 <router-link to="/">
                     <v-img
@@ -17,9 +20,28 @@
                 </router-link>
             </v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-avatar size="36" color="grey lighten-2">
-                <v-icon>$vuetify.icons.account</v-icon>
-            </v-avatar>
+
+            <!-- RIGHT: AVATAR + DROPDOWN MENU -->
+            <v-menu rounded offset-y>
+                <template v-slot:activator="{ on }">
+                    <v-btn icon v-on="on">
+                        <v-avatar size="36" color="grey lighten-2">
+                            <v-icon>$vuetify.icons.account</v-icon>
+                        </v-avatar> 
+                    </v-btn>
+                </template>
+                <v-card v-if="userLogIn === true">
+                    <v-list-item-content class="justify-center">
+                        <v-btn depressed rounded text>
+                            MON PROFIL
+                        </v-btn>
+                        <v-btn depressed rounded text>
+                            SE DECONNECTER
+                        </v-btn>
+                    </v-list-item-content>
+                </v-card>
+            </v-menu>
+
         </v-toolbar>
 
         <v-navigation-drawer temporary app v-model="drawer" v-if="userLogIn === true">
