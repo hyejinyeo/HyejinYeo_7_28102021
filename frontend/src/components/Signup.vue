@@ -18,7 +18,7 @@
                                     color="#005C68"
                                 ></v-text-field>
                                 <v-text-field
-                                    label="prenom"
+                                    label="prénom"
                                     v-model="firstName"
                                     type="text"
                                     required
@@ -44,12 +44,11 @@
                                     color="#005C68"
                                 ></v-text-field>
                             </v-form>
-                            <v-alert dense text type="success">
-                                I'm a dense alert with the <strong>text</strong> prop and a <strong>type</strong> of success
-                            </v-alert>
+                            <!--
                             <v-alert dense text type="error">
-                                I'm a dense alert with the <strong>text</strong> prop and a <strong>type</strong> of error
+                                Nous n'avons pas pu traiter votre demande en raison d'une saisie incorrecte du formulaire. Veuillez vérifier vos saisies et réessayer !
                             </v-alert>
+                            -->
                             
                         </v-card-text>
                         <v-card-actions class="justify-center">
@@ -77,10 +76,18 @@ export default {
             email: "",
             password: "",
             nameRules: [
-                v => v.length >= 3 || 'Minimum length is 3 characters'
+                v => !!v || 'Ce champ est obligatoire.',
+                // v => v.length >= 2 || 'Votre nom et prénom doit contenir 2 lettres minimum.',
+                v => /^[a-zA-ZàâäéèêëîïôöùûüÿçæœA-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜŸÇÆ ,.'-]+$/u.test(v) || 'Ce champ peut contenir les caractères alphabétiques qui sont utilisés dans la langue française et [ . ] [ \' ] [ - ].'
             ],
-            emailRules: [],
-            passwordRules: [],
+            emailRules: [
+                v => !!v || 'Ce champ est obligatoire.',
+                v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Veuillez saisir une adresse e-mail valide.'
+            ],
+            passwordRules: [
+                v => !!v || 'Ce champ est obligatoire.',
+                v => /(^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,64}$)/.test(v) || 'Un mot de passe doit être d\'une longueur minimale de 8 caractères comprenant au moins un majuscule, un miniscule, un chiffre et un caractère spécial.'
+            ],
             showPassword: false,
             btnLoading: false,
             snackbar: false
