@@ -68,6 +68,8 @@
 </template>
 
 <script>
+import AuthentificationService from '@/services/AuthentificationService'
+
 export default {
     data() {
         return {
@@ -94,13 +96,24 @@ export default {
         }
     },
     methods: {
-        signup() {
+        async signup() {
+            const response = await AuthentificationService.signup({
+                lastName: this.lastName,
+                firstName: this.firstName,
+                email: this.email,
+                password: this.password
+            })
+            console.log(response.data)
+
+
+
+            /*
             // if the form is valid, submit
             if (this.$refs.signupForm.validate()) {
                 this.btnLoading = true;
                 console.log('form is valid');
                 console.log(this.lastName, this.firstName, this.email, this.password)
-                const hello = {
+                const user = {
                     lastName: this.lastName,
                     firstName: this.firstName,
                     email: this.email,
@@ -108,7 +121,7 @@ export default {
                 }
                 // add new user into the database
                 
-                console.log(hello)
+            
                 console.log('added to the database');
                 
                 // stop button roader
@@ -122,7 +135,7 @@ export default {
             else {
                 console.log('form is invalid')
             }
-            
+            */
         }
     }
 }
