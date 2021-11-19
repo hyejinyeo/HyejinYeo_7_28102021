@@ -39,6 +39,10 @@ const errorHandler = error => {
 
 const server = http.createServer(app);
 
+
+/* ------------------------------------------------------------------------------------------------- */
+/* Previous code without sequelize */ 
+
 // server.on('error', errorHandler);
 // server.on('listening', () => {
 //     const address = server.address();
@@ -49,6 +53,14 @@ const server = http.createServer(app);
 // server.listen(port);
 
 
+/* ------------------------------------------------------------------------------------------------- */
+/* Sequelize - MySQL Database Connection Test */ 
+
+db.sequelize.authenticate()
+    .then(()=> console.log('database connected'))
+    .catch(err => console.log('err' + err))
+
+/* ------------------------------------------------------------------------------------------------- */
 
 
 db.sequelize.sync().then(() => {
