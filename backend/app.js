@@ -10,6 +10,10 @@ const cors = require('cors');
 // const postRoutes = require('./routes/post');
 
 
+/* Base de données */
+const { sequelize } = require('./models/index');
+
+
 /* Création d'une application Express */
 const app = express();
 
@@ -32,9 +36,9 @@ app.use(express.urlencoded({ extended: true }));
 // });
 
 
-/* Routes User  */
+/* Routes User */
 // app.use('/api/user', userRoutes);
-/* Routes Post  */
+/* Routes Post */
 // app.use('/api/post', postRoutes);
 
 
@@ -55,6 +59,20 @@ app.post('/signup', (req, res) => {
     })
 })
 
+// Sequelize - MySQL Database Connection Test  
+
+const dbTest = async function () {
+    try {
+        await sequelize.authenticate();
+        console.log('Sequelize has successfully connected to the database');
+    }
+    catch {
+        console.log('Connection failed :' + err);
+    }
+};
+dbTest();
+
+/* ------------------------------------------------------------------------------------------------- */
 
 /* ------------------------------------------------------------------------------------------------- */
 
