@@ -53,7 +53,7 @@
                         </v-card-text>
                         <v-card-actions class="justify-center">
                             <v-btn rounded depressed large min-width="200" color="#FFD7D7" class="mx-1 grey--text text--darken-2 font-weight-bold"
-                                @click="signup" :loading="btnLoading"> <!-- add button loader while signun form is being submitted -->
+                                @click.prevent="signup" :loading="btnLoading"> <!-- add button loader while signun form is being submitted -->
                                 S'INSCRIRE
                             </v-btn>
                             <v-snackbar v-model="snackbar" :timeout="2000">
@@ -97,45 +97,42 @@ export default {
     },
     methods: {
         async signup() {
-            const response = await AuthentificationService.signup({
-                lastName: this.lastName,
-                firstName: this.firstName,
-                email: this.email,
-                password: this.password
-            })
-            console.log(response.data)
+            // Original code that works perfectly!
+            // const response = await AuthentificationService.signup({
+            //     lastName: this.lastName,
+            //     firstName: this.firstName,
+            //     email: this.email,
+            //     password: this.password
+            // })
+            // console.log(response.data)
 
-
-
-            /*
-            // if the form is valid, submit
+            // 
             if (this.$refs.signupForm.validate()) {
                 this.btnLoading = true;
                 console.log('form is valid');
-                console.log(this.lastName, this.firstName, this.email, this.password)
-                const user = {
+                console.log(this.lastName, this.firstName, this.email, this.password);
+                
+                const response = await AuthentificationService.signup({
                     lastName: this.lastName,
                     firstName: this.firstName,
                     email: this.email,
                     password: this.password
-                }
-                // add new user into the database
-                
-            
-                console.log('added to the database');
-                
-                // stop button roader
+                })
+                console.log(response.data)
+
+                // stop button roader 
                 this.btnLoading = false;
                 // popup snackbar
                 this.snackbar = true;
+                // change userLoggedIn into true
                 // redirect to the home.vue
-
-            } 
-            // if the form is not valid, prevent the submission and show error message
+                setTimeout(function() {
+                    window.location.href= "./";
+                }, 2200)
+            }
             else {
                 console.log('form is invalid')
             }
-            */
         }
     }
 }
