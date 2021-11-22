@@ -1,11 +1,12 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 
 
 /* Déclaration des routes */
 // User
-// const userRoutes = require('./routes/user');
+const userRoutes = require('./routes/user');
 // Post
 // const postRoutes = require('./routes/post');
 
@@ -28,16 +29,16 @@ app.use(express.urlencoded({ extended: true }));
 
 
 // prevents cors header errors 
-// app.use((req, res, next) => {
-//     res.setHeader('Access-Control-Allow-Origin', '*');
-//     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-//     next();
-// });
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    next();
+});
 
 
 /* Routes User */
-// app.use('/api/user', userRoutes);
+app.use('/api/user', userRoutes);
 /* Routes Post */
 // app.use('/api/post', postRoutes);
 
@@ -48,26 +49,21 @@ app.use(express.urlencoded({ extended: true }));
 // POSTMAN TEST DONE
 app.get('/status', (req, res) => {
     res.send({
-        message: 'Hello world! 👍'
+        message: 'Hello world! 👍 - Test API'
     })
 })
 
-// POSTMAN TEST DONE - FRONTEND TEST DONE
-app.post('/signup', (req, res) => {
-    res.send({
-        message: `Hello ${req.body.firstName} ${req.body.lastName}, your email ${req.body.email} has been successfully registered! Have fun 👍`
-    })
-})
+
+require('./routes/user')(app)
 
 // Sequelize - MySQL Database Connection Test  
-
 const dbTest = async function () {
     try {
         await sequelize.authenticate();
-        console.log('Sequelize has successfully connected to the database');
+        console.log('Connection has been established successfully.');
     }
     catch {
-        console.log('Connection failed :' + err);
+        console.log('Unable to connect to the database:' + error);
     }
 };
 dbTest();

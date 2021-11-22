@@ -3,7 +3,7 @@
     "username": "OCP7Hyejin",
     "password": "Projet7Hyejin",
     "database": "groupomania",
-    "host": "127.0.0.1",
+    "host": "localhost",
     "dialect": "mysql"
   },
   "test": {

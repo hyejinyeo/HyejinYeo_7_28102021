@@ -54,7 +54,13 @@ const server = http.createServer(app);
 
 
 /* ------------------------------------------------------------------------------------------------- */
+/* Sequelize - MySQL Database Connection Test */ 
 
+// db.sequelize.authenticate()
+//     .then(()=> console.log('database connected'))
+//     .catch(err => console.log('err' + err))
+
+/* ------------------------------------------------------------------------------------------------- */
 
 
 db.sequelize.sync().then(() => {
