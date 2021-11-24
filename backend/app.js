@@ -6,7 +6,7 @@ const path = require('path');
 
 /* Déclaration des routes */
 // User
-const userRoutes = require('./routes/user');
+// const userRoutes = require('./routes/user');
 // Post
 // const postRoutes = require('./routes/post');
 
@@ -38,9 +38,15 @@ app.use((req, res, next) => {
 
 
 /* Routes User */
-app.use('/api/user', userRoutes);
+// app.use('/api/user', userRoutes);
 /* Routes Post */
 // app.use('/api/post', postRoutes);
+
+
+/* VERSION 1 */
+// user route imported twice: 
+require('./routes/user')(app)
+
 
 
 /* ------------------------------------------------------------------------------------------------- */
@@ -54,7 +60,6 @@ app.get('/status', (req, res) => {
 })
 
 
-require('./routes/user')(app)
 
 // Sequelize - MySQL Database Connection Test  
 const dbTest = async function () {
@@ -67,8 +72,6 @@ const dbTest = async function () {
     }
 };
 dbTest();
-
-/* ------------------------------------------------------------------------------------------------- */
 
 /* ------------------------------------------------------------------------------------------------- */
 
