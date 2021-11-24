@@ -2,7 +2,7 @@
 
 // Importer le controller User
 const userCtrl = require('../controllers/user');
-
+// const auth = require('../middleware/auth')
 
 /* Router pour USER */
 // S'inscrire
