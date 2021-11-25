@@ -30,7 +30,7 @@
                         </v-avatar> 
                     </v-btn>
                 </template>
-                <v-card v-if="userLogIn === true">
+                <v-card v-if="userLoggedIn === true">
                     <v-list-item-content class="justify-center">
                         <v-btn depressed rounded text>
                             MON PROFIL
@@ -44,7 +44,7 @@
 
         </v-toolbar>
 
-        <v-navigation-drawer temporary app v-model="drawer" v-if="userLogIn === true">
+        <v-navigation-drawer temporary app v-model="drawer" v-if="userLoggedIn === true">
             <v-list>
                 <v-list-item v-for="link in links" :key="link.text" router :to="link.route"> 
                     <v-list-item-action>
@@ -72,8 +72,10 @@ export default {
         }
     },
     computed: {
-        userLogIn() {
-            return true;
+        // Vuex: Get login status (true/false)
+        userLoggedIn() {
+            // return this.$store.state.userLoggedIn
+            return this.$store.getters.userLoggedIn
         }
     }
 }

@@ -44,11 +44,11 @@
                                     color="#005C68"
                                 ></v-text-field>
                             </v-form>
-                            <!--
-                            <v-alert dense text type="error">
-                                Nous n'avons pas pu traiter votre demande en raison d'une saisie incorrecte du formulaire. Veuillez vérifier vos saisies et réessayer !
-                            </v-alert>
-                            -->
+                            
+                            <!-- <v-alert dense text type="error" v-if="errorMessage === true">
+                                Form is invalid
+                            </v-alert> -->
+                            <!-- <div v-html="errorMessage" class="error" /> -->
                             
                         </v-card-text>
                         <v-card-actions class="justify-center">
@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import AuthentificationService from '@/services/AuthentificationService'
+import AuthenticationService from '@/services/AuthenticationService'
 
 export default {
     data() {
@@ -77,9 +77,9 @@ export default {
             firstName: "",
             email: "",
             password: "",
+            // error: null,
             nameRules: [
                 v => !!v || 'Ce champ est obligatoire.',
-                // v => v.length >= 2 || 'Votre nom et prénom doit contenir 2 lettres minimum.',
                 v => /^[a-zA-ZàâäéèêëîïôöùûüÿçæœA-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜŸÇÆ ,.'-]+$/u.test(v) || 'Ce champ peut contenir les caractères alphabétiques qui sont utilisés dans la langue française et [ . ] [ \' ] [ - ].'
             ],
             emailRules: [
@@ -97,47 +97,49 @@ export default {
     },
     methods: {
         async signup() {
-            // Original code that works perfectly!
-            // const response = await AuthentificationService.signup({
-            //     lastName: this.lastName,
-            //     firstName: this.firstName,
-            //     email: this.email,
-            //     password: this.password
-            // })
-            // console.log(response.data)
-
-            // 
+            // If sign-up form is valid
             if (this.$refs.signupForm.validate()) {
+                // Start button loader 
                 this.btnLoading = true;
-                console.log('form is valid');
-                console.log(this.lastName, this.firstName, this.email, this.password);
+                // Send the form inputs to API (axios-sequelize-mysql)           
+                try {
+                    const response = await AuthenticationService.signup({
+                        lastName: this.lastName,
+                        firstName: this.firstName,
+                        email: this.email,
+                        password: this.password
+                    })
+                    console.log(response.data)
+                    // Stop button roader 
+                    this.btnLoading = false;
+                    // Pop-up snackbar
+                    this.snackbar = true;
+                    // change userLoggedIn into true
+                    // return this.$store.state.userLoggedIn = true;
+                    // Redirect to the main page after 2.2 seconds
+                    setTimeout(function() {
+                        window.location.href= "./";
+                    }, 2200)
+                }
+                // Catch authentication error 
+                catch (error) {
+                    // Stop button roader 
+                    this.btnLoading = false;
+                    // Display authentication error message
+                    // this.error = error.response.data.error
+                }
                 
-                const response = await AuthentificationService.signup({
-                    lastName: this.lastName,
-                    firstName: this.firstName,
-                    email: this.email,
-                    password: this.password
-                })
-                console.log(response.data)
-
-                // stop button roader 
-                this.btnLoading = false;
-                // popup snackbar
-                this.snackbar = true;
-                // change userLoggedIn into true
-                // redirect to the home.vue
-                setTimeout(function() {
-                    window.location.href= "./";
-                }, 2200)
             }
+            // If sign-up form is not valid
             else {
                 console.log('form is invalid')
+                // this.errorMessage = true;
+                // Display form error message
             }
         }
     }
 }
 </script>
 
-<style>
-
+<style scoped>
 </style>
