@@ -28,7 +28,7 @@
                     </div>
                     <div v-if="userLoggedIn === true">
                         <h2 class="text-center teal--text text--darken-2 mb-4">
-                            Bonjour, <br> Hyejin !
+                            Bonjour, <br> {{ user.firstName }} !
                         </h2>
                     </div>
                 </v-flex>
@@ -40,7 +40,6 @@
 <script>
 export default {
     name: 'Home',
-
     components: {
        
     },
@@ -56,6 +55,9 @@ export default {
         userLoggedIn() {
             // return false;
             return this.$store.state.userLoggedIn
+        },
+        user() {
+            return this.$store.getters.user;
         },
         // userName() {
         //     return this.$store.state.userLoggedIn

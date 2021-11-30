@@ -25,8 +25,15 @@
             <v-menu rounded offset-y>
                 <template v-slot:activator="{ on }">
                     <v-btn icon v-on="on">
-                        <v-avatar size="36" color="grey lighten-2">
-                            <v-icon>$vuetify.icons.account</v-icon>
+                        <!-- userLoggedIn === false -->
+                        <v-avatar v-if="userLoggedIn === false" size="36" color="grey lighten-2">
+                            <v-icon >$vuetify.icons.account</v-icon>
+                        </v-avatar> 
+                        <!-- userLoggedIn === true -->
+                        <v-avatar v-if="userLoggedIn === true" size="36" color="grey lighten-2">
+                            <!-- <v-icon v-if="userLoggedIn === false">$vuetify.icons.account</v-icon> -->
+                            <span> {{ user.lastName }}</span>
+                            <img v-if="user.photo" :src="user.photo" >
                         </v-avatar> 
                     </v-btn>
                 </template>
@@ -35,7 +42,7 @@
                         <v-btn depressed rounded text>
                             MON PROFIL
                         </v-btn>
-                        <v-btn depressed rounded text>
+                        <v-btn depressed rounded text @click="logOut">
                             SE DECONNECTER
                         </v-btn>
                     </v-list-item-content>
@@ -76,6 +83,15 @@ export default {
         userLoggedIn() {
             // return this.$store.state.userLoggedIn
             return this.$store.getters.userLoggedIn
+        },
+        user() {
+            return this.$store.getters.user;
+        },
+    },
+    methods: {
+        logOut() {
+            this.$store.dispatch("logOut");
+            window.location.href = "/";
         }
     }
 }

@@ -41,6 +41,7 @@
                                 ></v-text-field>
                             </v-form>
                         </v-card-text>
+                        <!-- <div v-html="errorMessage" class="error" /> -->
                         <v-card-actions class="justify-center d-flex flex-wrap">
                             <v-btn rounded depressed large min-width="200" color="#FFD7D7" class="ma-1 grey--text text--darken-2 font-weight-bold" 
                                 @click="login" :loading="btnLoading">
@@ -76,7 +77,8 @@ export default {
                 v => /(^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,64}$)/.test(v) || 'Un mot de passe doit être d\'une longueur minimale de 8 caractères comprenant au moins un majuscule, un miniscule, un chiffre et un caractère spécial.'
             ],
             showPassword: false,
-            btnLoading: false
+            btnLoading: false,
+            errorMessage: null,
         }
     },
     methods: {
@@ -90,26 +92,28 @@ export default {
                         password: this.password
                     })
                     console.log(response.data)
+                    // Store token in Local Storage for Auto Login
 
                     // Update data in Vuex Store
                     this.$store.dispatch("logIn", response.data.token);
-                    // this.$store.dispatch("setUser", response.data.user);
+                    this.$store.dispatch("setUser", response.data.user);
                     // this.$store.dispatch("getUserById", response.data.user.id);
 
 
                     this.btnLoading = false;
 
-                    let router = this.$router
                     // Redirect to the main page
-                    setTimeout(function() {
-                        router.push('/feed');
-                    }, 2200)
+                    // let router = this.$router
+                    // router.push('/');
+
+                    // Update Navbar component (reload the component only or the entire page)
+                    window.location.href = "/";
                     
                 }
                 // Catch authentication error 
                 catch (error) {
                     this.btnLoading = false;
-                    console.log(error)
+
                 }
                 
             }
