@@ -44,16 +44,13 @@
                                     color="#005C68"
                                 ></v-text-field>
                             </v-form>
-                            
-                            <!-- <v-alert dense text type="error" v-if="errorMessage === true">
-                                Form is invalid
-                            </v-alert> -->
-                            <!-- <div v-html="errorMessage" class="error" /> -->
-                            
+                            <v-alert dense text type="error" v-if="errorMessage !== null" class="my-2 ">
+                                {{ errorMessage }}
+                            </v-alert> 
                         </v-card-text>
                         <v-card-actions class="justify-center">
                             <v-btn rounded depressed large min-width="200" color="#FFD7D7" class="mx-1 grey--text text--darken-2 font-weight-bold"
-                                @click.prevent="signup" :loading="btnLoading"> <!-- add button loader while signun form is being submitted -->
+                                @click.prevent="signup" :loading="btnLoading">
                                 S'INSCRIRE
                             </v-btn>
                             <v-snackbar v-model="snackbar" :timeout="2000">
@@ -77,7 +74,6 @@ export default {
             firstName: "",
             email: "",
             password: "",
-            // error: null,
             nameRules: [
                 v => !!v || 'Ce champ est obligatoire.',
                 v => /^[a-zA-ZàâäéèêëîïôöùûüÿçæœA-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜŸÇÆ ,.'-]+$/u.test(v) || 'Ce champ peut contenir les caractères alphabétiques qui sont utilisés dans la langue française et [ . ] [ \' ] [ - ].'
@@ -92,7 +88,10 @@ export default {
             ],
             showPassword: false,
             btnLoading: false,
-            snackbar: false
+            snackbar: false,
+
+            // error message 
+            errorMessage: null,
         }
     },
     methods: {
@@ -126,15 +125,12 @@ export default {
                     // Stop button roader 
                     this.btnLoading = false;
                     // Display authentication error message
-                    // this.error = error.response.data.error
+                    this.errorMessage = error.response.data.error;
                 }
-                
             }
             // If sign-up form is not valid
             else {
-                console.log('form is invalid')
-                // this.errorMessage = true;
-                // Display form error message
+                this.errorMessage = 'Oops, votre saisie ne respecte pas le format du formulaire. Veuillez le renseigner 😅';
             }
         }
     }

@@ -40,14 +40,16 @@
                                     color="#005C68"
                                 ></v-text-field>
                             </v-form>
+                            <v-alert dense text type="error" v-if="errorMessage !== null" class="my-2 ">
+                                {{ errorMessage }}
+                            </v-alert> 
                         </v-card-text>
-                        <!-- <div v-html="errorMessage" class="error" /> -->
                         <v-card-actions class="justify-center d-flex flex-wrap">
                             <v-btn rounded depressed large min-width="200" color="#FFD7D7" class="ma-1 grey--text text--darken-2 font-weight-bold" 
                                 @click="login" :loading="btnLoading">
                                 SE CONNECTER
                             </v-btn> 
-                            <!-- TO ADD : 
+                            <!-- TO ADD : Find password
                             <v-btn rounded depressed small min-width="200" min-height="45" color="white" class="ma-1 grey--text text--darken-2">
                                 Vous avez oublié votre mot de passe ?
                             </v-btn>
@@ -112,16 +114,14 @@ export default {
                 // Catch authentication error 
                 catch (error) {
                     this.btnLoading = false;
+                    this.errorMessage = error.response.data.error;
 
                 }
                 
             }
             // Login form is not valid
             else {
-                console.log('form is invalid')
-        
-                // this.errorMessage = true;
-                // Display form error message
+                this.errorMessage = 'Oops, votre saisie ne respecte pas le format du formulaire. Veuillez le renseigner 😅';
             }        
         }
     }
