@@ -9,7 +9,8 @@ const userCtrl = require('../controllers/user');
 module.exports = (app) => {
     app.post('/signup', userCtrl.signup),
     app.get('/signup', userCtrl.userlist),
-    app.post('/login', userCtrl.login)
+    app.post('/login', userCtrl.login),
+    app.get('/account/:id', userCtrl.getAccount)
 }
 
 

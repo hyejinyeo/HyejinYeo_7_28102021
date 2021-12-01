@@ -121,5 +121,17 @@ exports.login = async (req, res) => {
 };
 
 // Modifier le profil
+exports.getAccount = async (req, res) => {
+    try { 
+        const user = await User.findOne({
+            where: { id: req.params.id }
+        });
+        res.status(200).send(user);
+    }
+    catch (error) {
+        return res.status(500).json({ error: "Erreur serveur" });
+    }
+    
+}
 
 
