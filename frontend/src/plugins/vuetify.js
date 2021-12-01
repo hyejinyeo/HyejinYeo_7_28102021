@@ -11,6 +11,8 @@ const MY_ICONS = {
     lock: 'mdi-lock-outline',
     eyeon: 'mdi-eye',
     eyeoff: 'mdi-eye-off',
+    logout: 'mdi-power',
+    addphoto: 'mdi-camera-plus',
     //ADD MORE ICONS HERE
     friends: 'mdi-account-supervisor-circle',
     delete: 'mdi-trash-can-outline',

@@ -27,23 +27,30 @@
                     <v-btn icon v-on="on">
                         <!-- userLoggedIn === false -->
                         <v-avatar v-if="userLoggedIn === false" size="36" color="grey lighten-2">
-                            <v-icon >$vuetify.icons.account</v-icon>
+                            <v-icon>$vuetify.icons.account</v-icon>
                         </v-avatar> 
                         <!-- userLoggedIn === true -->
-                        <v-avatar v-if="userLoggedIn === true" size="36" color="grey lighten-2">
-                            <!-- <v-icon v-if="userLoggedIn === false">$vuetify.icons.account</v-icon> -->
-                            <span> {{ user.lastName }}</span>
-                            <img v-if="user.photo" :src="user.photo" >
-                        </v-avatar> 
+                        <v-badge
+                            v-if="userLoggedIn === true"
+                            bordered bottom dot color="green"
+                            offset-x="10" offset-y="10"
+                        >
+                            <v-avatar v-if="userLoggedIn === true" size="36" color="grey lighten-2">
+                                <span v-if="!user.photo" class="font-weight-black"> {{ userInitials }}</span>
+                                <img v-if="user.photo" :src="user.photo" >
+                            </v-avatar>
+                        </v-badge>
                     </v-btn>
                 </template>
                 <v-card v-if="userLoggedIn === true">
                     <v-list-item-content class="justify-center">
-                        <v-btn depressed rounded text>
-                            MON PROFIL
+                        <v-btn depressed text :to="`/account/${user.id}`">
+                            <v-icon left>$vuetify.icons.account</v-icon>
+                            <span>MON PROFIL</span>
                         </v-btn>
-                        <v-btn depressed rounded text @click="logOut">
-                            SE DECONNECTER
+                        <v-btn depressed text @click="logOut">
+                            <v-icon left>$vuetify.icons.logout</v-icon>
+                            <span>DECONNEXION</span>
                         </v-btn>
                     </v-list-item-content>
                 </v-card>
@@ -53,6 +60,7 @@
 
         <v-navigation-drawer temporary app v-model="drawer" v-if="userLoggedIn === true">
             <v-list>
+                <!-- <v-divider></v-divider> -->
                 <v-list-item v-for="link in links" :key="link.text" router :to="link.route"> 
                     <v-list-item-action>
                         <v-icon>{{ link.icon }}</v-icon>
@@ -87,6 +95,11 @@ export default {
         user() {
             return this.$store.getters.user;
         },
+        userInitials() {
+            const user = this.$store.getters.user;
+            const initials = user.firstName.substring(0, 1).toUpperCase() + user.lastName.substring(0, 1).toUpperCase();
+            return initials;
+        }
     },
     methods: {
         logOut() {
@@ -98,5 +111,18 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.logged-in-avatar {
+    position: relative
+}
+.logged-in-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: green;
+    position: absolute;
+    right: 6px;
+    bottom: 3px;
+    
+}
 
 </style>

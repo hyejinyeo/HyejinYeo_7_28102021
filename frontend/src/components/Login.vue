@@ -97,8 +97,7 @@ export default {
                     // Update data in Vuex Store
                     this.$store.dispatch("logIn", response.data.token);
                     this.$store.dispatch("setUser", response.data.user);
-                    // this.$store.dispatch("getUserById", response.data.user.id);
-
+                    this.$store.dispatch("getUserById", response.data.user.id);
 
                     this.btnLoading = false;
 
@@ -106,7 +105,7 @@ export default {
                     // let router = this.$router
                     // router.push('/');
 
-                    // Update Navbar component (reload the component only or the entire page)
+                    // Redirect to the main page + reload the entire page (to update Navbar component)
                     window.location.href = "/";
                     
                 }
