@@ -6,6 +6,9 @@ export default {
     },
     login(data) {
         return Api().post('login', data);
+    },
+    getUserById(id) {
+        return Api().get('account/' + id)
     }
 }
 
