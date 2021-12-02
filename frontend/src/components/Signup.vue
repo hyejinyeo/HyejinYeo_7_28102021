@@ -109,16 +109,22 @@ export default {
                         password: this.password
                     })
                     console.log(response.data)
-                    // Stop button roader 
-                    this.btnLoading = false;
+                    
                     // Pop-up snackbar
                     this.snackbar = true;
-                    // change userLoggedIn into true
-                    // return this.$store.state.userLoggedIn = true;
+
+                    // Update data
+                    this.$store.dispatch("logIn", response.data.token);
+                    this.$store.dispatch("setUser", response.data.user);
+                    this.$store.dispatch("getUserById", response.data.user.id);
+
+                    // Stop button loading
+                    this.btnLoading = false;
+
                     // Redirect to the main page after 2.2 seconds
                     setTimeout(function() {
                         window.location.href= "./";
-                    }, 2200)
+                    }, 1500)
                 }
                 // Catch authentication error 
                 catch (error) {

@@ -30,11 +30,11 @@ exports.signup = async (req, res) => {
         console.log(user);
         // If the user email already exists in the database, return an error message
         if (user !== null) {
-            return res.status(400).json({ error: 'Cet email est déjà utilisé'});
+            return res.status(400).json({ error: 'Cette adresse mail est déjà utilisé.'});
         }
         // If the user email does not exist yet, move on to the password validation
         else {
-            // If the password is valid, create a new user account
+            // If the password is valid, create a new user account and create a new token
             if (passwordSchema.validate(req.body.password)) {
                 const hash = await bcrypt.hash(req.body.password, 10);
                 const newUser = await User.create({
@@ -44,21 +44,20 @@ exports.signup = async (req, res) => {
                     password: hash,
                     isAdmin: false,
                 });
-                // Create a token
                 res.status(201).json({
-                    // user, token, expires to be added
-                    // user: newUser,
-                    // token: 'TOKEN', jwt.sign({ userEmail: newUser.email }, 'RANDOM_TOKEN_SECRET', { expiresIn: '24h'})
-                    // expires: 
+                    user: newUser,
+                    token: jwt.sign(
+                        { userEmail: newUser.email }, 
+                        'RANDOM_SECRET_TOKEN', 
+                        { expiresIn: '24h'}
+                    ),
                     message: 'Votre inscription a bien été prise en compte !'
                 });
-         
-                
             }
             // If the password is not valid, return an error message
             else {
                 res.status(400).json({
-                    message: 'Format de mot de passe incorrect !'
+                    message: 'Le format de votre mot de passe est incorrect.'
                 });
             };
         };
@@ -88,7 +87,7 @@ exports.login = async (req, res) => {
         });
         // If the user email does not exist yet, return an error
         if (!user) {
-            return res.status(401).json({ error: 'Cet email n\'est pas enregistré !'});
+            return res.status(401).json({ error: 'Cette adresse mail n\'est pas encore enregistré !'});
         }
         // If the user email exists,
         else {
@@ -97,26 +96,20 @@ exports.login = async (req, res) => {
                 return res.status(401).json({ error: 'Mot de passe incorrect !' });
             }
             else {
-                // const issuedToken = await jwt.sign(
-                //     { userEmail: user.email }, 
-                //     'RANDOM_SECRET_TOKEN', 
-                //     { expiresIn: '24h'}
-                // )
                 return res.status(200).json({
                     user: user,
-                    // token: issuedToken,
                     token: jwt.sign(
                         { userEmail: user.email }, 
                         'RANDOM_SECRET_TOKEN', 
                         { expiresIn: '24h'}
                     ),
-                    message: 'Logged in successfully and a token has been created.'
+                    message: 'Connecté avec succès !'
                 });
             }
         }
     }
     catch (error) {
-        return res.status(500).json({ error: "Erreur serveur" });
+        return res.status(500).json({ error: 'Erreur du serveur' });
     };       
 };
 
@@ -129,7 +122,7 @@ exports.getAccount = async (req, res) => {
         res.status(200).send(user);
     }
     catch (error) {
-        return res.status(500).json({ error: "Erreur serveur" });
+        return res.status(500).json({ error: 'Erreur du serveur' });
     }
     
 }
