@@ -13,10 +13,11 @@ const MY_ICONS = {
     eyeoff: 'mdi-eye-off',
     logout: 'mdi-power',
     addphoto: 'mdi-camera-plus',
-    //ADD MORE ICONS HERE
-    friends: 'mdi-account-supervisor-circle',
     delete: 'mdi-trash-can-outline',
     update: 'mdi-update',
+    file: 'mdi-paperclip',
+    //ADD MORE ICONS HERE
+    friends: 'mdi-account-supervisor-circle',
     comment: 'mdi-comment-text-outline',
     like: 'mdi-emoticon-outline',
     home: 'mdi-home',

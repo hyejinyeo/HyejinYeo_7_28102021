@@ -33,7 +33,7 @@ const routes = [
     {
         path: '/account/:id',
         name: 'Account',
-        component: () => import('../components/Account.vue')
+        component: () => import('../views/Account.vue')
     }
     // TO ADD 
     // USER: Profil modification page (add photo, modify password, delete account)

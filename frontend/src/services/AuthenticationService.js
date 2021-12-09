@@ -8,7 +8,13 @@ export default {
         return Api().post('login', data);
     },
     getUserById(id) {
-        return Api().get('account/' + id)
+        return Api().get('account/' + id);
+    },
+    updateAccount(id, data) {
+        return Api().put('account/' + id, data);
+    },
+    deleteAccount(id) {
+        return Api().delete('account/' + id);
     }
 }
 
