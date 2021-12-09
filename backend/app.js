@@ -3,6 +3,8 @@ const cors = require('cors');
 const path = require('path');
 
 
+/* Sécurité */
+const helmet = require("helmet");
 
 /* Déclaration des routes */
 // User
@@ -43,16 +45,21 @@ app.use((req, res, next) => {
 // app.use('/api/post', postRoutes);
 
 
-/* VERSION 1 */
-// user route imported twice: 
+/* Sécurité */
+app.use(helmet());
+
+
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+
+/* Routes User */
 require('./routes/user')(app)
+/* Routes Post */
+// require('./routes/post')(app)
 
 
 
-/* ------------------------------------------------------------------------------------------------- */
-// freeCodeCamp tuto 
-
-// POSTMAN TEST DONE
+// TEST API
 app.get('/status', (req, res) => {
     res.send({
         message: 'Hello world! 👍 - Test API'
@@ -72,8 +79,6 @@ const dbTest = async function () {
     }
 };
 dbTest();
-
-/* ------------------------------------------------------------------------------------------------- */
 
 
 
