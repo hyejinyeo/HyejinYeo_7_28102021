@@ -44,6 +44,12 @@
                 </template>
                 <v-card v-if="userLoggedIn === true">
                     <v-list-item-content class="justify-center">
+                        <!-- ADMIN ONLY -->
+                        <v-btn v-if="user.isAdmin === true" depressed text :to="`/admin`">
+                            <v-icon left>$vuetify.icons.lock</v-icon>
+                            <span>admin</span>
+                        </v-btn>
+                        <!-- ALL USERS -->
                         <v-btn depressed text :to="`/account/${user.id}`">
                             <v-icon left>$vuetify.icons.account</v-icon>
                             <span>MON PROFIL</span>
@@ -52,6 +58,7 @@
                             <v-icon left>$vuetify.icons.logout</v-icon>
                             <span>DECONNEXION</span>
                         </v-btn>
+                        
                     </v-list-item-content>
                 </v-card>
             </v-menu>
@@ -111,18 +118,5 @@ export default {
 </script>
 
 <style lang="css" scoped>
-.logged-in-avatar {
-    position: relative
-}
-.logged-in-status {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: green;
-    position: absolute;
-    right: 6px;
-    bottom: 3px;
-    
-}
 
 </style>
