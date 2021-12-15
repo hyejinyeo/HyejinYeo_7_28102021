@@ -43,6 +43,7 @@
                                     v-model="email"
                                     type="email"
                                     readonly
+                                    aria-readonly="true"
                                     hint="* ce champ n'est pas modifiable"
                                     persistent-hint
                                 ></v-text-field>
@@ -108,11 +109,6 @@
                 </v-flex>
             </v-layout> 
         </v-container>
-        <!-- <v-container style="max-width: 900px" v-if="user.isAdmin === false">
-            Admin user page
-        </v-container> -->
-
-
     </div>
 </template>
 
@@ -132,6 +128,7 @@ export default {
             dialog: false,
             nameRules: [
                 v => !!v || 'Ce champ est obligatoire.',
+                v => v.length <= 20 || 'Entre 1 et 20 caractères.',
                 v => /^[a-zA-ZàâäéèêëîïôöùûüÿçæœA-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜŸÇÆ ,.'-]+$/u.test(v) || 'Ce champ peut contenir les caractères alphabétiques qui sont utilisés dans la langue française et [ . ] [ \' ] [ - ].'
             ],
             // emailRules: [

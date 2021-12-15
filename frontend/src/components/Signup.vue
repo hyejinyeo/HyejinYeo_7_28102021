@@ -76,6 +76,7 @@ export default {
             password: "",
             nameRules: [
                 v => !!v || 'Ce champ est obligatoire.',
+                v => v.length <= 20 || 'Entre 1 et 20 caractères.',
                 v => /^[a-zA-ZàâäéèêëîïôöùûüÿçæœA-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜŸÇÆ ,.'-]+$/u.test(v) || 'Ce champ peut contenir les caractères alphabétiques qui sont utilisés dans la langue française et [ . ] [ \' ] [ - ].'
             ],
             emailRules: [
@@ -116,7 +117,7 @@ export default {
                     // Update data
                     this.$store.dispatch("logIn", response.data.token);
                     this.$store.dispatch("setUser", response.data.user);
-                    this.$store.dispatch("getUserById", response.data.user.id);
+                    // this.$store.dispatch("getUserById", response.data.user.id);
 
                     // Stop button loading
                     this.btnLoading = false;
