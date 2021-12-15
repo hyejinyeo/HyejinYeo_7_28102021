@@ -33,33 +33,64 @@
                                         <v-dialog v-model="gifDialog" max-width="700" class="pa-2">
                                             <v-card>
                                                 <v-card-title>
-                                                    <!-- <v-text-field
-                                                        v-model="search"
-                                                        prepend-icon="mdi-magnify"
-                                                        label="Search"
-                                                        single-line
-                                                        hide-details
-                                                        color="#005C68"
-                                                    ></v-text-field> -->
+                                                    <v-text-field v-model="searchInput" prepend-icon="$vuetify.icons.search" label="Search" single-line hide-details color="#005C68" @input="gifInput">
+                                                    </v-text-field>
                                                 </v-card-title>
-                                                <v-card-text>gif displays here</v-card-text>
+                                                <v-card-text>
+                                                    <img class="gif" v-for="gif in gifs" :key="gif.id" :gif="gif" :src="gif.images.original.url" @click="selectGif"/>
+                                                </v-card-text>
                                             </v-card>
                                         </v-dialog>
-                                        <!-- INPUT IMAGE/GIF DISPLAY AREA -->
-                                        <div class="imageContainer">
-                                            <v-btn fab icon small depressed color="red lighten-2" v-if="selectedFile !== null" class="image--deleteButton" @click="deleteImage">
+                                         <!-- LINK -->
+                                        <v-btn depressed rounded class="mr-2" @click="linkDialog = true">
+                                            <v-icon color="grey darken-2">
+                                                $vuetify.icons.link
+                                            </v-icon>
+                                        </v-btn>
+                                        <v-dialog v-model="linkDialog" max-width="700" class="pa-2">
+                                            <v-card>
+                                                <v-card-text>
+                                                    <input type="url" v-model="linkUrl" placeholder="https://example.com" pattern="https://.*" class="mt-4 linkInputArea">
+                                                </v-card-text>
+                                                <v-card-actions>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn color="teal darken-2" text @click="submitLink">
+                                                        AJOUTER
+                                                    </v-btn>
+                                                </v-card-actions>
+                                            </v-card>
+                                        </v-dialog>
+                                        
+                                        <!-- INPUT DISPLAY AREA -->
+                                        <div class="imageContainer mt-3">
+                                            <img id="output" class="image"> 
+                                            <v-btn fab icon small depressed color="red lighten-2" v-if="selectedImageFile !== null" class="image--deleteButton" @click="deleteImage">
                                                 <v-icon>$vuetify.icons.close</v-icon>
                                             </v-btn>
-                                            <img id="output" class="image"> 
+                                        </div>
+                                        <div class="gifContainer">
+                                            <img class="image" :src="selectedGifFile"> 
+                                            <v-btn fab icon small depressed color="red lighten-2" v-if="selectedGifFile !== null" class="gif--deleteButton" @click="deleteGif">
+                                                <v-icon>$vuetify.icons.close</v-icon>
+                                            </v-btn>
+                                        </div>
+                                        <div class="linkContainer mt-3" v-if="linkOutput !== null">
+                                            <span class="link d-flex align-center">
+                                                <v-icon small class="mr-2">$vuetify.icons.selectedlink</v-icon>
+                                                <span class="linkText">{{ linkOutput }}</span>
+                                            </span>
+                                            <v-btn fab icon small depressed color="red lighten-2" v-if="linkUrl !== null" class="link--deleteButton" @click="deleteLink">
+                                                <v-icon>$vuetify.icons.close</v-icon>
+                                            </v-btn>
                                         </div>
                                         <!-- TEXT -->
-                                        <v-textarea label="Message" filled color="#005C68" class="mt-2">
+                                        <v-textarea label="Message" filled color="#005C68" class="mt-2" v-model="inputMessage">
                                         </v-textarea>
                                     </v-form>
                                 </v-container>
                             </v-card-text>
                             <v-card-actions>
-                                <v-btn color="teal darken-2" text block @click="createPost">
+                                <v-btn color="teal darken-2" text block @click.prevent="createPost">
                                     Publier
                                 </v-btn>
                             </v-card-actions>
@@ -75,13 +106,31 @@
 
 <script>
 export default {
+    // GIPHY Trial
+    props: {
+        gif: Object,
+        // gifs: Array
+    },
+
+
     data() {
         return {
             dialog: false,
             gifDialog: false,
-            selectedFile: null,
+            linkDialog: false,
+            selectedImageFile: null,
+            searchInput: null,
+            timeout: null,
+            gifs: [],
+            selectedGifFile: null,
+            linkUrl: null,
+            linkOutput: null,
+            inputMessage: null,
             imageButtonDisabled: false,
             gifButtonDisabled: false,
+            // data
+
+            
 
         }
     },
@@ -92,22 +141,82 @@ export default {
         uploadImage(event) {
             let output = document.getElementById('output');
             output.src = URL.createObjectURL(event.target.files[0]);
-            this.selectedFile = event.target.files[0];
+            this.selectedImageFile = event.target.files[0];
             this.gifButtonDisabled = true;
-            let property = document.getElementById('imgIcon');
-            property.color = "#005C68"
         },
         deleteImage() {
             let output = document.getElementById('output');
             output.src = '';
-            this.selectedFile = null;
+            this.selectedImageFile = null;
+            this.selectedGifFile = null;
             this.imageButtonDisabled = false;
             this.gifButtonDisabled = false;
         },
+        // GIPHY API 
+        // L1GdpfNaiyZu93ykfOGu4vsf7JBVS8Qn
+        // It will call the GET request fuction "gifSearch" after 0.5 seconds of the last search input, i
+        gifInput() {
+            clearTimeout(this.timeout);
+            this.timeout = setTimeout(()=> {
+                this.gifSearch()
+            }, 500);
+        },
+        // GET Request to Giphy search endpoint
+        gifSearch() {
+            fetch( `https://api.giphy.com/v1/gifs/search?api_key=L1GdpfNaiyZu93ykfOGu4vsf7JBVS8Qn&q=${this.searchInput}&limit=30`)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result);
+                this.gifs = result.data;
+            })
+            .catch(error => console.log(error))
+        },
+        selectGif(event) {
+            this.selectedGifFile = event.srcElement.currentSrc;
+            this.imageButtonDisabled = true;
+            this.gifDialog = false;            
+        },
+        deleteGif() {
+            this.selectedImageFile = null;
+            this.selectedGifFile = null; 
+            this.imageButtonDisabled = false;
+            this.gifButtonDisabled = false;
+        },
+        submitLink() {
+            console.log(this.linkUrl);
+            this.linkOutput = this.linkUrl;
+            this.linkDialog = false;
+        },
+        deleteLink() {
+            this.linkUrl = null;
+            this.linkOutput = null;
+        },
         createPost() {
-            console.log(this.selectedFile)
+            // send request to backend
+            console.log(this.selectedImageFile)
+            console.log(this.selectedGifFile)
+            console.log(this.linkUrl)
+            console.log(this.inputMessage) 
+            // Reset data
+            this.selectedImageFile = null;
+            let output = document.getElementById('output');
+            output.src = '';
+            this.selectedGifFile = null;
+            this.linkUrl = null;
+            this.linkOutput = null;
+            this.inputMessage = null;
+            // Activate buttons
+            this.imageButtonDisabled = false;
+            this.gifButtonDisabled = false;
+            // Close dialog
             this.dialog = false;
         },
+
+
+        
+        
+
+
     }
 
 
@@ -121,10 +230,45 @@ export default {
 }
 .image--deleteButton {
     position: absolute;
-    right: 2px;
-    top: 2px;
+    right: 1px;
+    top: 1px;
 }
 .image {
     max-width: 100%;
+    width: 100%;
+}
+.gifContainer {
+    max-width: 800px;
+    position: relative;
+}
+.gif--deleteButton {
+    position: absolute;
+    right: 1px;
+    top: 1px;
+}
+.gif {
+    width: 100%;
+}
+.linkInputArea {
+    width: 100%;
+    padding: 5px; 
+    border: 1px solid lightgray;
+}
+.linkContainer {
+    max-width: 800px;
+    position: relative;
+}
+.link--deleteButton {
+    position: absolute;
+    right: 1px;
+    top: 0px;
+}
+.link {
+    height: 40px;
+    margin: auto 10px;
+}
+.linkText {
+    font-style: italic;
+    text-decoration: underline;
 }
 </style>
