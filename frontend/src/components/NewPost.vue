@@ -84,9 +84,12 @@
                                             </v-btn>
                                         </div>
                                         <!-- TEXT -->
-                                        <v-textarea label="Message" filled color="#005C68" class="mt-2" v-model="inputMessage">
+                                        <v-textarea label="Message" filled color="#005C68" class="mt-2" ref="messageInput" autocomplete="off" :rules="messageRules" v-model="inputMessage">
                                         </v-textarea>
                                     </v-form>
+                                    <v-alert dense text type="error" v-if="errorMessage !== null" class="my-2 ">
+                                        {{ errorMessage }}
+                                    </v-alert> 
                                 </v-container>
                             </v-card-text>
                             <v-card-actions>
@@ -106,13 +109,9 @@
 
 <script>
 export default {
-    // GIPHY Trial
     props: {
         gif: Object,
-        // gifs: Array
     },
-
-
     data() {
         return {
             dialog: false,
@@ -128,10 +127,15 @@ export default {
             inputMessage: null,
             imageButtonDisabled: false,
             gifButtonDisabled: false,
-            // data
-
-            
-
+            messageRules: [
+                v => !!v || 'Ce champ est obligatoire.',
+            ],
+            errorMessage: null,            
+        }
+    },
+    computed: {
+        user() {
+            return this.$store.getters.user;
         }
     },
     methods: {
@@ -166,7 +170,6 @@ export default {
             fetch( `https://api.giphy.com/v1/gifs/search?api_key=L1GdpfNaiyZu93ykfOGu4vsf7JBVS8Qn&q=${this.searchInput}&limit=30`)
             .then(response => response.json())
             .then(result => {
-                console.log(result);
                 this.gifs = result.data;
             })
             .catch(error => console.log(error))
@@ -183,7 +186,6 @@ export default {
             this.gifButtonDisabled = false;
         },
         submitLink() {
-            console.log(this.linkUrl);
             this.linkOutput = this.linkUrl;
             this.linkDialog = false;
         },
@@ -192,34 +194,43 @@ export default {
             this.linkOutput = null;
         },
         createPost() {
-            // send request to backend
-            console.log(this.selectedImageFile)
-            console.log(this.selectedGifFile)
-            console.log(this.linkUrl)
-            console.log(this.inputMessage) 
-            // Reset data
-            this.selectedImageFile = null;
-            let output = document.getElementById('output');
-            output.src = '';
-            this.selectedGifFile = null;
-            this.linkUrl = null;
-            this.linkOutput = null;
-            this.inputMessage = null;
-            // Activate buttons
-            this.imageButtonDisabled = false;
-            this.gifButtonDisabled = false;
-            // Close dialog
-            this.dialog = false;
-        },
-
-
-        
-        
-
-
+            if (this.$refs.messageInput.validate()) {
+                const formData = new FormData();
+                // user id
+                formData.append('userId', this.user.id);
+                formData.append('message', this.inputMessage);
+                if (this.selectedImageFile !== null) {
+                    formData.append('imageUrl', this.selectedImageFile);
+                }
+                if (this.selectedGifFile !== null) {
+                    formData.append('giphyUrl', this.selectedGifFile);
+                }
+                if (this.linkUrl !== null) {
+                    formData.append('link', this.linkUrl);
+                }
+                console.log(formData)
+                this.$store.dispatch("createPost", formData);
+                
+                // Reset data
+                this.selectedImageFile = null;
+                let output = document.getElementById('output');
+                output.src = '';
+                this.selectedGifFile = null;
+                this.linkUrl = null;
+                this.linkOutput = null;
+                this.inputMessage = null;
+                // Reactivate buttons
+                this.imageButtonDisabled = false;
+                this.gifButtonDisabled = false;
+                // Relocate to the post page and close the dialog
+                // window.location.href = "/";
+                this.dialog = false;
+            } 
+            else {
+                this.errorMessage = 'Uh-oh 😮 Il semble que vous n\'avez rien écrit. Le champ de message est obligatoire.';
+            }               
+        },    
     }
-
-
 }
 </script>
 

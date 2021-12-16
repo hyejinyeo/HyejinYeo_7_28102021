@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 // import Auth from '../services/AuthenticationService';
 import axios from "axios";
 import createPersistedState from "vuex-persistedstate";
+// import PostService from '../services/PostService';
 
 
 Vue.use(Vuex)
@@ -16,7 +17,6 @@ export default new Vuex.Store({
         users: [],
         post: {},
         posts: [],
-
     },
     plugins: [createPersistedState({
         storage: window.sessionStorage,
@@ -30,6 +30,9 @@ export default new Vuex.Store({
         },
         users(state) {
             return state.users;
+        },
+        posts(state) {
+            return state.posts;
         },
     },
     mutations: {
@@ -64,9 +67,17 @@ export default new Vuex.Store({
             state.userLoggedIn = false;
             state.token = null;
             state.user = null;
-        }      
+        },
+        // POST
+        GET_POSTS(state, posts) {
+            state.posts = posts;
+        },
+        ADD_POST(state, post) {
+            state.posts = [post, ...state.posts];
+        },      
     },
     actions: {
+        // USER
         logIn({ commit }, token) {
             commit("LOG_IN", token);
         },
@@ -96,15 +107,15 @@ export default new Vuex.Store({
                     const updatedUser = response.data.user;
                     commit("UPDATE_ACCOUNT", updatedUser);
                 })
-                .catch((error) => {
-                    console.log(error)
-                })
                 // .then (() => {
                 //     PostService.getPosts().then((response) => {
-                //     const posts = response.data;
-                //     commit("GET_POSTS", posts);
-                // })
-            // }) 
+                //         const posts = response.data;
+                //         commit("GET_POSTS", posts);
+                //     })
+                // }) 
+                .catch((error) => {
+                    console.log(error)
+                })      
         },
         deleteAccount({ commit }, id) {
             axios
@@ -121,8 +132,63 @@ export default new Vuex.Store({
         },
         logOut({ commit }) {
             commit("LOG_OUT");
+        },
+
+
+        // ---------------------------------------  POST  ---------------------------------------
+        getPosts({ commit }) {
+            // PostService.getPosts().then((response) => {
+            //     const posts = response.data;
+            //     commit("GET_POSTS", posts);
+            // });
+            axios
+                .get(`${process.env.PORT || 'http://localhost:3000/'}feed`, {
+                    headers: { Authorization: 'Bearer ' + this.state.token }, 
+                })
+                .then((response) => {
+                    const posts = response.data;
+                    commit("GET_POSTS", posts);
+                })
+        },
+        createPost({ commit }, post) {
+            // PostService.createPost(post)
+            //     .then((response) => {
+            //         const post = response.data;
+            //         commit("ADD_POST", post);
+            //     })
+            //     .then(() => {
+            //         PostService.getPosts().then((response) => {
+            //             const posts = response.data;
+            //             commit("GET_POSTS", posts);
+            //         });
+            //     })
+            //     .catch((error) => {
+            //         console.log(error)
+            //     })
+
+            axios
+                .post(`${process.env.PORT || 'http://localhost:3000/'}feed`, post, {
+                    headers: { Authorization: 'Bearer ' + this.state.token }, 
+                })
+                .then((response) => {
+                    const post = response.data;
+                    console.log(post)
+                    commit("ADD_POST", post);
+                })
+                .then(() => {
+                    axios
+                        .get(`${process.env.PORT || 'http://localhost:3000/'}feed`, {
+                            headers: { Authorization: 'Bearer ' + this.state.token }, 
+                        })
+                        .then((response) => {
+                            const posts = response.data;
+                            commit("GET_POSTS", posts);
+                        })
+                })
         }
+        
     },
     modules: {
+
     }
 })

@@ -31,12 +31,13 @@ const MY_ICONS = {
     comment: 'mdi-comment-outline',
     like: 'mdi-thumb-up-outline',
     //ADD MORE ICONS HERE
-    
     // friends: 'mdi-account-supervisor-circle',
-    
     heart: 'mdi-heart',
-    home: 'mdi-home',
     mail: 'mdi-email-outline',
+    help: 'mdi-help',
+    settings: 'mdi-cog-outline',
+    hashtag: 'mdi-pound'
+
 }
 
 export default new Vuetify({
