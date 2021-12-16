@@ -50,12 +50,13 @@ app.use(helmet());
 
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 /* Routes User */
 require('./routes/user')(app)
 /* Routes Post */
-// require('./routes/post')(app)
+require('./routes/post')(app)
 
 
 
