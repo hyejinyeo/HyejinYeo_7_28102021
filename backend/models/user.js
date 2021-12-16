@@ -1,63 +1,31 @@
-/* ------------------------------------------------------------------------------------------------- */
-// 'use strict';
-
-// const { Model } = require('sequelize');
-
-// module.exports = (sequelize, Datatypes) => {
-//     sequelize.define('User', {
-//         lastName: Sequelize.STRING,
-//         firstName: Sequelize.STRING,
-//         email: Sequelize.STRING, 
-//         password: Sequelize.STRING,
-//         isAdmin: Sequelize.TINYINT
-
-//     })
-// }
-
-/* ------------------------------------------------------------------------------------------------- */
-// Worked well - sequelize tuto 
-
-
-
+'use strict';
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-    const User = sequelize.define('User', {
-        lastName: { type: DataTypes.STRING, allowNull: false },
-        firstName: { type: DataTypes.STRING, allowNull: false },
-        email: { type: DataTypes.STRING, allowNull: false, unique: true },
-        password: { type: DataTypes.STRING, allowNull: false },
-        photo: { type: DataTypes.STRING, allowNull: true },
-        isAdmin: { type: DataTypes.BOOLEAN, allowNull: false, default: false }
-    })
-  
+    class User extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+        static associate(models) {
+            models.User.hasMany(models.Post);
+        //   models.User.hasMany(models.Comment);
+        //   models.User.hasMany(models.Like);
+        }
+    }
+    User.init(
+        {
+            lastName: { type: DataTypes.STRING, allowNull: false },
+            firstName: { type: DataTypes.STRING, allowNull: false },
+            email: { type: DataTypes.STRING, allowNull: false, unique: true },
+            password: { type: DataTypes.STRING, allowNull: false },
+            photo: { type: DataTypes.STRING, allowNull: true },
+            isAdmin: { type: DataTypes.BOOLEAN, allowNull: false, default: false }
+        },
+        {
+            sequelize,
+            modelName: 'User',
+        }
+    );
     return User;
 };
-
-
-/* ------------------------------------------------------------------------------------------------- */
-
-
-// const { Model } = require('sequelize');
-
-// module.exports = (sequelize, DataTypes) => {
-//     class User extends Model {
-//         static associate(models) {
-//             // define association here
-//         }
-//     };
-//     User.init(
-//         {
-//             lastname: { type: DataTypes.STRING, allowNull:false },
-//             firstname: { type: DataTypes.STRING, allowNull:false },
-//             email: { type: DataTypes.STRING, allowNull: false, unique: true },
-//             password: { type: DataTypes.STRING, allowNull: false },
-//             photo: { type: DataTypes.STRING, allowNull: true },
-//             isAdmin: { type: DataTypes.BOOLEAN, allowNull: false, default: false },
-//         },
-//         {
-//             sequelize, modelName: "User"
-//         }
-    
-//     );
-//     return User;
-
-// };

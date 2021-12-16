@@ -1,9 +1,8 @@
-/* VERSION 1 --- this works */
-
 // Importer le controller User
 const userCtrl = require('../controllers/user');
 const auth = require('../middleware/auth');
-const multer = require("../middleware/multer-config");
+const multer = require('../middleware/multer-config-user');
+
 
 /* Router pour USER */
 // S'inscrire
@@ -12,11 +11,10 @@ module.exports = (app) => {
     app.post('/login', userCtrl.login),
     app.get('/account/:id', auth, userCtrl.getAccount),
     app.put('/account/:id', auth, multer, userCtrl.updateAccount),
-    app.delete('/account/:id', auth, userCtrl.deleteAccount)
+    app.delete('/account/:id', auth, userCtrl.deleteAccount),
+    // temporary
+    app.get('/account', auth, userCtrl.getAllAccount)
 }
-
-
-
 
 
 

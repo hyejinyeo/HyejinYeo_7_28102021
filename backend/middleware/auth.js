@@ -14,25 +14,7 @@ module.exports = (req, res, next) => {
     }
     catch (error) {
         res.status(401).json({
-            error: error | 'Request non authentified' 
+            error: 'Request non authentifié' 
         })
     }
 };
-
-
-// function issueToken(user) {
-//     const id = user.email;
-//     const expiresIn = '24h';
-//     const payload = {
-//         sub: id,
-//         iat: Date.now()
-//     }
-//     const newToken = jwt.sign(payload, 'SECRET_TOKEN', { expiresIn: expiresIn});
-//     return {
-//         token: "Bearer " + newToken,
-//         expires: expiresIn
-//     };
-// }
-
-
-// module.exports.issueToken = issueToken;

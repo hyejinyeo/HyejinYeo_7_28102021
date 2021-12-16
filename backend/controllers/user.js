@@ -1,4 +1,4 @@
-const db = require("../models");
+const db = require('../models');
 const User = db.User;
 const Op = db.Sequelize.Op;
 
@@ -8,7 +8,7 @@ const fs = require('fs');
 // const auth = require("../middleware/auth");
 
 const passwordValidator = require('password-validator');
-const user = require("../routes/user");
+const user = require('../routes/user');
 const passwordSchema = new passwordValidator();
 passwordSchema
 .is().min(8)                                    
@@ -111,7 +111,7 @@ exports.login = async (req, res) => {
 };
 
 
-// Modifier le profil
+// Trouver un utilisateur du BDD par son id
 exports.getAccount = async (req, res) => {
     try { 
         const user = await User.findOne({
@@ -122,13 +122,23 @@ exports.getAccount = async (req, res) => {
     catch (error) {
         return res.status(500).json({ error: 'Erreur du serveur' });
     }
+};
+
+
+// temporary
+exports.getAllAccount = async (req, res) => {
+    try { 
+        const users = await User.findAll()
+        res.status(200).send(users);
+    }
+    catch (error) {
+        return res.status(500).json({ error: 'Erreur du serveur' });
+    }
 }
 
 
+// Modifier son profil
 exports.updateAccount = async (req, res) => {  
-    // email unique validator to be added 
-    
-
     let updatedUser = {};
     req.file ? (
         User.findOne({ where: { id: req.params.id } })
@@ -153,182 +163,10 @@ exports.updateAccount = async (req, res) => {
             message: 'Votre profil a bien été modifié'
         }))
         .catch(error => res.status(400).json({ error: 'update error - check user controller [user.update]'}));
-    
-    
-
-    // try {
-    //     // Check if the email has been already registered
-    //     const user = await User.findOne({
-    //         where: { email: req.body.email }
-    //     });
-    //     // If the user email already exists in the database, return an error message
-    //     if (user !== null) {
-    //         return res.status(400).json({ error: 'Cette adresse mail est déjà utilisé.'});
-    //     }
-    //     // If the user email does not exist yet, move on to profil update
-    //     else {
-    //         let updatedUser = {};
-    //         req.file ? (
-    //             User.findOne({ where: { id: req.params.id } })
-    //                 .then((user) => {
-    //                     const filename = user.photo.split('/images/')[1]
-    //                     fs.unlinkSync(`images/${filename}`)   
-    //                 }),
-    //                 updatedUser = {
-    //                     lastName: req.body.lastName,
-    //                     firstName: req.body.firstName,
-    //                     email: req.body.email,
-    //                     photo: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-    //                 }
-    //         ) : (updatedUser = { 
-    //                 lastName: req.body.lastName,
-    //                 firstName: req.body.firstName,
-    //                 email: req.body.email,
-    //             })
-    //         User.update(updatedUser, { where: { id: req.params.id } })
-    //             .then(() => res.status(200).json({ 
-    //                 user: updatedUser,
-    //                 message: 'Votre profil a bien été modifié'
-    //             }))
-    //             .catch(error => res.status(400).json({ error: 'update error - check user controller [user.update]'}));
-    //     };            
-    // }
-    // catch (error) {
-    //     console.log(error);
-    //     res.status(400).json({
-    //         error
-    //     });
-    // };
-
-    
+};
 
 
-    // const id = req.params.id;
-    // try {
-    //     const userEmail = token.userEmail(req);
-    //     let newPhoto
-    //     // Find the user from database
-    //     let user = await User.findOne({
-    //         where: { id: req.params.id }
-    //     })
-    //     if (userEmail === user.email) {
-    //         if (req.file && user.photo) {
-    //             const filename = user.photo.split('/images/')[1]
-    //             fs.unlinkSync(`images/${filename}`)
-    //             newPhoto = `${req.protocol}://${req.get("host")}/api/images/${req.file.name}`;
-    //         }
-    //         else if (req.file) {
-    //             newPhoto = `${req.protocol}://${req.get("host")}/api/images/${req.file.name}`;
-    //         }
-    //         console.log('photo registered')
-    //         // let updatedUser = {
-    //         //     lastName: req.body.lastName,
-    //         //     firstName: req.body.firstName,
-    //         //     email: req.body.email,
-    //         //     photo: newPhoto
-    //         // }
-    //         // console.log(updatedUser)
-    //         // User.update(updatedUser, { where: { id: id } } );
-    //         // res.status(200).json({
-    //         //     user: updatedUser,
-    //         //     message: "Votre profil a bien été modifié",
-    //         // });
-    //     }
-    //     else {
-    //         res.status(400).json({ error: 'temporary update error eeeeeeee'})
-    //     }
-        
-        // trial 
-        
-
-
-
-    // ESTELLE ROSE
-    // try {
-    //     // const userEmail = token.userEmail(req);
-    //     // Find the user from database
-    //     let user = await User.findOne({
-    //         where: { id: req.params.id }
-    //     })
-    //     // trial 
-    //     .then((user) => {
-    //         if (req.file && user.photo) {
-    //             const filename = user.photo.split('/images/')[1]
-    //             fs.unlinkSync(`images/${filename}`)
-    //             let newPhoto = `${req.protocol}://${req.get("host")}/api/images/${req.file.name}`;
-    //         }
-    //         else if (req.file) {
-    //             let newPhoto = `${req.protocol}://${req.get("host")}/api/images/${req.file.name}`;
-    //         }
-    //         let updatedUser = {
-    //             lastName: req.body.lastName,
-    //             firstName: req.body.firstName,
-    //             email: req.body.email,
-    //             photo: newPhoto
-    //         }
-    //         user.update(updatedUser, { where: { id: req.params.id } })
-    //             .then((updated) => {
-    //                 if (updated) {
-    //                     res.status(200).json({
-    //                         user: updatedUser,
-    //                         message: 'changes successfully updated'
-    //                     })
-    //                 }
-    //                 else {
-    //                     res.status(400).json({ error: 'temporary update error status code to be modified'})
-    //                 }
-    //             })
-    //     })
-    //     .catch((error) => {
-    //         res.status(400).json({ error: 'temporary controller error status code to be modified'})
-    //     })
-
-
-
-
-        // Compare user email of token and the one of database
-        // if (userEmail === user.email) {
-        //     // Change photo
-        //     if (req.file && user.photo) {
-        //         const filename = user.photo.split('/images/')[1]
-        //         fs.unlinkSync(`images/${filename}`)
-        //         let newPhoto = `${req.protocol}://${req.get("host")}/api/images/${req.file.name}`;
-        //     }
-        //     // Add a photo for the first time
-        //     else if (req.file) {
-        //         let newPhoto = `${req.protocol}://${req.get("host")}/api/images/${req.file.name}`;
-        //     }
-        //     if (newPhoto) {
-        //         user.photo = newPhoto;
-        //     }
-        //     if (req.body.lastName) {
-        //         user.lastName = req.body.lastName;
-        //     }
-        //     if (req.body.firstName) {
-        //         user.firstName = req.body.firstName;
-        //     }
-        //     if (req.body.email) {
-        //         user.email = req.body.email;
-        //     }
-        //     const updatedUser = await user.save({ fields: ["lastName", "firstName", "email", "photo"] });
-        //     res.status(200).json({
-        //         user: updatedUser,
-        //         message: 'changes successfully updated'
-        //     });
-        // }
-        // // If user emails doe not correspond each other
-        // else {
-        //     res.status(400).json({ error: 'Vous n\'avez pas les droits requis'});
-        //     console.log('error level controller');
-        // }
-    // }
-    // catch (error) {
-    //     return res.status(500).json({ error: 'Erreur du serveur - controller' });
-    // }
-    // // ESTELLE 
-
-}
-
+// Supprimer son compte
 exports.deleteAccount = async (req, res) => {
     try {
         const id = req.params.id;
@@ -352,4 +190,4 @@ exports.deleteAccount = async (req, res) => {
     catch (error) {
         return res.status(500).json({ error: 'Erreur du serveur' });
     }
-}
+};
