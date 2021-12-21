@@ -158,7 +158,7 @@ export default {
         },
         // GIPHY API 
         // L1GdpfNaiyZu93ykfOGu4vsf7JBVS8Qn
-        // It will call the GET request fuction "gifSearch" after 0.5 seconds of the last search input, i
+        // It will call the "gifSearch" function after 0.5 seconds of the last search input
         gifInput() {
             clearTimeout(this.timeout);
             this.timeout = setTimeout(()=> {

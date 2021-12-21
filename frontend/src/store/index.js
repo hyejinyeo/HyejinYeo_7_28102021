@@ -10,6 +10,11 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     strict: true,
+    plugins: [createPersistedState({
+        storage: window.sessionStorage,
+    })],
+
+    // ***************************************  STATE  ***************************************
     state: {
         userLoggedIn: false,
         token: null,
@@ -18,10 +23,10 @@ export default new Vuex.Store({
         post: {},
         posts: [],
     },
-    plugins: [createPersistedState({
-        storage: window.sessionStorage,
-    })],
+    
+    // ***************************************  GETTERS  ***************************************
     getters: {
+        // -----------------------------------  USER  
         userLoggedIn(state) {
             return state.userLoggedIn;
         },
@@ -31,11 +36,18 @@ export default new Vuex.Store({
         users(state) {
             return state.users;
         },
+        // -----------------------------------  POST
+        post(state) {
+            return state.post;
+        }, 
         posts(state) {
             return state.posts;
         },
     },
+
+    // ***************************************  MUTATIONS  ***************************************
     mutations: {
+        // -----------------------------------  USER  
         LOG_IN(state, token) {
             state.token = token;
             if (token) {
@@ -68,16 +80,23 @@ export default new Vuex.Store({
             state.token = null;
             state.user = null;
         },
-        // POST
-        GET_POSTS(state, posts) {
+        // -----------------------------------  POST 
+        GET_ALL_POSTS(state, posts) {
             state.posts = posts;
+        },
+        GET_POST_BY_ID(state, post) {
+            state.post = post;
+        },
+        RESET_POST(state) {
+            state.post = {};
         },
         ADD_POST(state, post) {
             state.posts = [post, ...state.posts];
-        },      
+        },  
     },
+    // ***************************************  ACTIONS  ***************************************
     actions: {
-        // USER
+        // -----------------------------------  USER  
         logIn({ commit }, token) {
             commit("LOG_IN", token);
         },
@@ -107,12 +126,16 @@ export default new Vuex.Store({
                     const updatedUser = response.data.user;
                     commit("UPDATE_ACCOUNT", updatedUser);
                 })
-                // .then (() => {
-                //     PostService.getPosts().then((response) => {
-                //         const posts = response.data;
-                //         commit("GET_POSTS", posts);
-                //     })
-                // }) 
+                .then (() => {
+                    axios
+                        .get(`${process.env.PORT || 'http://localhost:3000/'}feed`, {
+                            headers: { Authorization: 'Bearer ' + this.state.token }, 
+                        })
+                        .then((response) => {
+                            const posts = response.data;
+                            commit("GET_POSTS", posts);
+                        })
+                }) 
                 .catch((error) => {
                     console.log(error)
                 })      
@@ -135,8 +158,8 @@ export default new Vuex.Store({
         },
 
 
-        // ---------------------------------------  POST  ---------------------------------------
-        getPosts({ commit }) {
+        // -----------------------------------  POST
+        getAllPosts({ commit }) {
             // PostService.getPosts().then((response) => {
             //     const posts = response.data;
             //     commit("GET_POSTS", posts);
@@ -147,8 +170,21 @@ export default new Vuex.Store({
                 })
                 .then((response) => {
                     const posts = response.data;
-                    commit("GET_POSTS", posts);
+                    commit("GET_ALL_POSTS", posts);
+                });
+        },
+        getPostById({ commit }, id) {
+            axios
+                .get(`${process.env.PORT || 'http://localhost:3000/'}feed/${id}`, {
+                    headers: { Authorization: 'Bearer ' + this.state.token }, 
                 })
+                .then((response) => {
+                    const post = response.data;
+                    commit("GET_POST_BY_ID", post);
+                });
+        },
+        resetPost({ commit }) {
+            commit("RESET_POST");
         },
         createPost({ commit }, post) {
             // PostService.createPost(post)
@@ -182,12 +218,26 @@ export default new Vuex.Store({
                         })
                         .then((response) => {
                             const posts = response.data;
-                            commit("GET_POSTS", posts);
+                            commit("GET_ALL_POSTS", posts);
                         })
+                });
+        },
+        updatePost({ commit }, post) {
+            console.log('store actions received');
+            let id = this.state.post.id
+            axios
+                .put(`${process.env.PORT || 'http://localhost:3000/'}feed/${id}`, post, {
+                    headers: { Authorization: 'Bearer ' + this.state.token }, 
                 })
-        }
+                .then((response) => {
+                    const post = response.data;
+                    commit("UPDATE_POST", id, post);
+                });
+        },
+        
         
     },
+    // ***************************************  MODULES  ***************************************
     modules: {
 
     }

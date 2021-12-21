@@ -42,7 +42,7 @@
                                 </div>
                             </div>
                             <!-- EDIT BUTTON : visible only for the author-->
-                            <div>
+                            <div v-if="$store.state.user.id == post.User.id || $store.state.user.isAdmin == true">
                                 <v-menu rounded offset-y role="menu" aria-label="Dropdown menu pour modifier la publication. Author or Admin only">
                                     <template v-slot:activator="{ on }">
                                         <v-btn icon v-on="on">
@@ -51,11 +51,11 @@
                                     </template>
                                     <v-card v-if="userLoggedIn === true">
                                         <v-list-item-content class="justify-center" roll="listitem" aria-label="List items pour pub modification ou suppression">
-                                            <v-btn depressed text color="grey darken-1" @click="modifyPost" role="Bouton pour modifier la publication"> 
+                                            <v-btn depressed text color="grey darken-1" @click="modifyPost(post.id)" role="Bouton pour modifier la publication"> 
                                                 <v-icon left aria-hidden="true">$vuetify.icons.modifyPost</v-icon>
                                                 <span>Modifier</span>
                                             </v-btn>
-                                            <v-btn depressed text color="grey darken-1" @click="deletePost" role="Bouton pour supprimer la publication">
+                                            <v-btn depressed text color="grey darken-1" @click="deletePost(post.id)" role="Bouton pour supprimer la publication">
                                                 <v-icon left aria-hidden="true">$vuetify.icons.deletePost</v-icon>
                                                 <span>Supprimer</span>
                                             </v-btn>
@@ -161,14 +161,6 @@ export default {
     },
     data() {
         return {
-            // Temporary dummy data start
-            feeds: [
-                { id: 1, firstName: 'Hyejin', lastName: 'Yeo', date: '10-11-2021:13:32:50', imageFilePath: null, imageUrl:'https://media3.giphy.com/media/iDOOSqoC0k3VeT9rd5/giphy.gif?cid=d3ffeb6drsdgeucm7qi5u68sv23n46k6gduauhe2uhoas8nl&rid=giphy.gif&ct=g', link: null, message: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dignissimos veniam enim eius consectetur sunt, explicabo expedita tempora! Consequuntur aperiam veniam quam quia facilis fugit nulla, vel qui hic ullam cumque. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reprehenderit, voluptas? Eveniet delectus amet, officia ducimus, quod asperiores et facilis vero, enim ratione qui impedit similique voluptatum fugiat ex aliquid magni.'},
-                { id: 2, firstName: 'Bongout', lastName: 'O', date: '10-11-2021:13:32:50', imageFilePath: null, imageUrl: 'https://media1.giphy.com/media/l2JhGa1nx4ir3zj20/giphy.gif?cid=d3ffeb6d87cx91w8p8wylrhzctju6tuwkpyk8700p8ubxceb&rid=giphy.gif&ct=g', link: 'https://www.youtube.com/watch?v=SMDGP1FSMGc', message: 'Merry Christmas to you all 🎄'},
-                { id: 3, firstName: 'Groupomania', lastName: 'Admin', date: '10-11-2021:13:32:50', imageFilePath: null, imageUrl: null, link: null, message: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dignissimos veniam enim eius consectetur sunt, explicabo expedita tempora! Consequuntur aperiam veniam quam quia facilis fugit nulla, vel qui hic ullam cumque.'},
-                { id: 4, firstName: 'Groupomania', lastName: 'Admin', date: '10-11-2021:13:32:50', imageFilePath: 'http://localhost:3000/images/hyejinyeo1639496777799.jpg', imageUrl:null, link: 'https://openclassrooms.com/fr/', message: null},
-                { id: 5, firstName: 'Groupomania', lastName: 'Admin', date: '10-11-2021:13:32:50', imageUrl:'https://media0.giphy.com/media/PAqjdPkJLDsmBRSYUp/giphy.gif?cid=d3ffeb6d0arfyvfqn7ylg22tzbp1nv1qcw97h6nkgbzml8bn&rid=giphy.gif&ct=g', link: 'https://openclassrooms.com/fr/', message: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dignissimos veniam enim eius consectetur sunt, explicabo expedita tempora! Consequuntur aperiam veniam quam quia facilis fugit nulla, vel qui hic ullam cumque.'}
-            ],
             // Temporary dummy data end
             showComments: false,
         
@@ -202,7 +194,7 @@ export default {
 
     },
     beforeMount() {
-        this.$store.dispatch("getPosts");
+        this.$store.dispatch("getAllPosts");
     },
 
     methods: {
@@ -210,8 +202,8 @@ export default {
         // sortBy(prop){
         //     this.feeds.sort((a, b) => a[prop] < b[prop] ? -1 : 1)
         // },
-        modifyPost() {
-
+        modifyPost(id) {
+            this.$router.push(`feed/${id}`)
         },
         deletePost() {
 

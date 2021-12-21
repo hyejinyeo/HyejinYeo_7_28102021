@@ -11,24 +11,14 @@ const routes = [
         component: Home
     },
     {
-        path: '/feed',
-        name: 'Feed',
-        component: () => import('../views/Feed.vue')
-    },
-    {
-        path: '/chat',
-        name: 'Chat',
-        component: () => import('../views/Chat.vue')
+        path: '/signup',
+        name: 'Signup',
+        component: () => import('../components/Signup.vue')
     },
     {
         path: '/login',
         name: 'Login',
         component: () => import('../components/Login.vue')
-    },
-    {
-        path: '/signup',
-        name: 'Signup',
-        component: () => import('../components/Signup.vue')
     },
     {
         path: '/account/:id',
@@ -39,7 +29,22 @@ const routes = [
         path: '/admin',
         name: 'Admin',
         component: () => import('../views/Admin.vue')
-    }
+    },
+    {
+        path: '/feed',
+        name: 'Feed',
+        component: () => import('../views/Feed.vue')
+    },
+    {
+        path: '/feed/:id',
+        name: 'EditPost',
+        component: () => import('../components/EditPost.vue')
+    },
+    {
+        path: '/chat',
+        name: 'Chat',
+        component: () => import('../views/Chat.vue')
+    },
     // TO ADD 
     // USER: Profil modification page (add photo, modify password, delete account)
     // FEED: Writing area(CRUD), Feed cards looping through the data

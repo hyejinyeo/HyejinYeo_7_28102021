@@ -4,12 +4,15 @@ export default {
     createPost(data) {
         return Api().post('feed/', data);
     },
-    getPosts() {
+    getAllPosts() {
         return Api().get('feed');
     },
-    // updatePost(data) {
-    //     return Api().put('feed', data);
-    // },
+    getPostById(id) {
+        return Api().get('feed/' + id);
+    },
+    updatePost(data) {
+        return Api().put('feed', data);
+    }
     // deletePost(id) {
     //     return Api().delete('feed' + id);
     // }
