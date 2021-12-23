@@ -37,7 +37,7 @@
                                 <div>
                                     <v-card-subtitle>
                                         <span class="font-weight-bold">{{ post.User.firstName }} {{ post.User.lastName }}</span><br> 
-                                        <span class="caption">{{ post.createdAt }}</span> <!-- npm date-fns to better format the date -->
+                                        <span class="caption">{{ new Date(post.createdAt).toLocaleDateString("fr-FR") + ' à ' + new Date(post.createdAt).toLocaleTimeString("fr-FR") }}</span>
                                     </v-card-subtitle>
                                 </div>
                             </div>
@@ -105,13 +105,13 @@
                         <v-card-actions>  
                             <v-row>
                                 <v-col cols="6" >
-                                    <v-btn small text width="100%">
+                                    <v-btn small text width="100%" @click="likePost(post.id)">
                                         <v-icon left>$vuetify.icons.like</v-icon>
                                         <span>J'aime</span>
                                     </v-btn>
                                 </v-col>
                                 <v-col cols="6" >
-                                    <v-btn small text width="100%" id="showCommentBtn" @click="showComments = !showComments">
+                                    <v-btn small text width="100%" @click="focusCommentInput(post.id)">
                                         <v-icon left>$vuetify.icons.comment</v-icon>
                                         <span>Commenter</span>
                                     </v-btn>
@@ -120,9 +120,12 @@
                         </v-card-actions>
                         <v-divider></v-divider>
                         <!-- COMMENT DISPLAY & INPUT -->
-                        <v-container v-if="showComments == true">
-                            <div class="comments--v-for-to-be-added">
-                                other comments display here
+                        <v-container :id="'commentsContainer'+post.id" v-if="showComments == true">
+                            <div class="comments">
+                                <!-- <v-btn small plain>lire plus...</v-btn> -->
+                                <div>
+                                    other comments display here with v-for
+                                </div>
                             </div>
                             <div class="newComment d-flex align-top row pl-2 mt-3">
                                 <div class="mr-2">
@@ -135,15 +138,37 @@
                                     <v-form>
                                         <v-text-field
                                             filled rounded dense autogrow
-                                            placeholder="Ecrivez un commentaire et appuyez sur 'entrée' pour le publier."
+                                            placeholder="Ecrivez un commentaire ..."
                                             type="text"
                                             class="mr-2"
+                                            color="grey"
+                                            :id="'commentInput'+post.id"
+                                            :append-outer-icon="'mdi-send'"
+                                            @click:append-outer="submitComment(post.id)"
                                         ></v-text-field>
                                     </v-form>
                                 </v-flex>
                                 
                             </div>
                         </v-container>
+
+                        <!-- Expansion panels instead of container-->
+                        <!-- <v-expansion-panels>
+                        <v-expansion-panel>
+                            <v-expansion-panel-header>
+                            </v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                        </v-expansion-panels> -->
+
+
+
+
+
+
+
                     </v-card>
                 </v-flex>
             </v-row>
@@ -162,7 +187,8 @@ export default {
     data() {
         return {
             // Temporary dummy data end
-            showComments: false,
+            showComments: true,
+            // commentInput: null,
         
         }
     },
@@ -182,9 +208,6 @@ export default {
         posts() {
             return this.$store.getters.posts;
         },
-                // posts() {
-        //     return this.$store.getters.posts;
-        // },
         // Show feeds that are created by certain author
         // myFeeds() {
         //     return this.feeds.filter(feed => {
@@ -205,11 +228,30 @@ export default {
         modifyPost(id) {
             this.$router.push(`feed/${id}`)
         },
-        deletePost() {
-
+        deletePost(id) {
+            this.$store.dispatch("deletePost", id);
+            window.location.reload();
         },
         openLink(linkUrl) {
             window.open(linkUrl);
+        },
+        likePost(id) {
+            this.$store.dispatch("likePost", id);
+        },
+        openCommentArea(id) {
+            console.log(id);
+            this.showComments = !this.showComments
+        },
+        focusCommentInput(id) {
+            // const commentInputArea = 'commentInput'+id;
+            // console.log(commentInputArea);
+            document.getElementById("commentInput"+id).focus();
+        },
+        submitComment(id) {
+            console.log(id);
+            // console.log(this.commentInput);
+            const commentInput = document.getElementById("commentInput"+id).value;
+            console.log(commentInput);
         }
     },
 

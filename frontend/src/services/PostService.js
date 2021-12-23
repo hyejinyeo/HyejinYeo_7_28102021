@@ -12,8 +12,8 @@ export default {
     },
     updatePost(data) {
         return Api().put('feed', data);
+    },
+    deletePost(id) {
+        return Api().delete('feed/' + id);
     }
-    // deletePost(id) {
-    //     return Api().delete('feed' + id);
-    // }
 }

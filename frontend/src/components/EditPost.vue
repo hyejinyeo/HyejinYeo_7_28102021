@@ -7,6 +7,19 @@
                     <v-card elevation="2" class="mx-auto my-7">
                         <v-card-text>
                             <v-form>
+                            <!-- CREATED / UPDATED -->
+                                <div class="mb-5 text-right">
+                                    <!-- <v-btn icon plain @click="backToFeed(this.$store.getters.post.id)">
+                                        <v-icon>
+                                            mdi-arrow-left
+                                        </v-icon>    
+                                    </v-btn>
+                                    
+                                    <div> -->
+                                        <span>Publiée le {{ new Date(this.$store.getters.post.createdAt).toLocaleDateString("fr-FR") + ' à ' + new Date(this.$store.getters.post.createdAt).toLocaleTimeString("fr-FR") + 'h'}}  || </span>
+                                        <span>Modifiée le {{ new Date(this.$store.getters.post.updatedAt).toLocaleDateString("fr-FR") + ' à ' + new Date(this.$store.getters.post.updatedAt).toLocaleTimeString("fr-FR") }} </span>
+                                    <!-- </div> -->
+                                </div>
                             <!-- FILE/LINK UPLOAD BUTTONS -->
                                 <v-btn depressed rounded class="mr-2" :disabled="imageButtonDisabled" @click="openImageDialog">
                                     <v-icon color="grey darken-2">
@@ -108,9 +121,12 @@
                                 <v-textarea label="Message" filled color="#005C68" class="mt-3" ref="newMessageInput" autocomplete="off" :rules="messageRules" v-if="textarea == true" v-model="newMessage"> 
                                 </v-textarea>
                             </v-form>
+                            <v-alert dense text type="error" v-if="errorMessage !== null" class="my-2 ">
+                                {{ errorMessage }}
+                            </v-alert> 
                         </v-card-text>
                         <v-card-actions>
-                            <v-btn color="teal darken-2" text block @click.prevent="updatePost">
+                            <v-btn color="teal darken-2" text block @click.prevent="updatePost" :loading="btnLoading">
                                 Modifier
                             </v-btn>
                         </v-card-actions>
@@ -129,15 +145,19 @@ export default {
     data() {
         return {       
             gifDialog: false,
-            linkDialog: false,   
+            linkDialog: false,
+            postImageDeleted: false,   
             newImage: false,
             newImageFile: null,
             searchInput: null,
             timeout: null,
             gifs: [],
+            postGifDeleted: false,
             newGifFile: null,
+            postLinkDeleted: false,
             linkUrl: null,
             linkOutput: null,
+            postMessageDeleted: false,
             newMessage: null,
             messageRules: [
                 v => !!v || 'Ce champ est obligatoire.',
@@ -146,6 +166,7 @@ export default {
             gifButtonDisabled: false,
             linkButtonDisabled: false,
             textarea: false,
+            btnLoading: false,
             errorMessage: null,               
         }
     },
@@ -153,50 +174,86 @@ export default {
         let id = this.$route.params.id;
         this.$store.dispatch("getPostById", id);
     },
-    beforeMount() {
-        if ( this.$store.getters.post.imageUrl !== null ) {
-            this.gifButtonDisabled = true;
-            this.imageButtonDisabled = true;
-        }
-        if ( this.$store.getters.post.giphyUrl !== null) {
-            this.gifButtonDisabled = true;
-            this.imageButtonDisabled = true;
-        }
-        if ( this.$store.getters.post.link !== null) {
-            this.linkButtonDisabled = true;
-        } 
-    },
+    // beforeMount() {
+        // this.setButtons();
+        // if ( this.$store.getters.post.imageUrl == null && this.$store.getters.post.giphyUrl == null ) {
+        //     this.imageButtonDisabled = false;
+        //     this.gifButtonDisabled = false;    
+        // }
+        // if ( this.$store.getters.post.imageUrl !== null || this.$store.getters.post.giphyUrl !== null ) {
+        //     this.imageButtonDisabled = true;
+        //     this.gifButtonDisabled = true;    
+        // }
+        // if ( this.$store.getters.post.link == null) {
+        //     this.linkButtonDisabled = false;
+        // } 
+    // },
     beforeDestroy() {
         this.$store.dispatch("resetPost");
     },
     computed: {
         user() {
             return this.$store.getters.user;
+        },
+        post() {
+            return this.$store.getters.post;
         }
     },
     methods: {
+        setButtons() {
+            // if ( this.$store.getters.post.imageUrl == null && this.$store.getters.post.giphyUrl == null ) {
+            //     this.imageButtonDisabled = false;
+            //     this.gifButtonDisabled = false;    
+            // }
+            // if ( this.$store.getters.post.imageUrl !== null || this.$store.getters.post.giphyUrl !== null ) {
+            //     this.imageButtonDisabled = true;
+            //     this.gifButtonDisabled = true;    
+            // }
+            // if ( this.$store.getters.post.link == null) {
+            //     this.linkButtonDisabled = false;
+            // } 
+            // if ( this.post.imageUrl == null && this.post.giphyUrl == null ) {
+            //     this.imageButtonDisabled = false;
+            //     this.gifButtonDisabled = false;    
+            // }
+            // // if ( this.post.imageUrl !== null || this.post.giphyUrl !== null ) {
+            // //     this.imageButtonDisabled = true;
+            // //     this.gifButtonDisabled = true;    
+            // // }
+            // if ( this.post.link == null) {
+            //     this.linkButtonDisabled = false;
+            // } 
+        },
         deletePostImage() {
             this.$store.getters.post.imageUrl = null;
+            this.postImageDeleted = true;
             this.gifButtonDisabled = false;
             this.imageButtonDisabled = false;
         },
         deletePostGif() {
             this.$store.getters.post.giphyUrl = null;
+            this.postGifDeleted =  true;
             this.gifButtonDisabled = false;
             this.imageButtonDisabled = false;
         },
         deletePostLink() {
             this.$store.getters.post.link = null;
+            this.postLinkDeleted = true;
             this.linkButtonDisabled = false;
         },
         deletePostMessage() {
             this.$store.getters.post.message = null;
+            this.postMessageDeleted = true;
             this.textarea = true;
         },
         openImageDialog() {
             document.getElementById('imageDialog').click();
         },
         uploadNewImage(event) {
+            this.$store.getters.post.imageUrl = null;
+            this.$store.getters.post.giphyUrl = null;
+            this.postImageDeleted = true;
+            this.postGifDeleted =  true;
             let output = document.getElementById('output');
             output.src = URL.createObjectURL(event.target.files[0]);
             this.newImage = true;
@@ -220,13 +277,17 @@ export default {
         },
         gifSearch() {
             fetch( `https://api.giphy.com/v1/gifs/search?api_key=L1GdpfNaiyZu93ykfOGu4vsf7JBVS8Qn&q=${this.searchInput}&limit=30`)
-            .then(response => response.json())
-            .then(result => {
-                this.gifs = result.data;
-            })
-            .catch(error => console.log(error))
+                .then(response => response.json())
+                .then(result => {
+                    this.gifs = result.data;
+                })
+                .catch(error => console.log(error));
         },
         selectNewGif(event) {
+            this.$store.getters.post.imageUrl = null;
+            this.$store.getters.post.giphyUrl = null;
+            this.postImageDeleted = true;
+            this.postGifDeleted =  true;
             this.newGifFile = event.srcElement.currentSrc;
             this.imageButtonDisabled = true;
             this.gifDialog = false;            
@@ -238,6 +299,7 @@ export default {
             this.gifButtonDisabled = false;
         },
         submitNewLink() {
+            this.$store.getters.post.link = null;
             this.linkOutput = this.linkUrl;
             this.linkDialog = false;
         },
@@ -246,62 +308,43 @@ export default {
             this.linkOutput = null;
         },
         updatePost() {
+            this.btnLoading = true;
             try {
                 const formData = new FormData();
                 // formData.append('userId', this.user.id);
                 if (this.newImageFile !== null) {
                     formData.append('imageUrl', this.newImageFile);
-                } else {
-                    formData.append('imageUrl', this.$store.getters.post.imageUrl);
+                } else if (this.$store.getters.post.imageUrl == null && this.postImageDeleted == true && this.newImageFile == null) {
+                    formData.append('imageUrl', null);
                 }
                 if (this.newGifFile !== null) {
                     formData.append('giphyUrl', this.newGifFile);
-                } else {
-                    formData.append('giphyUrl', this.$store.getters.post.giphyUrl);
+                } else if (this.$store.getters.post.giphyUrl == null && this.postGifDeleted == true && this.newGifFile == null) {
+                    formData.append('giphyUrl', null);
                 }
                 if (this.linkUrl !== null) {
                     formData.append('link', this.linkUrl);
-                } else {
-                    formData.append('link', this.$store.getters.post.link);
+                } else if (this.$store.getters.post.link == null && this.postLinkDeleted == true && this.linkUrl == null) {
+                    formData.append('link', null);
                 }
-                if (this.newMessage !== null) {
+                if (this.newMessage !== null && this.postMessageDeleted == true) {
                     if (this.$refs.newMessageInput.validate()) {
                         console.log('message validation done');
                         formData.append('message', this.newMessage);
                     } else {
                         this.errorMessage = 'Uh-oh 😮 Il semble que vous n\'avez rien écrit. Le champ de message est obligatoire.';
                     }         
-                } else {
-                    formData.append('link', this.$store.getters.post.message);
                 }
-                console.log(formData);
                 this.$store.dispatch("updatePost", formData);
-                // this.$store.dispatch("createPost", formData);
-                
-                // Reset data
-                // this.selectedImageFile = null;
-                // let output = document.getElementById('output');
-                // output.src = '';
-                // this.selectedGifFile = null;
-                // this.linkUrl = null;
-                // this.linkOutput = null;
-                // this.inputMessage = null;
-                // Reactivate buttons
-                // this.imageButtonDisabled = false;
-                // this.gifButtonDisabled = false;
-                // Relocate to the post page and close the dialog
-                // back to the specific post
-                // window.location.href = "/";
-            
-           
-                     
-
+                this.btnLoading = false;
+                window.location.reload();
             }
             catch (error) {
                 this.errorMessage = error.response.data.error;
-            }
-                
-
+            }       
+        },
+        backToFeed(id) {
+            console.log(id);
         }
     }
 }

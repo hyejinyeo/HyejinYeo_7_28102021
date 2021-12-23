@@ -92,7 +92,10 @@ export default new Vuex.Store({
         },
         ADD_POST(state, post) {
             state.posts = [post, ...state.posts];
-        },  
+        },
+        DELETE_POST(state) {
+            state.post = {};
+        }  
     },
     // ***************************************  ACTIONS  ***************************************
     actions: {
@@ -227,14 +230,26 @@ export default new Vuex.Store({
             let id = this.state.post.id
             axios
                 .put(`${process.env.PORT || 'http://localhost:3000/'}feed/${id}`, post, {
-                    headers: { Authorization: 'Bearer ' + this.state.token }, 
+                    headers: { Authorization: 'Bearer ' + this.state.token },     
                 })
                 .then((response) => {
                     const post = response.data;
                     commit("UPDATE_POST", id, post);
                 });
         },
-        
+        deletePost({ commit }, id) {
+            axios
+                .delete(`${process.env.PORT || 'http://localhost:3000/'}feed/${id}`, {
+                    headers: { Authorization: 'Bearer ' + this.state.token },     
+                })
+                .then(() => {
+                    commit("DELETE_POST");
+                })
+        },
+        likePost({ commit }, id) {
+            console.log(id)
+            console.log,(commit)
+        }
         
     },
     // ***************************************  MODULES  ***************************************
