@@ -5,11 +5,12 @@ const Op = db.Sequelize.Op;
 
 const fs = require('fs');
 
-/* Controller pour USER */
+
+/* Controller POST */
 exports.getAllPosts = async (req, res) => {
     try {
         const posts = await Post.findAll({
-            attributes: ['id', 'imageUrl', 'giphyUrl', 'link', 'message', 'createdAt'],
+            attributes: ['id', 'imageUrl', 'giphyUrl', 'link', 'message', 'createdAt', 'updatedAt'],
             order: [['createdAt', 'DESC']],
             include: [
                 {
@@ -19,6 +20,26 @@ exports.getAllPosts = async (req, res) => {
             ]    
         });
         res.status(200).send(posts);
+    }
+    catch (error) {
+        return res.status(500).json({ error: 'Erreur du serveur' });
+    }
+};
+
+
+exports.getPostById = async (req, res) => {
+    try {
+        const post = await Post.findOne({
+            where: { id: req.params.id },
+            attributes: ['id', 'imageUrl', 'giphyUrl', 'link', 'message', 'createdAt', 'updatedAt'],
+            include: [
+                {
+                    model: User,
+                    attributes: ['id', 'lastName', 'firstName', 'photo']
+                }
+            ]    
+        });
+        res.status(200).send(post);
     }
     catch (error) {
         return res.status(500).json({ error: 'Erreur du serveur' });
@@ -74,4 +95,101 @@ exports.createPost = async (req, res) => {
     }
 };
 
+
+exports.updatePost = async (req, res) => {
+    try {
+        // let newImageUrl, newGiphyUrl, newLink, newMessage;
+        let newImageUrl;
+        let post = await Post.findOne({
+            where: { id: req.params.id },
+            attributes: ['id', 'imageUrl', 'giphyUrl', 'link', 'message', 'createdAt', 'updatedAt'],
+            include: [
+                {
+                    model: User,
+                    attributes: ['id', 'lastName', 'firstName', 'photo']
+                }
+            ]    
+        });
+        if (post !== null) {
+            // imageUrl
+            if (req.body.imageUrl == "null") {
+                console.log('imageUrl null')
+                if (post.imageUrl) {
+                    const filename = post.imageUrl.split('/uploads')[1]
+                    fs.unlinkSync(`uploads/${filename}`)
+                    console.log(`uploads/${filename}`);
+                }
+                post.imageUrl = null;
+            }
+            if (req.file) {
+                console.log('reqfile rempli')
+                if (post.imageUrl) {
+                    console.log(post.imageUrl)
+                    const filename = post.imageUrl.split('/uploads')[1]
+                    fs.unlinkSync(`uploads/${filename}`)
+                    console.log(`uploads/${filename}`);
+        
+                }
+                newImageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
+                post.imageUrl = newImageUrl;
+            }
+            // giphyUrl
+            if (req.body.giphyUrl == "null") {
+
+
+
+                post.giphyUrl = null;
+            } else { post.giphyUrl = req.body.giphyUrl; }
+            // link
+            if (req.body.link == "null") {
+                post.link = null;
+            } else { post.link = req.body.link; }
+            // message
+            if (req.body.message) {
+                post.message = req.body.message;
+            }
+
+            const updatedPost = await post.save({
+                fields: ['imageUrl', 'giphyUrl', 'link', 'message']
+            });
+            res.status(200).json({
+                post: updatedPost
+            });
+        }
+        else {
+            res.status(400).json({
+                error: 'Nous ne trouvons pas cette publication dans notre base de données.'
+            })
+        }
+    }
+    catch (error) {
+        return res.status(500).json({ error: 'Erreur du serveur' });
+    }     
+};
+
+
+exports.deletePost = async (req, res) => {
+    console.log('delete controller starts')
+    try {
+        let post = await Post.findOne({
+            where: { id: req.params.id },
+            attributes: ['id', 'imageUrl', 'giphyUrl', 'link', 'message', 'createdAt', 'updatedAt'],
+            include: [
+                {
+                    model: User,
+                    attributes: ['id', 'lastName', 'firstName', 'photo']
+                }
+            ]    
+        });
+        if (post.imageUrl) {
+            const filename = post.imageUrl.split('/uploads')[1]
+            fs.unlinkSync(`uploads/${filename}`)
+        }
+        post.destroy();
+        res.status(200).json({ message: 'Post supprimé'}) 
+    }
+    catch (error) {
+        return res.status(500).json({ error: 'Erreur du serveur' });
+    }     
+}
 
