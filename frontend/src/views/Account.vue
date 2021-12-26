@@ -154,7 +154,7 @@ export default {
     methods: {
         uploadImage(files) {
             this.selectedFile = files
-            console.log(this.selectedFile);   
+            console.log(this.selectedFile)
         },
         updateAccount() {
             if (this.$refs.profilUpdateForm.validate()) {
@@ -169,6 +169,7 @@ export default {
                 // this.$store.dispatch("getUserById", this.user.id);
                 setTimeout(function() {
                     window.location.reload;
+                    //window.location.href = "/";
                 }, 1500)   
             }
             else {

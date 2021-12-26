@@ -99,8 +99,9 @@ export default {
                     // Update data in Vuex Store
                     this.$store.dispatch("logIn", response.data.token);
                     this.$store.dispatch("setUser", response.data.user);
-                    this.$store.dispatch("getUserById", response.data.user.id);
+                    // this.$store.dispatch("getUserById", response.data.user.id);
 
+                    // Stop button loading
                     this.btnLoading = false;
 
                     // Redirect to the main page
@@ -109,6 +110,7 @@ export default {
 
                     // Redirect to the main page + reload the entire page (to update Navbar component)
                     window.location.href = "/";
+                    // window.location.reload; Use only to reload the current page
                     
                 }
                 // Catch authentication error 
