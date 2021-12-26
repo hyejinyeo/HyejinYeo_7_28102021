@@ -95,23 +95,24 @@
                             <!-- <v-btn small icon fab> -->
                             <div class="mr-7">
                                 <v-badge overlap color="grey" content="24">
-                                <v-icon small class="pr-3">$vuetify.icons.comment</v-icon>
+                                <v-icon small class="pr-3" @click="openCommentsContainer(post.id)">$vuetify.icons.comment</v-icon>
                                 </v-badge>  
                             </div>
                             <!-- </v-btn> -->
+                            <!-- <p>{{ post.Likes.length }}</p> -->
                         </div>
                         <!-- LIKE & COMMENT BUTTONS -->
                         <v-divider></v-divider>
                         <v-card-actions>  
                             <v-row>
                                 <v-col cols="6" >
-                                    <v-btn small text width="100%" @click="likePost(post.id)">
+                                    <v-btn small text width="100%" :color="isLiked" @click="likePost(post.id)">
                                         <v-icon left>$vuetify.icons.like</v-icon>
                                         <span>J'aime</span>
                                     </v-btn>
                                 </v-col>
                                 <v-col cols="6" >
-                                    <v-btn small text width="100%" @click="focusCommentInput(post.id)">
+                                    <v-btn small text width="100%" @click="openCommentsContainer(post.id)">
                                         <v-icon left>$vuetify.icons.comment</v-icon>
                                         <span>Commenter</span>
                                     </v-btn>
@@ -120,9 +121,16 @@
                         </v-card-actions>
                         <v-divider></v-divider>
                         <!-- COMMENT DISPLAY & INPUT -->
-                        <v-container :id="'commentsContainer'+post.id" v-if="showComments == true">
+                        <v-container :id="'commentsContainer'+post.id" style="display: none" class="commentsContainer">
+                            <div class="closeCommentsBtn">
+                                <v-btn small plain @click="closeCommentsContainer(post.id)">
+                                    <v-icon>mdi-chevron-up</v-icon>
+                                </v-btn>
+                            </div>
                             <div class="comments">
+                                <p class="moreComments grey--text text--darken-2 font-weight-bold">Voir les commentaires précédents</p>
                                 <!-- <v-btn small plain>lire plus...</v-btn> -->
+
                                 <div>
                                     other comments display here with v-for
                                 </div>
@@ -147,27 +155,9 @@
                                             @click:append-outer="submitComment(post.id)"
                                         ></v-text-field>
                                     </v-form>
-                                </v-flex>
-                                
+                                </v-flex>    
                             </div>
                         </v-container>
-
-                        <!-- Expansion panels instead of container-->
-                        <!-- <v-expansion-panels>
-                        <v-expansion-panel>
-                            <v-expansion-panel-header>
-                            </v-expansion-panel-header>
-                            <v-expansion-panel-content>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                            </v-expansion-panel-content>
-                        </v-expansion-panel>
-                        </v-expansion-panels> -->
-
-
-
-
-
-
 
                     </v-card>
                 </v-flex>
@@ -187,7 +177,7 @@ export default {
     data() {
         return {
             // Temporary dummy data end
-            showComments: true,
+            // showComments: true,
             // commentInput: null,
         
         }
@@ -208,6 +198,18 @@ export default {
         posts() {
             return this.$store.getters.posts;
         },
+        isLiked() {
+            return "";
+            // logic to be added
+            // const userId = this.$store.state.user.id;
+            // let userLiked = this.post.Like.map((a) => a.userId);
+            // if (userLiked.includes(userId)) {
+            //     return "pink accent-2";
+            // }
+            // else {
+            //     return "";
+            // }
+        }
         // Show feeds that are created by certain author
         // myFeeds() {
         //     return this.feeds.filter(feed => {
@@ -218,6 +220,9 @@ export default {
     },
     beforeMount() {
         this.$store.dispatch("getAllPosts");
+    },
+    beforeDestroy() {
+        this.$store.dispatch("resetPosts");
     },
 
     methods: {
@@ -236,23 +241,50 @@ export default {
             window.open(linkUrl);
         },
         likePost(id) {
+            // const userId = this.$store.getters.user.id;
+            // console.log(userId);
+            // const postId = id;
+            // console.log(postId);
+
+            // const formData = new FormData();
+               
+            // formData.append('user_id', userId);
+            // formData.append('post_id', postId);
+
+            // console.log(formData);
+
             this.$store.dispatch("likePost", id);
+
+
+
+            // const userId = this.$store.getters.user.id;
+            // console.log(userId);
+            // const postId = id;
+            // console.log(postId);
+
+            // const formData = new FormData();
+               
+            // formData.append('user_id', userId);
+            // formData.append('post_id', postId);
+
+            // console.log(formData);
+
+            // this.$store.dispatch("likePost", formData);
         },
-        openCommentArea(id) {
-            console.log(id);
-            this.showComments = !this.showComments
-        },
-        focusCommentInput(id) {
-            // const commentInputArea = 'commentInput'+id;
-            // console.log(commentInputArea);
+        openCommentsContainer(id) {
+            document.getElementById("commentsContainer"+id).style.display = "block";
             document.getElementById("commentInput"+id).focus();
+        },
+        closeCommentsContainer(id) {
+            document.getElementById("commentsContainer"+id).style.display = "none";
         },
         submitComment(id) {
             console.log(id);
             // console.log(this.commentInput);
             const commentInput = document.getElementById("commentInput"+id).value;
             console.log(commentInput);
-        }
+        },
+        
     },
 
 
@@ -276,4 +308,17 @@ img {
 .red {
     background-color: red;
 }
+.commentsContainer {
+    position: relative;
+}
+.closeCommentsBtn {
+    position: absolute;
+    top: 10px;
+    right: 1px;
+}
+.moreComments:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 </style>

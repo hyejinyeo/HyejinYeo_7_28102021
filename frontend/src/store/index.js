@@ -79,6 +79,7 @@ export default new Vuex.Store({
             state.userLoggedIn = false;
             state.token = null;
             state.user = null;
+            state.posts = [];
         },
         // -----------------------------------  POST 
         GET_ALL_POSTS(state, posts) {
@@ -90,12 +91,18 @@ export default new Vuex.Store({
         RESET_POST(state) {
             state.post = {};
         },
+        RESET_POSTS(state) {
+            state.posts = [];
+        },
         ADD_POST(state, post) {
             state.posts = [post, ...state.posts];
         },
         DELETE_POST(state) {
             state.post = {};
-        }  
+        },
+        LIKE_POST(state, like) {
+            state.posts = [like, ...state.posts];
+        }
     },
     // ***************************************  ACTIONS  ***************************************
     actions: {
@@ -189,6 +196,9 @@ export default new Vuex.Store({
         resetPost({ commit }) {
             commit("RESET_POST");
         },
+        resetPosts({ commit }) {
+            commit("RESET_POSTS");
+        },
         createPost({ commit }, post) {
             // PostService.createPost(post)
             //     .then((response) => {
@@ -247,8 +257,34 @@ export default new Vuex.Store({
                 })
         },
         likePost({ commit }, id) {
-            console.log(id)
-            console.log,(commit)
+            
+            console.log('post id : ' + id);
+            const userId = this.state.user.id;
+            console.log('user id : ' + userId);
+            // const userId = payload.data.user_id;
+            // console.log('received user id : ' + userId)
+            // const postId = payload.data.post_id;
+            // console.log('received post id : ' + postId)
+            console.log(commit)
+            
+            axios
+                .post(`${process.env.PORT || 'http://localhost:3000/'}feed/${id}/like`, { user_id: userId, post_id: id }, {
+                    headers: { Authorization: 'Bearer ' + this.state.token }, 
+                })
+                .then((response) => {
+                    const like = response.data;
+                    commit("LIKE_POST", like)
+                })
+                .then(() => {
+                    axios
+                    .get(`${process.env.PORT || 'http://localhost:3000/'}feed`, {
+                        headers: { Authorization: 'Bearer ' + this.state.token }, 
+                    })
+                    .then((response) => {
+                        const posts = response.data;
+                        commit("GET_ALL_POSTS", posts);
+                    });
+                })
         }
         
     },

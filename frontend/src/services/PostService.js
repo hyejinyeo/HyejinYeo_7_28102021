@@ -15,5 +15,8 @@ export default {
     },
     deletePost(id) {
         return Api().delete('feed/' + id);
+    },
+    likePost(id) {
+        return Api().post('feed/' + id + '/like')
     }
 }
