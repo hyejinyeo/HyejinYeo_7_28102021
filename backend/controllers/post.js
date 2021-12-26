@@ -1,9 +1,11 @@
 const db = require('../models');
 const Post = db.Post;
 const User = db.User;
+const Like = db.Like;
 const Op = db.Sequelize.Op;
 
 const fs = require('fs');
+// const jwt = require('jsonwebtoken');
 
 
 /* Controller POST */
@@ -16,7 +18,15 @@ exports.getAllPosts = async (req, res) => {
                 {
                     model: User,
                     attributes: ['id', 'lastName', 'firstName', 'photo']
-                }
+                },
+                // {
+                //     model: Like,
+                //     attributes: ['user_id']
+                // },
+                // {
+                //     model: Like,
+                //     attributes: ['user_id' , 'post_id']
+                // },
             ]    
         });
         res.status(200).send(posts);
@@ -36,7 +46,11 @@ exports.getPostById = async (req, res) => {
                 {
                     model: User,
                     attributes: ['id', 'lastName', 'firstName', 'photo']
-                }
+                },
+                // {
+                //     model: Like,
+                //     attributes: ['user_id' , 'post_id']
+                // },
             ]    
         });
         res.status(200).send(post);
@@ -135,9 +149,6 @@ exports.updatePost = async (req, res) => {
             }
             // giphyUrl
             if (req.body.giphyUrl == "null") {
-
-
-
                 post.giphyUrl = null;
             } else { post.giphyUrl = req.body.giphyUrl; }
             // link
@@ -193,3 +204,43 @@ exports.deletePost = async (req, res) => {
     }     
 }
 
+
+/* Controller LIKE */
+exports.likePost = async (req, res) => {
+    console.log('likePost Controller starts')
+    console.log(req.body.user_id);
+    console.log(req.body.post_id)
+
+    try {
+        const userId = req.body.user_id
+        console.log('ctrl userId :' + userId);
+        const postId = req.body.post_id
+        console.log('ctrl postId :' + postId);
+
+        console.log('find like from BDD');
+        const alreadyLiked = await Like.findOne({
+            where: { user_id: userId, post_id: postId },
+            attributes: ['id', 'user_id', 'post_id']
+        });
+        console.log('findLike done. Conditional statement starts')
+        if (alreadyLiked) {
+            await Like.destroy(
+                { where: { user_id: req.body.user_id, post_id: req.body.post_id } },
+                { truncate: true, restartIdentity: true }
+            );
+            res.status(200).json({ message: 'like annulé'})
+        } else {
+            await Like.create({
+                user_id: req.body.user_id,
+                post_id: req.body.post_id
+            });
+            res.status(201).json({ message: 'like ajouté'})
+        }
+    }
+    catch (error) {
+        return res.status(500).json({ error: 'Erreur du serveur' });
+    }   
+}
+
+
+/* Controller COMMENT */

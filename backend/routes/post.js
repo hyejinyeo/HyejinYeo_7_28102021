@@ -9,5 +9,6 @@ module.exports = (app) => {
     app.get('/feed/:id', auth, postCtrl.getPostById),
     app.post('/feed', auth, multer, postCtrl.createPost),
     app.put('/feed/:id', auth, multer, postCtrl.updatePost),
-    app.delete('/feed/:id', auth, postCtrl.deletePost)
+    app.delete('/feed/:id', auth, postCtrl.deletePost),
+    app.post('/feed/:id/like', auth, postCtrl.likePost)
 }
