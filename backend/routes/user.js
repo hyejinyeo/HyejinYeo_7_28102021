@@ -13,7 +13,7 @@ module.exports = (app) => {
     app.put('/account/:id', auth, multer, userCtrl.updateAccount),
     app.delete('/account/:id', auth, userCtrl.deleteAccount),
     // temporary
-    app.get('/account', auth, userCtrl.getAllAccount)
+    app.get('/account', auth, userCtrl.getAllAccounts)
 }
 
 

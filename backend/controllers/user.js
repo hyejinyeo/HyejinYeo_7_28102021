@@ -21,7 +21,7 @@ passwordSchema
 
 
 
-/* Controller pour USER */
+/* Controller USER */
 
 // S'inscrire
 exports.signup = async (req, res) => {
@@ -97,6 +97,7 @@ exports.login = async (req, res) => {
                     user: user,
                     token: jwt.sign(
                         { userEmail: user.email }, 
+                        // { userEmail: user.email, admin: user.isAdmin }, test frontend admin page
                         'RANDOM_SECRET_TOKEN', 
                         { expiresIn: '24h'}
                     ),
@@ -126,7 +127,7 @@ exports.getAccount = async (req, res) => {
 
 
 // temporary
-exports.getAllAccount = async (req, res) => {
+exports.getAllAccounts = async (req, res) => {
     try { 
         const users = await User.findAll()
         res.status(200).send(users);
@@ -176,7 +177,7 @@ exports.deleteAccount = async (req, res) => {
         // S'il y a une photo d'utilisateur, on la supprime 
         if (user.photo !== null) {
             //delete user photo
-            const filename = user.photo.split('/images/')[1]
+            const filename = user.photo.split('/images')[1]
             fs.unlinkSync(`images/${filename}`)  
 
             User.destroy({ where: { id: id } });
