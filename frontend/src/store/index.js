@@ -102,6 +102,9 @@ export default new Vuex.Store({
         },
         LIKE_POST(state, like) {
             state.posts = [like, ...state.posts];
+        },
+        COMMENT_POST(state, comment) {
+            state.posts = [comment, ...state.posts];
         }
     },
     // ***************************************  ACTIONS  ***************************************
@@ -257,16 +260,7 @@ export default new Vuex.Store({
                 })
         },
         likePost({ commit }, id) {
-            
-            console.log('post id : ' + id);
             const userId = this.state.user.id;
-            console.log('user id : ' + userId);
-            // const userId = payload.data.user_id;
-            // console.log('received user id : ' + userId)
-            // const postId = payload.data.post_id;
-            // console.log('received post id : ' + postId)
-            console.log(commit)
-            
             axios
                 .post(`${process.env.PORT || 'http://localhost:3000/'}feed/${id}/like`, { user_id: userId, post_id: id }, {
                     headers: { Authorization: 'Bearer ' + this.state.token }, 
@@ -274,6 +268,49 @@ export default new Vuex.Store({
                 .then((response) => {
                     const like = response.data;
                     commit("LIKE_POST", like)
+                })
+                .then(() => {
+                    axios
+                    .get(`${process.env.PORT || 'http://localhost:3000/'}feed`, {
+                        headers: { Authorization: 'Bearer ' + this.state.token }, 
+                    })
+                    .then((response) => {
+                        const posts = response.data;
+                        commit("GET_ALL_POSTS", posts);
+                    });
+                })
+        },
+        commentPost({ commit }, payload) {
+            const userId = this.state.user.id;
+            const postId = payload.postId
+            const commentInput = payload.message
+            console.log('store commentPost post id: ' + postId)
+            console.log('store commentPost message: ' + commentInput)
+
+            axios
+                .post(`${process.env.PORT || 'http://localhost:3000/'}feed/${postId}/comment`, { user_id: userId, post_id: postId, message: commentInput }, {
+                    headers: { Authorization: 'Bearer ' + this.state.token }, 
+                })
+                .then((response) => {
+                    const comment = response.data;
+                    commit("COMMENT_POST", comment);
+                })
+                .then(() => {
+                    axios
+                    .get(`${process.env.PORT || 'http://localhost:3000/'}feed`, {
+                        headers: { Authorization: 'Bearer ' + this.state.token }, 
+                    })
+                    .then((response) => {
+                        const posts = response.data;
+                        commit("GET_ALL_POSTS", posts);
+                    });
+                })
+        },
+        deleteComment({ commit }, id) {
+            console.log('store deleteComment')
+            axios
+                .delete(`${process.env.PORT || 'http://localhost:3000/'}feed/comment/${id}`, {
+                    headers: { Authorization: 'Bearer ' + this.state.token }, 
                 })
                 .then(() => {
                     axios

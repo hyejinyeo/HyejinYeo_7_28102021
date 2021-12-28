@@ -18,5 +18,11 @@ export default {
     },
     likePost(id) {
         return Api().post('feed/' + id + '/like')
+    },
+    commentPost(id, data) {
+        return Api().post('feed/' + id + '/comment', data)
+    },
+    deleteComment(id) {
+        return Api().delete('feed/comment/' + id)
     }
 }
