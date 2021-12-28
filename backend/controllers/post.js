@@ -5,12 +5,13 @@ const Like = db.Like;
 const Op = db.Sequelize.Op;
 
 const fs = require('fs');
-// const jwt = require('jsonwebtoken');
 
 
 /* Controller POST */
 exports.getAllPosts = async (req, res) => {
+    console.log('gellAllPosts controller starts')
     try {
+        console.log('try finding posts')
         const posts = await Post.findAll({
             attributes: ['id', 'imageUrl', 'giphyUrl', 'link', 'message', 'createdAt', 'updatedAt'],
             order: [['createdAt', 'DESC']],
@@ -18,17 +19,33 @@ exports.getAllPosts = async (req, res) => {
                 {
                     model: User,
                     attributes: ['id', 'lastName', 'firstName', 'photo']
-                },
+                }, 
+                {
+                    model: Like,
+                    attributes: ['user_id'],
+                    order: [['createdAt', 'DESC']],
+                    include: [
+                        {
+                            model: User,
+                            attributes: ['lastName', 'firstName']
+                        },
+                    ]
+                }
                 // {
-                //     model: Like,
-                //     attributes: ['user_id']
-                // },
-                // {
-                //     model: Like,
-                //     attributes: ['user_id' , 'post_id']
-                // },
+                //     model: Comment,
+                //     attributes: ['user_id', 'message'],
+                //     order: [['createdAt', 'DESC']],
+                    // include: [
+                    //     {
+                    //         model: User,
+                    //         attributes: ['lastName', 'firstName', 'photo']
+                    //     },
+                    // ]
+
+                // },      
             ]    
         });
+        console.log('found posts, return them to frontend')
         res.status(200).send(posts);
     }
     catch (error) {
@@ -46,11 +63,7 @@ exports.getPostById = async (req, res) => {
                 {
                     model: User,
                     attributes: ['id', 'lastName', 'firstName', 'photo']
-                },
-                // {
-                //     model: Like,
-                //     attributes: ['user_id' , 'post_id']
-                // },
+                }
             ]    
         });
         res.status(200).send(post);
@@ -230,11 +243,26 @@ exports.likePost = async (req, res) => {
             );
             res.status(200).json({ message: 'like annulé'})
         } else {
-            await Like.create({
+            // await Like.create({
+            //     user_id: req.body.user_id,
+            //     post_id: req.body.post_id
+            // });
+
+            const newLike = await Like.create({
+                // include: [
+                //     {
+                //         model: User,
+                //         attributes: ['id', 'lastName', 'firstName']
+                //     },
+                //     {
+                //         model: Post,
+                //         attributes: ['id']
+                //     },
+                // ],
                 user_id: req.body.user_id,
                 post_id: req.body.post_id
             });
-            res.status(201).json({ message: 'like ajouté'})
+            res.status(201).json({ like: newLike });
         }
     }
     catch (error) {
@@ -242,5 +270,15 @@ exports.likePost = async (req, res) => {
     }   
 }
 
+
+
+// exports.getAllLikes = async (req, res) => {
+//     try {
+//         console.log('get')
+//     }
+//     catch (error) {
+//         return res.status(500).json({ error: 'Erreur du serveur' });
+//     }   
+// }
 
 /* Controller COMMENT */

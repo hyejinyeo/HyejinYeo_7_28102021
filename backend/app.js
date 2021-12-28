@@ -60,14 +60,6 @@ require('./routes/post')(app)
 
 
 
-// TEST API
-app.get('/status', (req, res) => {
-    res.send({
-        message: 'Hello world! 👍 - Test API'
-    })
-})
-
-
 
 // Sequelize - MySQL Database Connection Test  
 const dbTest = async function () {
