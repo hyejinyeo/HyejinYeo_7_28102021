@@ -30,6 +30,7 @@ const MY_ICONS = {
     deletePost: 'mdi-trash-can',
     comment: 'mdi-comment-outline',
     like: 'mdi-thumb-up-outline',
+    send: 'mdi-send',
     
     //ADD MORE ICONS HERE
     // friends: 'mdi-account-supervisor-circle',

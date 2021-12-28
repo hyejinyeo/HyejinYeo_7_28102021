@@ -152,7 +152,6 @@
                                 <!-- <p class="moreComments grey--text text--darken-2 font-weight-bold">Voir les commentaires précédents</p> -->
                                 <!-- <v-btn small plain>lire plus...</v-btn> -->
                                 <div v-for="comment in post.Comments" :key="comment.id" :comment="comment" class="d-flex align-top mb-3">
-                                <!-- <div v-for="comment in post.Comments.slice().reverse()" :key="comment.id" :comment="comment" class="d-flex align-top mb-3"> -->
                                     <v-avatar size="40" color="grey lighten-2">
                                         <img v-if="comment.User.photo" :src="comment.User.photo">
                                         <span v-if="!comment.User.photo" class="font-weight-bold subtitle-2">{{ comment.User.firstName.substring(0, 1).toUpperCase() }}{{ comment.User.lastName.substring(0, 1).toUpperCase() }} </span>
@@ -177,7 +176,7 @@
                                     </v-avatar>
                                 </div>
                                 <v-flex grow>
-                                    <v-form ref="messageInput">
+                                    <v-form >
                                         <v-text-field
                                             filled rounded dense autogrow
                                             placeholder="Ecrivez un commentaire ..."
@@ -185,12 +184,15 @@
                                             class="mr-2"
                                             color="grey"
                                             required
-                                            :rules="messageRules"
+                                            v-model="commentInput"
                                             :id="'commentInput'+post.id"
-                                            :append-outer-icon="'mdi-send'"
+                                            :append-outer-icon="'$vuetify.icons.send'"
                                             @click:append-outer.prevent="submitComment(post.id)"
                                         ></v-text-field>
                                     </v-form>
+                                    <v-alert dense text type="error" v-if="errorMessage !== null" class="mr-3">
+                                        {{ errorMessage }}
+                                    </v-alert> 
                                 </v-flex>    
                             </div>
                         </v-container>
@@ -217,9 +219,8 @@ export default {
     },
     data() {
         return {
-            messageRules: [
-                v => !!v || 'Ce champ est obligatoire.',
-            ]  
+            commentInput: null,
+            errorMessage: null,
         }
     },
     computed: {
@@ -240,6 +241,7 @@ export default {
         },
         isLiked() {
             // const userId = this.$store.getters.user.id;
+            // return "pink accent-2";
             return "";
             // let userLiked = this.post.Like.map((a) => a.userId);
             // if (userLiked.includes(userId)) {
@@ -293,23 +295,25 @@ export default {
             document.getElementById("commentsContainer"+id).style.display = "none";
         },
         submitComment(id) {
-            const commentInput = document.getElementById("commentInput"+id).value;
-            console.log(commentInput)
-            if (commentInput == null) {
-                console.log('no input')
+            console.log(id);
+            console.log(this.commentInput);
+            if (this.commentInput == null) {
+                this.errorMessage = 'Uh-oh 😮 Il semble que vous n\'avez rien écrit.';
             } else {
+                console.log('comment contains string')
                 this.$store.dispatch("commentPost", {
                     postId: id,
-                    message: commentInput
+                    message: this.commentInput
                 });
-            } 
+                this.commentInput = null;
+                this.errorMessage = null; 
+            }     
         },
         deleteComment(id) {
             console.log('commentid: ' + id)
             this.$store.dispatch("deleteComment", id);
             window.location.reload;
         }
-        
     },
 
 
