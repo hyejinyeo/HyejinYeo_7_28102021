@@ -12,5 +12,8 @@ module.exports = (app) => {
     app.put('/feed/:id', auth, multer, postCtrl.updatePost),
     app.delete('/feed/:id', auth, multer, postCtrl.deletePost),
     // LIKE
-    app.post('/feed/:id/like', auth, postCtrl.likePost)
+    app.post('/feed/:id/like', auth, postCtrl.likePost),
+    // COMMENT
+    app.post('/feed/:id/comment', auth, postCtrl.commentPost),
+    app.delete('/feed/comment/:id', auth, postCtrl.deleteComment)
 }

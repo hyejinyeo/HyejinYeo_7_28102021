@@ -3,15 +3,10 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     class Post extends Model {
         static associate(models) {
-            models.Post.belongsTo(models.User, {
-                foreignKey: 'user_id',
-                // onDelete:'CASCADE',
-            }),
+            models.Post.belongsTo(models.User, { foreignKey: 'user_id'}),
             models.Post.hasMany(models.Like, { foreignKey: 'post_id' });
-            //   models.Post.hasMany(models.Comment);
+            models.Post.hasMany(models.Comment, { foreignKey: 'post_id' });
         }
-        
-        
     }
     Post.init(
         {

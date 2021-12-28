@@ -2,6 +2,7 @@ const db = require('../models');
 const Post = db.Post;
 const User = db.User;
 const Like = db.Like;
+const Comment = db.Comment;
 const Op = db.Sequelize.Op;
 
 const fs = require('fs');
@@ -23,26 +24,25 @@ exports.getAllPosts = async (req, res) => {
                 {
                     model: Like,
                     attributes: ['user_id'],
-                    order: [['createdAt', 'DESC']],
+                    order: [['createdAt', 'ASC']],
                     include: [
                         {
                             model: User,
                             attributes: ['lastName', 'firstName']
                         },
                     ]
-                }
-                // {
-                //     model: Comment,
-                //     attributes: ['user_id', 'message'],
-                //     order: [['createdAt', 'DESC']],
-                    // include: [
-                    //     {
-                    //         model: User,
-                    //         attributes: ['lastName', 'firstName', 'photo']
-                    //     },
-                    // ]
-
-                // },      
+                },
+                {
+                    model: Comment,
+                    attributes: ['id', 'user_id', 'message', 'createdAt'],
+                    order: [['createdAt', 'ASC']],
+                    include: [
+                        {
+                            model: User,
+                            attributes: ['id', 'lastName', 'firstName', 'photo']
+                        },
+                    ]
+                }   
             ]    
         });
         console.log('found posts, return them to frontend')
@@ -220,22 +220,14 @@ exports.deletePost = async (req, res) => {
 
 /* Controller LIKE */
 exports.likePost = async (req, res) => {
-    console.log('likePost Controller starts')
-    console.log(req.body.user_id);
-    console.log(req.body.post_id)
-
     try {
         const userId = req.body.user_id
-        console.log('ctrl userId :' + userId);
         const postId = req.body.post_id
-        console.log('ctrl postId :' + postId);
-
-        console.log('find like from BDD');
+    
         const alreadyLiked = await Like.findOne({
             where: { user_id: userId, post_id: postId },
             attributes: ['id', 'user_id', 'post_id']
         });
-        console.log('findLike done. Conditional statement starts')
         if (alreadyLiked) {
             await Like.destroy(
                 { where: { user_id: req.body.user_id, post_id: req.body.post_id } },
@@ -243,22 +235,7 @@ exports.likePost = async (req, res) => {
             );
             res.status(200).json({ message: 'like annulé'})
         } else {
-            // await Like.create({
-            //     user_id: req.body.user_id,
-            //     post_id: req.body.post_id
-            // });
-
             const newLike = await Like.create({
-                // include: [
-                //     {
-                //         model: User,
-                //         attributes: ['id', 'lastName', 'firstName']
-                //     },
-                //     {
-                //         model: Post,
-                //         attributes: ['id']
-                //     },
-                // ],
                 user_id: req.body.user_id,
                 post_id: req.body.post_id
             });
@@ -282,3 +259,31 @@ exports.likePost = async (req, res) => {
 // }
 
 /* Controller COMMENT */
+
+exports.commentPost = async (req, res) => {
+    try {
+        const newComment = await Comment.create({
+            message: req.body.message,
+            user_id: req.body.user_id,
+            post_id: req.body.post_id
+        });
+        res.status(201).json({ comment: newComment });
+    }
+    catch (error) {
+        return res.status(500).json({ error: 'Erreur du serveur' });
+    }   
+}
+
+
+exports.deleteComment = async (req, res) => {
+    console.log('backend deleteComment controller')
+    try {
+        Comment.destroy(
+            { where: { id: req.params.id }}, { truncate: true }
+        );
+        res.status(200).json({ message: 'commentaire supprimé' });
+    }
+    catch (error) {
+        return res.status(500).json({ error: 'Erreur du serveur' });
+    }   
+}

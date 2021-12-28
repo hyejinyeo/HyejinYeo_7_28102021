@@ -10,8 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             models.User.hasMany(models.Post);
             models.User.hasMany(models.Like);
-        //   models.User.hasMany(models.Comment);
-            
+            models.User.hasMany(models.Comment);
         }
     }
     User.init(
