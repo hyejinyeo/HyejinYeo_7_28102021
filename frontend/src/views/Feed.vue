@@ -85,22 +85,42 @@
                         <!-- LIKE & COMMENT COUNTER -->
                         <div class="d-flex mb-2">
                             <v-spacer></v-spacer>
-                            <!-- <v-btn small icon fab> -->
-                            <div class="mr-7">
-                                <v-badge overlap color="grey" content="100">
-                                <v-icon small class="pr-3">$vuetify.icons.like</v-icon>
-                                </v-badge> 
+                            <div class="mr-7" v-if="post.Likes.length > 0">
+                                <v-menu width="150px" top :offset-y="offset" dark>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-badge overlap color="grey" :content="post.Likes.length">
+                                            <v-btn icon v-bind="attrs" v-on="on">
+                                                <v-icon small>$vuetify.icons.like</v-icon>
+                                            </v-btn>
+                                        </v-badge> 
+                                    </template>
+                                    <v-card>
+                                        <v-card-text>
+                                            <v-list v-for="like in post.Likes" :key="like.id" :like="like" class="my-0 py-0">
+                                                <v-list-item-content class="caption my-0 py-0">
+                                                    {{ like.User.firstName }} {{ like.User.lastName }}
+                                                </v-list-item-content>
+                                            </v-list>
+                                        
+                                        </v-card-text>
+                                    </v-card>
+                                </v-menu>
                             </div>
-                            <!-- </v-btn> -->
-                            <!-- <v-btn small icon fab> -->
                             <div class="mr-7">
-                                <v-badge overlap color="grey" content="24">
-                                <v-icon small class="pr-3" @click="openCommentsContainer(post.id)">$vuetify.icons.comment</v-icon>
+                                <v-badge overlap color="grey" content="1">
+                                    <v-btn icon>
+                                        <v-icon small @click="openCommentsContainer(post.id)">$vuetify.icons.comment</v-icon>
+                                    </v-btn>
                                 </v-badge>  
                             </div>
-                            <!-- </v-btn> -->
-                            <!-- <p>{{ post.Likes.length }}</p> -->
                         </div>
+                        <!-- Users liked the post for hover box -->
+                        <!-- <v-list v-for="like in post.Likes" :key="like.id" :like="like">
+                            <v-list-item-content>
+                                {{ like.User.firstName }} {{ like.User.lastName }}
+                            </v-list-item-content>
+                        </v-list> -->
+                        
                         <!-- LIKE & COMMENT BUTTONS -->
                         <v-divider></v-divider>
                         <v-card-actions>  
@@ -112,7 +132,7 @@
                                     </v-btn>
                                 </v-col>
                                 <v-col cols="6" >
-                                    <v-btn small text width="100%" @click="openCommentsContainer(post.id)">
+                                    <v-btn small text width="100%" @click="openCommentsContainerAndFocusInput(post.id)">
                                         <v-icon left>$vuetify.icons.comment</v-icon>
                                         <span>Commenter</span>
                                     </v-btn>
@@ -174,6 +194,11 @@ export default {
     components: {
         Newpost
     },
+    props: {
+        post: {
+            type: Object
+        }
+    },
     data() {
         return {
             // Temporary dummy data end
@@ -199,9 +224,8 @@ export default {
             return this.$store.getters.posts;
         },
         isLiked() {
+            // const userId = this.$store.getters.user.id;
             return "";
-            // logic to be added
-            // const userId = this.$store.state.user.id;
             // let userLiked = this.post.Like.map((a) => a.userId);
             // if (userLiked.includes(userId)) {
             //     return "pink accent-2";
@@ -272,6 +296,9 @@ export default {
             // this.$store.dispatch("likePost", formData);
         },
         openCommentsContainer(id) {
+            document.getElementById("commentsContainer"+id).style.display = "block";
+        },
+        openCommentsContainerAndFocusInput(id) {
             document.getElementById("commentsContainer"+id).style.display = "block";
             document.getElementById("commentInput"+id).focus();
         },
