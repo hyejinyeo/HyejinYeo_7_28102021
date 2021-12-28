@@ -15,7 +15,6 @@ exports.getAllPosts = async (req, res) => {
         console.log('try finding posts')
         const posts = await Post.findAll({
             attributes: ['id', 'imageUrl', 'giphyUrl', 'link', 'message', 'createdAt', 'updatedAt'],
-            order: [['createdAt', 'DESC']],
             include: [
                 {
                     model: User,
@@ -24,7 +23,6 @@ exports.getAllPosts = async (req, res) => {
                 {
                     model: Like,
                     attributes: ['user_id'],
-                    order: [['createdAt', 'ASC']],
                     include: [
                         {
                             model: User,
@@ -35,7 +33,6 @@ exports.getAllPosts = async (req, res) => {
                 {
                     model: Comment,
                     attributes: ['id', 'user_id', 'message', 'createdAt'],
-                    order: [['createdAt', 'ASC']],
                     include: [
                         {
                             model: User,
@@ -43,7 +40,12 @@ exports.getAllPosts = async (req, res) => {
                         },
                     ]
                 }   
-            ]    
+            ],
+            order: [
+                ['createdAt', 'DESC'],
+                [Like, 'createdAt', 'ASC'],
+                [Comment, 'createdAt', 'ASC']
+            ],    
         });
         console.log('found posts, return them to frontend')
         res.status(200).send(posts);
