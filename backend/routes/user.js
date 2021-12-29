@@ -12,8 +12,10 @@ module.exports = (app) => {
     app.get('/account/:id', auth, userCtrl.getAccount),
     app.put('/account/:id', auth, multer, userCtrl.updateAccount),
     app.delete('/account/:id', auth, userCtrl.deleteAccount),
-    // temporary
-    app.get('/account', auth, userCtrl.getAllAccounts)
+    // Admin only page
+    app.get('/users', auth, userCtrl.getAllUsers),
+    app.put('/user/:id', auth, userCtrl.updateAdmin),
+    app.delete('/user/:id', auth, userCtrl.deleteUser)
 }
 
 

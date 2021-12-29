@@ -126,18 +126,6 @@ exports.getAccount = async (req, res) => {
 };
 
 
-// temporary
-exports.getAllAccounts = async (req, res) => {
-    try { 
-        const users = await User.findAll()
-        res.status(200).send(users);
-    }
-    catch (error) {
-        return res.status(500).json({ error: 'Erreur du serveur' });
-    }
-}
-
-
 // Modifier son profil
 exports.updateAccount = async (req, res) => {  
     let updatedUser = {};
@@ -190,5 +178,56 @@ exports.deleteAccount = async (req, res) => {
     }
     catch (error) {
         return res.status(500).json({ error: 'Erreur du serveur' });
+    }
+};
+
+
+
+exports.getAllUsers = async (req, res) => {
+    try { 
+        const users = await User.findAll()
+        res.status(200).send(users);
+    }
+    catch (error) {
+        return res.status(500).json({ error: 'Erreur du serveur' });
+    }
+};
+
+
+exports.updateAdmin = async (req, res) => {
+    console.log('updateAdmin controller backend');
+    console.log(req.body.user_id)
+    let updatedUser = {};
+    
+    const user = await User.findOne({ where: { id: req.body.user_id } });
+    if (user.isAdmin == false) {
+        updatedUser = { isAdmin: true }
+    } else if (user.isAdmin == true) {
+        updatedUser = { isAdmin: false }
+    }
+        
+    User.update(updatedUser, { where: { id: req.body.user_id } })
+        .then(() => res.status(200).json({ 
+            user: updatedUser,
+            message: 'Votre profil a bien été modifié'
+        }))
+        .catch(error => res.status(400).json({ error: 'update error - check user controller [user.updateAdmin]'}));
+};
+
+
+exports.deleteUser = async (req, res) => {
+    const user = await User.findOne({
+        where: { id: req.params.id }
+    });
+    if (user.photo !== null) {
+        const filename = user.photo.split('/images')[1]
+        fs.unlinkSync(`images/${filename}`)  
+
+        User.destroy({ where: { id: req.params.id } });
+        res.status(200).json({ message: "utilisateur supprimé" });
+    } 
+    else {
+        User.destroy({ where: { id: req.params.id } });
+        res.status(200).json({ message: "utilisateur supprimé" });
     }
 };
