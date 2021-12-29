@@ -15,6 +15,15 @@ export default {
     },
     deleteAccount(id) {
         return Api().delete('account/' + id);
-    }
+    },
+    getAllUsers() {
+        return Api().get('users');
+    },
+    updateAdmin(id) {
+        return Api().get('user/' + id);
+    },
+    deleteUser(id) {
+        return Api().get('user/' + id);
+    },
 }
 

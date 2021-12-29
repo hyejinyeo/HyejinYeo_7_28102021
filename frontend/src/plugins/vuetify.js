@@ -31,15 +31,17 @@ const MY_ICONS = {
     comment: 'mdi-comment-outline',
     like: 'mdi-thumb-up-outline',
     send: 'mdi-send',
+    adminplus: 'mdi-account-plus-outline',
+    adminremove: 'mdi-account-remove-outline',
     
     //ADD MORE ICONS HERE
     // friends: 'mdi-account-supervisor-circle',
-    change: 'mdi-swap-horizontal',
-    heart: 'mdi-heart',
-    mail: 'mdi-email-outline',
-    help: 'mdi-help',
-    settings: 'mdi-cog-outline',
-    hashtag: 'mdi-pound'
+    // change: 'mdi-swap-horizontal',
+    // heart: 'mdi-heart',
+    // mail: 'mdi-email-outline',
+    // help: 'mdi-help',
+    // settings: 'mdi-cog-outline',
+    // hashtag: 'mdi-pound'
 
 }
 

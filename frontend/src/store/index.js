@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-// import Auth from '../services/AuthenticationService';
 import axios from "axios";
 import createPersistedState from "vuex-persistedstate";
+// import Auth from '../services/AuthenticationService';
 // import PostService from '../services/PostService';
 
 
@@ -60,12 +60,10 @@ export default new Vuex.Store({
         SET_USER(state, user) {
             state.user = user;
         },
-        
         // for account page by user Id
         // GET_USER_BY_ID(state, user) {
         //     state.user = user;
         // },
-
         UPDATE_ACCOUNT(state, updatedUser) {
             Object.assign(
                 state.user, updatedUser
@@ -80,6 +78,12 @@ export default new Vuex.Store({
             state.token = null;
             state.user = null;
             state.posts = [];
+        },
+        GET_ALL_USERS(state, users) {
+            state.users = users;
+        },
+        RESET_USERS(state) {
+            state.users = [];
         },
         // -----------------------------------  POST 
         GET_ALL_POSTS(state, posts) {
@@ -116,7 +120,6 @@ export default new Vuex.Store({
         setUser({ commit }, user) {
             commit("SET_USER", user);
         },
-
         // for account page by user Id
         // getUserById({ commit }) {
         //     let id = this.state.user.id;
@@ -128,7 +131,6 @@ export default new Vuex.Store({
         //         console.log(error)
         //     })
         // },
-
         updateAccount({ commit }, data) {
             let id = this.state.user.id;
             axios
@@ -169,7 +171,56 @@ export default new Vuex.Store({
         logOut({ commit }) {
             commit("LOG_OUT");
         },
-
+        // -----------------------------------  USER (ADMIN)
+        getAllUsers({ commit }) {
+            axios
+                .get(`${process.env.PORT || 'http://localhost:3000/'}users`, {
+                    headers: { Authorization: 'Bearer ' + this.state.token }, 
+                })
+                .then((response) => {
+                    const users = response.data;
+                    commit("GET_ALL_USERS", users);
+                });
+        },
+        resetUsers({ commit }) {
+            commit("RESET_USERS");
+        },
+        updateAdmin({ commit }, payload) {
+            const userId = payload.userId;
+            console.log('updateAdmin vuex received user id ' + userId);
+            axios
+                .put(`${process.env.PORT || 'http://localhost:3000/'}user/${userId}`, { user_id: userId }, {
+                    headers: { Authorization: 'Bearer ' + this.state.token }, 
+                })
+                .then (() => {
+                    axios
+                        .get(`${process.env.PORT || 'http://localhost:3000/'}users`, {
+                            headers: { Authorization: 'Bearer ' + this.state.token }, 
+                        })
+                        .then((response) => {
+                            const users = response.data;
+                            commit("GET_ALL_USERS", users);
+                        });
+                }) 
+        },
+        deleteUser({ commit }, payload) {
+            const userId = payload.userId;
+            console.log('deleteUser vuex received user id ' + userId);
+            axios
+                .delete(`${process.env.PORT || 'http://localhost:3000/'}user/${userId}`, {
+                    headers: { Authorization: 'Bearer ' + this.state.token }, 
+                })
+                .then (() => {
+                    axios
+                        .get(`${process.env.PORT || 'http://localhost:3000/'}users`, {
+                            headers: { Authorization: 'Bearer ' + this.state.token }, 
+                        })
+                        .then((response) => {
+                            const users = response.data;
+                            commit("GET_ALL_USERS", users);
+                        });
+                }) 
+        },
 
         // -----------------------------------  POST
         getAllPosts({ commit }) {

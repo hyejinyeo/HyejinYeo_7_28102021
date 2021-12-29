@@ -115,19 +115,13 @@
                                 </v-badge>  
                             </div>
                         </div>
-                        <!-- Users liked the post for hover box -->
-                        <!-- <v-list v-for="like in post.Likes" :key="like.id" :like="like">
-                            <v-list-item-content>
-                                {{ like.User.firstName }} {{ like.User.lastName }}
-                            </v-list-item-content>
-                        </v-list> -->
-                        
                         <!-- LIKE & COMMENT BUTTONS -->
                         <v-divider></v-divider>
                         <v-card-actions>  
                             <v-row>
                                 <v-col cols="6" >
-                                    <v-btn small text width="100%" :color="isLiked" @click="likePost(post.id)">
+                                    <!-- <v-btn small text width="100%" :color="isLiked(post.id)" @click="likePost(post.id)"> -->
+                                    <v-btn small text width="100%" @click="likePost(post.id)">
                                         <v-icon left>$vuetify.icons.like</v-icon>
                                         <span>J'aime</span>
                                     </v-btn>
@@ -190,13 +184,12 @@
                                             @click:append-outer.prevent="submitComment(post.id)"
                                         ></v-text-field>
                                     </v-form>
-                                    <v-alert dense text type="error" v-if="errorMessage !== null" class="mr-3">
-                                        {{ errorMessage }}
-                                    </v-alert> 
                                 </v-flex>    
                             </div>
+                            <v-alert dense text type="error" v-if="errorMessage !== null" >
+                                {{ errorMessage }}
+                            </v-alert> 
                         </v-container>
-
                     </v-card>
                 </v-flex>
             </v-row>
@@ -239,18 +232,18 @@ export default {
         posts() {
             return this.$store.getters.posts;
         },
-        isLiked() {
-            // const userId = this.$store.getters.user.id;
-            // return "pink accent-2";
-            return "";
-            // let userLiked = this.post.Like.map((a) => a.userId);
-            // if (userLiked.includes(userId)) {
-            //     return "pink accent-2";
-            // }
-            // else {
-            //     return "";
-            // }
-        }
+        // isLiked(id) {
+        //     const userId = this.$store.getters.user.id;
+        //     const postId = id;
+        //     let findPost = this.$store.getters.posts.find(post => post.id == postId);
+        //     let findLikes = findPost.Likes;
+        //     let mapLikes = findLikes.map(like => like.user_id);
+        //     if (mapLikes.includes(userId)) {
+        //         return "pink accent-2";
+        //     } else {
+        //         return "";
+        //     }
+        // }
         // Show feeds that are created by certain author
         // myFeeds() {
         //     return this.feeds.filter(feed => {
@@ -299,6 +292,9 @@ export default {
             console.log(this.commentInput);
             if (this.commentInput == null) {
                 this.errorMessage = 'Uh-oh 😮 Il semble que vous n\'avez rien écrit.';
+                // setTimeout(function() {
+                //     this.errorMessage = null;
+                // }, 1500);
             } else {
                 console.log('comment contains string')
                 this.$store.dispatch("commentPost", {
@@ -312,30 +308,22 @@ export default {
         deleteComment(id) {
             console.log('commentid: ' + id)
             this.$store.dispatch("deleteComment", id);
-            window.location.reload;
         }
     },
 
 
 }
-
-/* Comment */
 </script>
 
 <style lang="css" scoped>
 img {
     width: 100%;
-    /* max-height: 1000px; */
 }
 .linkText {
     font-weight: bold;
     font-style: italic;
     text-decoration: underline;
     cursor: pointer;
-}
-
-.red {
-    background-color: red;
 }
 .commentsContainer {
     position: relative;
@@ -357,5 +345,4 @@ img {
     top: 1px;
     right: 1px;
 }
-
 </style>
