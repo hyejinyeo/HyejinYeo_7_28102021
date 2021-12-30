@@ -138,13 +138,11 @@ exports.updateAccount = async (req, res) => {
             updatedUser = {
                 lastName: req.body.lastName,
                 firstName: req.body.firstName,
-                // email: req.body.email,
                 photo: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
             }
     ) : (updatedUser = { 
             lastName: req.body.lastName,
             firstName: req.body.firstName,
-            // email: req.body.email,
         })
     User.update(updatedUser, { where: { id: req.params.id } })
         .then(() => res.status(200).json({ 
@@ -159,12 +157,8 @@ exports.updateAccount = async (req, res) => {
 exports.deleteAccount = async (req, res) => {
     try {
         const id = req.params.id;
-        const user = await User.findOne({
-            where: { id: id }
-        });
-        // S'il y a une photo d'utilisateur, on la supprime 
+        const user = await User.findOne({ where: { id: id } });
         if (user.photo !== null) {
-            //delete user photo
             const filename = user.photo.split('/images')[1]
             fs.unlinkSync(`images/${filename}`)  
 
@@ -195,14 +189,13 @@ exports.getAllUsers = async (req, res) => {
 
 
 exports.updateAdmin = async (req, res) => {
-    console.log('updateAdmin controller backend');
-    console.log(req.body.user_id)
     let updatedUser = {};
     
     const user = await User.findOne({ where: { id: req.body.user_id } });
     if (user.isAdmin == false) {
         updatedUser = { isAdmin: true }
-    } else if (user.isAdmin == true) {
+    } 
+    else if (user.isAdmin == true) {
         updatedUser = { isAdmin: false }
     }
         
@@ -211,18 +204,16 @@ exports.updateAdmin = async (req, res) => {
             user: updatedUser,
             message: 'Votre profil a bien été modifié'
         }))
-        .catch(error => res.status(400).json({ error: 'update error - check user controller [user.updateAdmin]'}));
+        .catch(error => res.status(400).json({ error: 'Erreur du serveur' }));
 };
 
 
 exports.deleteUser = async (req, res) => {
-    const user = await User.findOne({
-        where: { id: req.params.id }
-    });
-    if (user.photo !== null) {
-        const filename = user.photo.split('/images')[1]
-        fs.unlinkSync(`images/${filename}`)  
+    const user = await User.findOne({ where: { id: req.params.id } });
 
+    if (user.photo !== null) {
+        const filename = user.photo.split('/images')[1];
+        fs.unlinkSync(`images/${filename}`);  
         User.destroy({ where: { id: req.params.id } });
         res.status(200).json({ message: "utilisateur supprimé" });
     } 
