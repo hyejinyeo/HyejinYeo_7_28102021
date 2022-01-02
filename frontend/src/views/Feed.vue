@@ -5,27 +5,11 @@
         <Newpost />
         <!-- DISPLAY AREA -->
         <v-container style="max-width: 900px" class="my-3">
-            <!-- FILTERS -->
-            <!-- <v-row align="center" class="my-3">
-                <v-icon color="grey" class="mr-2 d-none d-sm-flex">mdi-filter</v-icon>  
-                <v-btn small depressed color="grey lighten-3 mr-1" @click="sortBy('date')"> 
-                    <v-icon left small>mdi-calendar</v-icon>
-                    <span class="caption text-uppercase">DATE</span>
-                </v-btn>
-                <v-btn small depressed color="grey lighten-3 mr-1" @click="sortBy('author')"> 
-                    <v-icon left small>mdi-account-circle</v-icon>
-                    <span class="caption text-uppercase">AUTHOR</span>
-                </v-btn>
-                <v-spacer></v-spacer>
-                <v-btn small depressed fab class="mx-2" color="#FFD7D7">
-                    <v-icon>mdi-plus</v-icon>
-                </v-btn>
-            </v-row> -->
             <!-- FEEDS -->
             <v-row>
                 <v-flex> 
                     <v-card elevation="2" class="mx-auto my-7" v-for="post in posts" :key="post.id" :post="post" :id="post.id"> 
-                        <!-- FEED HEADER -->
+                        <!-- POST HEADER -->
                         <div class="d-flex row align-center mx-1 pt-2">
                             <!-- AUTHOR / DATE -->
                             <div class="d-flex row align-center pl-4">
@@ -65,7 +49,7 @@
                                 </v-menu>
                             </div>
                         </div>
-                        <!-- FEED BODY -->
+                        <!-- POST BODY -->
                         <!-- IMAGE -->
                         <div class="mt-3 py-2" v-if="post.imageUrl !== null">
                             <img class="image" :src="post.imageUrl" />
@@ -120,8 +104,8 @@
                         <v-card-actions>  
                             <v-row>
                                 <v-col cols="6" >
-                                    <!-- <v-btn small text width="100%" :color="isLiked(post.id)" @click="likePost(post.id)"> -->
-                                    <v-btn small text width="100%" @click="likePost(post.id)">
+                                    <v-btn small text width="100%" :class="isLiked(post.id)" @click="likePost(post.id)">
+                                    <!-- <v-btn small text width="100%" @click="likePost(post.id)"> -->
                                         <v-icon left>$vuetify.icons.like</v-icon>
                                         <span>J'aime</span>
                                     </v-btn>
@@ -146,7 +130,7 @@
                                 <!-- <p class="moreComments grey--text text--darken-2 font-weight-bold">Voir les commentaires précédents</p> -->
                                 <!-- <v-btn small plain>lire plus...</v-btn> -->
                                 <div v-for="comment in post.Comments" :key="comment.id" :comment="comment" class="d-flex align-top mb-3">
-                                    <v-avatar size="40" color="grey lighten-2">
+                                    <v-avatar size="34" color="grey lighten-2">
                                         <img v-if="comment.User.photo" :src="comment.User.photo">
                                         <span v-if="!comment.User.photo" class="font-weight-bold subtitle-2">{{ comment.User.firstName.substring(0, 1).toUpperCase() }}{{ comment.User.lastName.substring(0, 1).toUpperCase() }} </span>
                                     </v-avatar>
@@ -164,7 +148,7 @@
                             </div>
                             <div class="newComment d-flex align-top row pl-3 mt-4">
                                 <div class="mr-2">
-                                    <v-avatar size="40" color="grey lighten-2">
+                                    <v-avatar size="34" color="grey lighten-2">
                                         <span v-if="!user.photo" class="font-weight-black"> {{ userInitials }}</span>
                                         <img v-if="user.photo" :src="user.photo" >
                                     </v-avatar>
@@ -228,42 +212,29 @@ export default {
             const initials = user.firstName.substring(0, 1).toUpperCase() + user.lastName.substring(0, 1).toUpperCase();
             return initials;
         },
-        // 
         posts() {
             return this.$store.getters.posts;
-        },
-        // isLiked(id) {
-        //     const userId = this.$store.getters.user.id;
-        //     const postId = id;
-        //     let findPost = this.$store.getters.posts.find(post => post.id == postId);
-        //     let findLikes = findPost.Likes;
-        //     let mapLikes = findLikes.map(like => like.user_id);
-        //     if (mapLikes.includes(userId)) {
-        //         return "pink accent-2";
-        //     } else {
-        //         return "";
-        //     }
-        // }
-        // Show feeds that are created by certain author
-        // myFeeds() {
-        //     return this.feeds.filter(feed => {
-        //         return feed.author === 'Hyejin Yeo'
-        //     })
-        // }
-
+        }
     },
     beforeMount() {
         this.$store.dispatch("getAllPosts");
+        this.isLiked();
     },
     beforeDestroy() {
         this.$store.dispatch("resetPosts");
     },
-
     methods: {
-        // Filter - The Net Ninja Vuetify #17
-        // sortBy(prop){
-        //     this.feeds.sort((a, b) => a[prop] < b[prop] ? -1 : 1)
-        // },
+        isLiked(id) {
+            const userId = this.$store.getters.user.id;
+            const postId = id;
+            let findPost = this.posts.find(post => parseInt(post.id) === parseInt(postId));
+            let mapLikes = findPost.Likes.map(like => like.user_id);
+            if (mapLikes.includes(userId)) {
+                return "red lighten-5";
+            } else {
+                return "";
+            }
+        },
         modifyPost(id) {
             this.$router.push(`feed/${id}`)
         },
@@ -292,9 +263,7 @@ export default {
             console.log(this.commentInput);
             if (this.commentInput == null) {
                 this.errorMessage = 'Uh-oh 😮 Il semble que vous n\'avez rien écrit.';
-                // setTimeout(function() {
-                //     this.errorMessage = null;
-                // }, 1500);
+                // reset errorMessage into null after few seconds;
             } else {
                 console.log('comment contains string')
                 this.$store.dispatch("commentPost", {
@@ -310,8 +279,6 @@ export default {
             this.$store.dispatch("deleteComment", id);
         }
     },
-
-
 }
 </script>
 
@@ -324,6 +291,7 @@ img {
     font-style: italic;
     text-decoration: underline;
     cursor: pointer;
+    width: 80%;
 }
 .commentsContainer {
     position: relative;
@@ -345,4 +313,7 @@ img {
     top: 1px;
     right: 1px;
 }
+/* .newComment {
+    width: 100%;
+} */
 </style>
