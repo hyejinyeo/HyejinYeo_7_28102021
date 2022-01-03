@@ -104,16 +104,15 @@
                         <v-card-actions>  
                             <v-row>
                                 <v-col cols="6" >
-                                    <v-btn small text width="100%" :class="isLiked(post.id)" @click="likePost(post.id)">
-                                    <!-- <v-btn small text width="100%" @click="likePost(post.id)"> -->
+                                    <v-btn small text width="100%" :class="likeButtonColor(post.id)" @click="likePost(post.id)">
                                         <v-icon left>$vuetify.icons.like</v-icon>
-                                        <span>J'aime</span>
+                                        <span class="caption">J'aime</span>
                                     </v-btn>
                                 </v-col>
                                 <v-col cols="6" >
                                     <v-btn small text width="100%" @click="openCommentsContainerAndFocusInput(post.id)">
                                         <v-icon left>$vuetify.icons.comment</v-icon>
-                                        <span>Commenter</span>
+                                        <span class="caption">Commenter</span>
                                     </v-btn>
                                 </v-col>
                             </v-row>   
@@ -123,43 +122,37 @@
                         <v-container :id="'commentsContainer'+post.id" style="display: none" class="commentsContainer">
                             <div class="closeCommentsBtn">
                                 <v-btn small plain @click="closeCommentsContainer(post.id)">
-                                    <v-icon>mdi-chevron-up</v-icon>
+                                    <v-icon>$vuetify.icons.up</v-icon>
                                 </v-btn>
                             </div>
                             <div class="comments mt-8">
-                                <!-- <p class="moreComments grey--text text--darken-2 font-weight-bold">Voir les commentaires précédents</p> -->
-                                <!-- <v-btn small plain>lire plus...</v-btn> -->
                                 <div v-for="comment in post.Comments" :key="comment.id" :comment="comment" class="d-flex align-top mb-3">
                                     <v-avatar size="34" color="grey lighten-2">
                                         <img v-if="comment.User.photo" :src="comment.User.photo">
                                         <span v-if="!comment.User.photo" class="font-weight-bold subtitle-2">{{ comment.User.firstName.substring(0, 1).toUpperCase() }}{{ comment.User.lastName.substring(0, 1).toUpperCase() }} </span>
                                     </v-avatar>
-                                    <v-flex grow>
-                                        <div class="grey lighten-4 rounded ml-2 pa-2 commentBox">
-                                            <v-btn icon v-if="$store.state.user.id == comment.User.id || $store.state.user.isAdmin == true" class="commentDeleteButton" @click="deleteComment(comment.id)">
-                                                <v-icon small>$vuetify.icons.delete</v-icon>
-                                            </v-btn>
-                                            <p class="caption font-weight-bold mb-0"> {{ comment.User.firstName }} {{ comment.User.lastName }} </p>
-                                            <p class="caption mb-0"> {{ comment.message }} </p>   
-                                        </div>
-                                    </v-flex> 
-
+                                    <v-spacer></v-spacer>
+                                    <div class="grey lighten-4 rounded ml-2 pa-2 commentBox">
+                                        <v-btn icon v-if="$store.state.user.id == comment.User.id || $store.state.user.isAdmin == true" class="commentDeleteButton" @click="deleteComment(comment.id)">
+                                            <v-icon small>$vuetify.icons.delete</v-icon>
+                                        </v-btn>
+                                        <p class="caption font-weight-bold mb-0"> {{ comment.User.firstName }} {{ comment.User.lastName }} </p>
+                                        <p class="caption mb-0"> {{ comment.message }} </p>   
+                                    </div>
                                 </div>
                             </div>
                             <div class="newComment d-flex align-top row pl-3 mt-4">
-                                <div class="mr-2">
+                                <div class="d-flex fullWidth">
                                     <v-avatar size="34" color="grey lighten-2">
                                         <span v-if="!user.photo" class="font-weight-black"> {{ userInitials }}</span>
                                         <img v-if="user.photo" :src="user.photo" >
-                                    </v-avatar>
-                                </div>
-                                <v-flex grow>
-                                    <v-form >
+                                    </v-avatar>                      
+                                    <v-form>
                                         <v-text-field
-                                            filled rounded dense autogrow
+                                            filled rounded dense
                                             placeholder="Ecrivez un commentaire ..."
                                             type="text"
-                                            class="mr-2"
+                                            class="mx-2"
                                             color="grey"
                                             required
                                             v-model="commentInput"
@@ -168,7 +161,7 @@
                                             @click:append-outer.prevent="submitComment(post.id)"
                                         ></v-text-field>
                                     </v-form>
-                                </v-flex>    
+                                </div>
                             </div>
                             <v-alert dense text type="error" v-if="errorMessage !== null" >
                                 {{ errorMessage }}
@@ -177,13 +170,16 @@
                     </v-card>
                 </v-flex>
             </v-row>
+            <!-- SCROLL-TO-TOP BUTTON -->
+            <v-btn fixed bottom right color="grey lighten-4" class="mb-2 mr-2" @click="scrollToTop">
+                <v-icon size="30">$vuetify.icons.up</v-icon>
+            </v-btn>
         </v-container>
     </div>
 </template>
 
 <script>
 import Newpost from '../components/NewPost'
-
 
 export default {
     components: {
@@ -218,13 +214,13 @@ export default {
     },
     beforeMount() {
         this.$store.dispatch("getAllPosts");
-        this.isLiked();
+        this.likeButtonColor();
     },
     beforeDestroy() {
         this.$store.dispatch("resetPosts");
     },
     methods: {
-        isLiked(id) {
+        likeButtonColor(id) {
             const userId = this.$store.getters.user.id;
             const postId = id;
             let findPost = this.posts.find(post => parseInt(post.id) === parseInt(postId));
@@ -263,7 +259,6 @@ export default {
             console.log(this.commentInput);
             if (this.commentInput == null) {
                 this.errorMessage = 'Uh-oh 😮 Il semble que vous n\'avez rien écrit.';
-                // reset errorMessage into null after few seconds;
             } else {
                 console.log('comment contains string')
                 this.$store.dispatch("commentPost", {
@@ -277,6 +272,9 @@ export default {
         deleteComment(id) {
             console.log('commentid: ' + id)
             this.$store.dispatch("deleteComment", id);
+        },
+        scrollToTop() {
+            window.scrollTo(0,0)
         }
     },
 }
@@ -296,24 +294,27 @@ img {
 .commentsContainer {
     position: relative;
 }
+.comments {
+    width: 100%;
+}
 .closeCommentsBtn {
     position: absolute;
     top: 10px;
     right: 1px;
 }
-.moreComments:hover {
-    text-decoration: underline;
-    cursor: pointer;
-}
 .commentBox {
     position: relative;
+    width: 100%;
 }
 .commentDeleteButton {
     position: absolute;
     top: 1px;
     right: 1px;
 }
-/* .newComment {
-    width: 100%;
-} */
+.newComment { 
+    width: auto;
+}
+.v-form, .fullWidth {
+    width: 100%;   
+}
 </style>
