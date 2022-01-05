@@ -60,10 +60,6 @@ export default new Vuex.Store({
         SET_USER(state, user) {
             state.user = user;
         },
-        // for account page by user Id
-        // GET_USER_BY_ID(state, user) {
-        //     state.user = user;
-        // },
         UPDATE_ACCOUNT(state, updatedUser) {
             Object.assign(
                 state.user, updatedUser
@@ -79,6 +75,7 @@ export default new Vuex.Store({
             state.user = null;
             state.posts = [];
         },
+        // -----------------------------------  USER (ADMIN)
         GET_ALL_USERS(state, users) {
             state.users = users;
         },
@@ -120,17 +117,6 @@ export default new Vuex.Store({
         setUser({ commit }, user) {
             commit("SET_USER", user);
         },
-        // for account page by user Id
-        // getUserById({ commit }) {
-        //     let id = this.state.user.id;
-        //     Auth.getUserById(id).then((response) => {
-        //         const user = response.data;
-        //         commit("GET_USER_BY_ID", user);
-        //     })
-        //     .catch((error) => {
-        //         console.log(error)
-        //     })
-        // },
         updateAccount({ commit }, data) {
             let id = this.state.user.id;
             axios
@@ -141,16 +127,6 @@ export default new Vuex.Store({
                     const updatedUser = response.data.user;
                     commit("UPDATE_ACCOUNT", updatedUser);
                 })
-                .then (() => {
-                    axios
-                        .get(`${process.env.PORT || 'http://localhost:3000/'}feed`, {
-                            headers: { Authorization: 'Bearer ' + this.state.token }, 
-                        })
-                        .then((response) => {
-                            const posts = response.data;
-                            commit("GET_POSTS", posts);
-                        })
-                }) 
                 .catch((error) => {
                     console.log(error)
                 })      
@@ -187,7 +163,6 @@ export default new Vuex.Store({
         },
         updateAdmin({ commit }, payload) {
             const userId = payload.userId;
-            console.log('updateAdmin vuex received user id ' + userId);
             axios
                 .put(`${process.env.PORT || 'http://localhost:3000/'}user/${userId}`, { user_id: userId }, {
                     headers: { Authorization: 'Bearer ' + this.state.token }, 
@@ -205,7 +180,6 @@ export default new Vuex.Store({
         },
         deleteUser({ commit }, payload) {
             const userId = payload.userId;
-            console.log('deleteUser vuex received user id ' + userId);
             axios
                 .delete(`${process.env.PORT || 'http://localhost:3000/'}user/${userId}`, {
                     headers: { Authorization: 'Bearer ' + this.state.token }, 
@@ -224,10 +198,6 @@ export default new Vuex.Store({
 
         // -----------------------------------  POST
         getAllPosts({ commit }) {
-            // PostService.getPosts().then((response) => {
-            //     const posts = response.data;
-            //     commit("GET_POSTS", posts);
-            // });
             axios
                 .get(`${process.env.PORT || 'http://localhost:3000/'}feed`, {
                     headers: { Authorization: 'Bearer ' + this.state.token }, 
@@ -236,6 +206,11 @@ export default new Vuex.Store({
                     const posts = response.data;
                     commit("GET_ALL_POSTS", posts);
                 });
+            // PostService.getAllPosts()
+            //     .then((response) => {
+            //         const posts = response.data;
+            //         commit("GET_ALL_POSTS", posts);
+            //     });
         },
         getPostById({ commit }, id) {
             axios
@@ -275,7 +250,6 @@ export default new Vuex.Store({
                 })
                 .then((response) => {
                     const post = response.data;
-                    console.log(post)
                     commit("ADD_POST", post);
                 })
                 .then(() => {
@@ -290,8 +264,7 @@ export default new Vuex.Store({
                 });
         },
         updatePost({ commit }, post) {
-            console.log('store actions received');
-            let id = this.state.post.id
+            let id = this.state.post.id;
             axios
                 .put(`${process.env.PORT || 'http://localhost:3000/'}feed/${id}`, post, {
                     headers: { Authorization: 'Bearer ' + this.state.token },     
@@ -333,11 +306,8 @@ export default new Vuex.Store({
         },
         commentPost({ commit }, payload) {
             const userId = this.state.user.id;
-            const postId = payload.postId
-            const commentInput = payload.message
-            console.log('store commentPost post id: ' + postId)
-            console.log('store commentPost message: ' + commentInput)
-
+            const postId = payload.postId;
+            const commentInput = payload.message;
             axios
                 .post(`${process.env.PORT || 'http://localhost:3000/'}feed/${postId}/comment`, { user_id: userId, post_id: postId, message: commentInput }, {
                     headers: { Authorization: 'Bearer ' + this.state.token }, 
@@ -358,7 +328,6 @@ export default new Vuex.Store({
                 })
         },
         deleteComment({ commit }, id) {
-            console.log('store deleteComment')
             axios
                 .delete(`${process.env.PORT || 'http://localhost:3000/'}feed/comment/${id}`, {
                     headers: { Authorization: 'Bearer ' + this.state.token }, 
@@ -374,10 +343,8 @@ export default new Vuex.Store({
                     });
                 })
         }
-        
     },
     // ***************************************  MODULES  ***************************************
     modules: {
-
     }
 })

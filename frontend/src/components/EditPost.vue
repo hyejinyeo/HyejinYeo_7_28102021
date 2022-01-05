@@ -6,45 +6,43 @@
                 <v-flex>
                     <v-card elevation="2" class="mx-auto my-7">
                         <v-card-text>
-                            <v-form>
-                            <!-- CREATED / UPDATED -->
+                            <v-form aria-label="Formulaire de publication">
+                            <!-- La date et l'heure -->
                                 <div class="mb-5 text-right">
-                                    <!-- <v-btn icon plain @click="backToFeed(this.$store.getters.post.id)">
-                                        <v-icon>
-                                            mdi-arrow-left
-                                        </v-icon>    
-                                    </v-btn>
-                                    
-                                    <div> -->
-                                        <span>Publiée le {{ new Date(this.$store.getters.post.createdAt).toLocaleDateString("fr-FR") + ' à ' + new Date(this.$store.getters.post.createdAt).toLocaleTimeString("fr-FR") + 'h'}}  || </span>
-                                        <span>Modifiée le {{ new Date(this.$store.getters.post.updatedAt).toLocaleDateString("fr-FR") + ' à ' + new Date(this.$store.getters.post.updatedAt).toLocaleTimeString("fr-FR") }} </span>
-                                    <!-- </div> -->
+                                    <span>Publiée le {{ new Date(this.$store.getters.post.createdAt).toLocaleDateString("fr-FR") + ' à ' + new Date(this.$store.getters.post.createdAt).toLocaleTimeString("fr-FR") + 'h'}}  || </span>
+                                    <span>Modifiée le {{ new Date(this.$store.getters.post.updatedAt).toLocaleDateString("fr-FR") + ' à ' + new Date(this.$store.getters.post.updatedAt).toLocaleTimeString("fr-FR") }} </span>  
                                 </div>
-                            <!-- FILE/LINK UPLOAD BUTTONS -->
-                                <v-btn depressed rounded class="mr-2" :disabled="imageButtonDisabled" @click="openImageDialog">
-                                    <v-icon color="grey darken-2">
+                            <!-- Boutons : Image / Giphy / Lien -->
+                                <v-btn depressed rounded class="mr-2" :disabled="imageButtonDisabled" 
+                                    type="button" aria-label="Bouton pour télécharger une image depuis l'appareil de l'utilisateur" @click="openImageDialog"
+                                >
+                                    <v-icon color="grey darken-2" aria-hidden="true">
                                         $vuetify.icons.image
                                     </v-icon>
                                 </v-btn>
                                 <input id="imageDialog" type="file" accept="image/*" hidden @change="uploadNewImage" />
-                                <v-btn depressed rounded class="mr-2" :disabled="gifButtonDisabled" @click="gifDialog = true">
-                                    <v-icon color="grey darken-2">
+                                <v-btn depressed rounded class="mr-2" :disabled="gifButtonDisabled" 
+                                    type="button" aria-label="Bouton pour rechercher un gif à partir de Giphy" @click="gifDialog = true"
+                                >
+                                    <v-icon color="grey darken-2" aria-hidden="true">
                                         $vuetify.icons.gif
                                     </v-icon>
                                 </v-btn>
                                 <v-dialog v-model="gifDialog" max-width="700" class="pa-2">
                                     <v-card>
                                         <v-card-title>
-                                            <v-text-field v-model="searchInput" prepend-icon="$vuetify.icons.search" label="Search" single-line hide-details color="#005C68" @input="gifInput">
+                                            <v-text-field v-model="searchInput" prepend-icon="$vuetify.icons.search" label="Search" single-line hide-details color="secondary" @input="gifInput">
                                             </v-text-field>
                                         </v-card-title>
                                         <v-card-text>
-                                            <img class="gif" v-for="gif in gifs" :key="gif.id" :gif="gif" :src="gif.images.original.url" @click="selectNewGif"/>
+                                            <img class="gif" v-for="gif in gifs" :key="gif.id" :gif="gif" :src="gif.images.original.url" @click="selectNewGif" alt="Résultats de recherche de gif" />
                                         </v-card-text>
                                     </v-card>
                                 </v-dialog>
-                                <v-btn depressed rounded class="mr-2" :disabled="linkButtonDisabled" @click="linkDialog = true">
-                                    <v-icon color="grey darken-2">
+                                <v-btn depressed rounded class="mr-2" :disabled="linkButtonDisabled" 
+                                    type="button" aria-label="Bouton pour ajouter un lien vers une page web" @click="linkDialog = true"
+                                >
+                                    <v-icon color="grey darken-2" aria-hidden="true">
                                         $vuetify.icons.link
                                     </v-icon>
                                 </v-btn>
@@ -55,70 +53,86 @@
                                         </v-card-text>
                                         <v-card-actions>
                                             <v-spacer></v-spacer>
-                                            <v-btn color="teal darken-2" text @click="submitNewLink">
+                                            <v-btn color="teal darken-2" text 
+                                                type="button" aria-label="Bouton pour soumettre un lien" @click="submitNewLink"
+                                            >
                                                 AJOUTER
                                             </v-btn>
                                         </v-card-actions>
                                     </v-card>
                                 </v-dialog>
-                            <!-- POST DISPLAY -->
-                                <!-- original image -->
+                            <!-- Zone d'affichage -->
+                                <!-- Image originale -->
                                 <div class="imageContainer mt-3" v-if="this.$store.getters.post.imageUrl !== null">
-                                    <img class="image" :src="this.$store.getters.post.imageUrl"> 
-                                    <v-btn fab icon small depressed color="red lighten-2" class="image--deleteButton" @click="deletePostImage">
-                                        <v-icon>$vuetify.icons.close</v-icon>
+                                    <img class="image" :src="this.$store.getters.post.imageUrl" /> 
+                                    <v-btn fab icon small depressed color="red lighten-2" class="image--deleteButton" 
+                                        type="button" aria-label="Bouton pour supprimer l'image originale" @click="deletePostImage"
+                                    >
+                                        <v-icon aria-hidden="true">$vuetify.icons.close</v-icon>
                                     </v-btn>
                                 </div>
-                                <!-- new image -->
+                                <!-- Nouvelle image -->
                                 <div class="imageContainer mt-3">
-                                    <img id="output" class="image"> 
-                                    <v-btn fab icon small depressed color="red lighten-2" class="image--deleteButton" v-if="newImage == true" @click="deleteNewImage">
-                                        <v-icon>$vuetify.icons.close</v-icon>
+                                    <img id="output" class="image" /> 
+                                    <v-btn fab icon small depressed color="red lighten-2" class="image--deleteButton" v-if="newImage == true" 
+                                        type="button" aria-label="Bouton pour supprimer la nouvelle image" @click="deleteNewImage"
+                                    >
+                                        <v-icon aria-hidden="true">$vuetify.icons.close</v-icon>
                                     </v-btn>
                                 </div>
-                                <!-- original gif -->
+                                <!-- Gif original -->
                                 <div class="gifContainer mt-3" v-if="this.$store.getters.post.giphyUrl !== null">
-                                    <img class="image" :src="this.$store.getters.post.giphyUrl"> 
-                                    <v-btn fab icon small depressed color="red lighten-2" class="image--deleteButton" @click="deletePostGif">
-                                        <v-icon>$vuetify.icons.close</v-icon>
+                                    <img class="image" :src="this.$store.getters.post.giphyUrl" /> 
+                                    <v-btn fab icon small depressed color="red lighten-2" class="image--deleteButton" 
+                                        type="button" aria-label="Bouton pour supprimer le gif original" @click="deletePostGif"
+                                    >
+                                        <v-icon aria-hidden="true">$vuetify.icons.close</v-icon>
                                     </v-btn>
                                 </div>
-                                <!-- new gif -->
+                                <!-- Nouveau gif -->
                                 <div class="gifContainer mt-3" v-if="newGifFile !== null">
-                                    <img class="image" :src="newGifFile"> 
-                                    <v-btn fab icon small depressed color="red lighten-2" class="image--deleteButton" @click="deleteNewGif">
-                                        <v-icon>$vuetify.icons.close</v-icon>
+                                    <img class="image" :src="newGifFile" /> 
+                                    <v-btn fab icon small depressed color="red lighten-2" class="image--deleteButton" 
+                                        type="button" aria-label="Bouton pour supprimer le nouveau gif" @click="deleteNewGif"
+                                    >
+                                        <v-icon aria-hidden="true">$vuetify.icons.close</v-icon>
                                     </v-btn>
                                 </div>
-                                <!-- original link -->
+                                <!-- Lien original -->
                                 <div class="linkContainer mt-3" v-if="this.$store.getters.post.link !== null">
                                     <span class="link d-flex align-center">
-                                        <v-icon small class="mr-2">$vuetify.icons.selectedlink</v-icon>
+                                        <v-icon small class="mr-2" aria-hidden="true">$vuetify.icons.selectedlink</v-icon>
                                         <span class="linkText">{{ this.$store.getters.post.link }}</span>
                                     </span>
-                                    <v-btn fab icon small depressed color="red lighten-2" class="link--deleteButton" @click="deletePostLink">
-                                        <v-icon>$vuetify.icons.close</v-icon>
+                                    <v-btn fab icon small depressed color="red lighten-2" class="link--deleteButton" 
+                                        type="button" aria-label="Bouton pour supprimer le lien original" @click="deletePostLink"
+                                    >
+                                        <v-icon aria-hidden="true">$vuetify.icons.close</v-icon>
                                     </v-btn>
                                 </div>
-                                <!-- new link -->
+                                <!-- Nouveau lien -->
                                 <div class="linkContainer mt-3" v-if="linkOutput !== null">
                                     <span class="link d-flex align-center">
-                                        <v-icon small class="mr-2">$vuetify.icons.selectedlink</v-icon>
+                                        <v-icon small class="mr-2" aria-hidden="true">$vuetify.icons.selectedlink</v-icon>
                                         <span class="linkText">{{ linkOutput }}</span>
                                     </span>
-                                    <v-btn fab icon small depressed color="red lighten-2" v-if="linkUrl !== null" class="link--deleteButton" @click="deleteNewLink">
-                                        <v-icon>$vuetify.icons.close</v-icon>
+                                    <v-btn fab icon small depressed color="red lighten-2" v-if="linkUrl !== null" class="link--deleteButton" 
+                                        type="button" aria-label="Bouton pour supprimer le nouveau lien" @click="deleteNewLink"
+                                    >
+                                        <v-icon aria-hidden="true">$vuetify.icons.close</v-icon>
                                     </v-btn>
                                 </div>
-                                <!-- original message -->
+                                <!-- Message d'origine -->
                                 <div class="messageContainer mt-3 grey lighten-3 pa-3 rounded" v-if="this.$store.getters.post.message !== null">
                                     <span>{{ this.$store.getters.post.message }}</span>
-                                    <v-btn fab icon small depressed color="red lighten-2" class="message--deleteButton" @click="deletePostMessage">
-                                        <v-icon>$vuetify.icons.close</v-icon>
+                                    <v-btn fab icon small depressed color="red lighten-2" class="message--deleteButton" 
+                                        type="button" aria-label="Bouton pour supprimer le message d'origine" @click="deletePostMessage"
+                                    >
+                                        <v-icon aria-hidden="true">$vuetify.icons.close</v-icon>
                                     </v-btn>
                                 </div>
-                                <!-- new message -->
-                                <v-textarea label="Message" filled color="#005C68" class="mt-3" ref="newMessageInput" autocomplete="off" :rules="messageRules" v-if="textarea == true" v-model="newMessage"> 
+                                <!-- Nouveau message -->
+                                <v-textarea label="Message" filled color="secondary" class="mt-3" ref="newMessageInput" autocomplete="off" :rules="messageRules" v-if="textarea == true" v-model="newMessage"> 
                                 </v-textarea>
                             </v-form>
                             <v-alert dense text type="error" v-if="errorMessage !== null" class="my-2 ">
@@ -126,7 +140,9 @@
                             </v-alert> 
                         </v-card-text>
                         <v-card-actions>
-                            <v-btn color="teal darken-2" text block @click.prevent="updatePost" :loading="btnLoading">
+                            <v-btn color="teal darken-2" text block :loading="btnLoading"
+                                type="button" aria-label="Bouton pour soumettre les modifications" @click.prevent="updatePost" 
+                            >
                                 Modifier
                             </v-btn>
                         </v-card-actions>
@@ -174,20 +190,6 @@ export default {
         let id = this.$route.params.id;
         this.$store.dispatch("getPostById", id);
     },
-    // beforeMount() {
-        // this.setButtons();
-        // if ( this.$store.getters.post.imageUrl == null && this.$store.getters.post.giphyUrl == null ) {
-        //     this.imageButtonDisabled = false;
-        //     this.gifButtonDisabled = false;    
-        // }
-        // if ( this.$store.getters.post.imageUrl !== null || this.$store.getters.post.giphyUrl !== null ) {
-        //     this.imageButtonDisabled = true;
-        //     this.gifButtonDisabled = true;    
-        // }
-        // if ( this.$store.getters.post.link == null) {
-        //     this.linkButtonDisabled = false;
-        // } 
-    // },
     beforeDestroy() {
         this.$store.dispatch("resetPost");
     },
@@ -200,30 +202,6 @@ export default {
         }
     },
     methods: {
-        setButtons() {
-            // if ( this.$store.getters.post.imageUrl == null && this.$store.getters.post.giphyUrl == null ) {
-            //     this.imageButtonDisabled = false;
-            //     this.gifButtonDisabled = false;    
-            // }
-            // if ( this.$store.getters.post.imageUrl !== null || this.$store.getters.post.giphyUrl !== null ) {
-            //     this.imageButtonDisabled = true;
-            //     this.gifButtonDisabled = true;    
-            // }
-            // if ( this.$store.getters.post.link == null) {
-            //     this.linkButtonDisabled = false;
-            // } 
-            // if ( this.post.imageUrl == null && this.post.giphyUrl == null ) {
-            //     this.imageButtonDisabled = false;
-            //     this.gifButtonDisabled = false;    
-            // }
-            // // if ( this.post.imageUrl !== null || this.post.giphyUrl !== null ) {
-            // //     this.imageButtonDisabled = true;
-            // //     this.gifButtonDisabled = true;    
-            // // }
-            // if ( this.post.link == null) {
-            //     this.linkButtonDisabled = false;
-            // } 
-        },
         deletePostImage() {
             this.$store.getters.post.imageUrl = null;
             this.postImageDeleted = true;
@@ -311,7 +289,6 @@ export default {
             this.btnLoading = true;
             try {
                 const formData = new FormData();
-                // formData.append('userId', this.user.id);
                 if (this.newImageFile !== null) {
                     formData.append('imageUrl', this.newImageFile);
                 } else if (this.$store.getters.post.imageUrl == null && this.postImageDeleted == true && this.newImageFile == null) {

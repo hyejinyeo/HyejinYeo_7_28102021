@@ -8,14 +8,14 @@
                             <h4 class="font-weight-regular">INSCRIPTION</h4>
                         </v-card-title>
                         <v-card-text class="font-weight-light">
-                            <v-form ref="signupForm" autocomplete="off">
+                            <v-form ref="signupForm" autocomplete="off" aria-label="Formulaire d'inscription">
                                 <v-text-field
                                     label="nom"
                                     v-model="lastName"
                                     type="text"
                                     required
                                     :rules="nameRules"
-                                    color="#005C68"
+                                    color="secondary"
                                 ></v-text-field>
                                 <v-text-field
                                     label="prénom"
@@ -23,7 +23,7 @@
                                     type="text"
                                     required
                                     :rules="nameRules"
-                                    color="#005C68"
+                                    color="secondary"
                                 ></v-text-field>
                                 <v-text-field
                                     label="e-mail"
@@ -31,7 +31,7 @@
                                     type="email"
                                     required
                                     :rules="emailRules"
-                                    color="#005C68"
+                                    color="secondary"
                                 ></v-text-field>
                                 <v-text-field
                                     label="mot de passe"
@@ -41,16 +41,16 @@
                                     :type="showPassword ? 'text' : 'password'"
                                     required
                                     :rules="passwordRules"
-                                    color="#005C68"
+                                    color="secondary"
                                 ></v-text-field>
                             </v-form>
-                            <v-alert dense text type="error" v-if="errorMessage !== null" class="my-2 ">
+                            <v-alert dense text type="error" v-if="errorMessage !== null" class="my-2">
                                 {{ errorMessage }}
                             </v-alert> 
                         </v-card-text>
                         <v-card-actions class="justify-center">
-                            <v-btn rounded depressed large min-width="200" color="#FFD7D7" class="mx-1 grey--text text--darken-2 font-weight-bold"
-                                @click.prevent="signup" :loading="btnLoading">
+                            <v-btn rounded depressed large min-width="200" color="primary" class="mx-1 grey--text text--darken-2 font-weight-bold"
+                                type="button" aria-label="Bouton pour soumettre le formulaire d'inscription" @click.prevent="signup" :loading="btnLoading">
                                 S'INSCRIRE
                             </v-btn>
                             <v-snackbar v-model="snackbar" :timeout="2000">
@@ -90,18 +90,14 @@ export default {
             showPassword: false,
             btnLoading: false,
             snackbar: false,
-
-            // error message 
             errorMessage: null,
         }
     },
     methods: {
         async signup() {
-            // If sign-up form is valid
+            // Si le formulaire d'inscription est valide
             if (this.$refs.signupForm.validate()) {
-                // Start button loader 
-                this.btnLoading = true;
-                // Send the form inputs to API (axios-sequelize-mysql)           
+                this.btnLoading = true;       
                 try {
                     const response = await AuthenticationService.signup({
                         lastName: this.lastName,
@@ -109,33 +105,20 @@ export default {
                         email: this.email,
                         password: this.password
                     })
-                    console.log(response.data)
-                    
-                    // Pop-up snackbar
                     this.snackbar = true;
-
-                    // Update data
                     this.$store.dispatch("logIn", response.data.token);
                     this.$store.dispatch("setUser", response.data.user);
-                    // this.$store.dispatch("getUserById", response.data.user.id);
-
-                    // Stop button loading
                     this.btnLoading = false;
-
-                    // Redirect to the main page after 2.2 seconds
                     setTimeout(function() {
                         window.location.href= "./";
                     }, 1500)
                 }
-                // Catch authentication error 
                 catch (error) {
-                    // Stop button roader 
                     this.btnLoading = false;
-                    // Display authentication error message
                     this.errorMessage = error.response.data.error;
                 }
             }
-            // If sign-up form is not valid
+            // Si le formulaire d'inscription n'est pas valide
             else {
                 this.errorMessage = 'Oops, votre saisie ne respecte pas le format du formulaire. Veuillez le renseigner 😅';
             }
@@ -144,5 +127,5 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 </style>

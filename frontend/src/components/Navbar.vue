@@ -1,11 +1,10 @@
 <template>
     <nav>
         <v-toolbar app flat color="grey lighten-4">
-            <!-- LEFT: DROPDOWN MENU -->
-            <v-app-bar-nav-icon @click="drawer = !drawer" role="navigation" aria-label="Dropdown menu pour navigation. Activé uniquement lorsqu'un utilisateur est connecté">
+            <!-- GAUCHE: DROPDOWN MENU POUR NAVIGATION (Ligne #66-77) -->
+            <v-app-bar-nav-icon @click="drawer = !drawer" role="navigation" aria-label="Dropdown menu pour navigation. Activé uniquement lorsqu'un utilisateur est connecté" aria-pressed="true">
             </v-app-bar-nav-icon>
             <v-spacer class="d-lg-none"></v-spacer>
-
             <!-- LOGO -->
             <v-toolbar-title role="button" aria-label="Bouton vers la page d'accueil">
                 <router-link to="/">
@@ -21,14 +20,13 @@
                 </router-link>
             </v-toolbar-title>
             <v-spacer></v-spacer>
-
-            <!-- RIGHT: AVATAR + DROPDOWN MENU -->
-            <v-menu rounded offset-y role="menu" aria-label="Dropdown menu pour utilisateur. Activé uniquement lorsqu'un utilisateur est connecté">
+            <!-- DROITE : AVATAR + DROPDOWN MENU POUR UTILISATEUR -->
+            <v-menu rounded offset-y role="menu" aria-label="Dropdown menu pour utilisateur. Activé uniquement lorsqu'un utilisateur est connecté" aria-pressed="true">
                 <template v-slot:activator="{ on }">
-                    <v-btn icon v-on="on">
+                    <v-btn icon v-on="on" type="button" aria-label="Bouton qui affiche les éléments de menu liés à l'utilisateur">
                         <!-- userLoggedIn === false -->
                         <v-avatar v-if="userLoggedIn === false" size="36" color="grey lighten-2" aria-hidden="true">
-                            <v-icon>$vuetify.icons.account</v-icon>
+                            <v-icon aria-hidden="true">$vuetify.icons.account</v-icon>
                         </v-avatar> 
                         <!-- userLoggedIn === true -->
                         <v-badge
@@ -38,35 +36,40 @@
                             aria-hidden="true"
                         >
                             <v-avatar v-if="userLoggedIn === true" size="36" color="grey lighten-2" aria-hidden="true">
-                                <span v-if="!user.photo" class="font-weight-black"> {{ userInitials }}</span>
-                                <img v-if="user.photo" :src="user.photo" >
+                                <span v-if="!user.photo" class="font-weight-black" title="Initiales de l'utilisateur"> {{ userInitials }}</span>
+                                <img v-if="user.photo" :src="user.photo" alt="Photo de l'utilisateur">
                             </v-avatar>
                         </v-badge>
                     </v-btn>
                 </template>
                 <v-card v-if="userLoggedIn === true">
-                    <v-list-item-content class="justify-center" roll="listitem" aria-label="List items pour utilisateur dropdown menu">
-                        <!-- ADMIN ONLY -->
-                        <v-btn v-if="user.isAdmin === true" depressed text color="green" :to="`/admin`" role="Bouton vers la page d'admin" aria-label="Accessible uniquement pour l'utilisateur administrateur">
+                    <v-list-item-content class="justify-center" role="listitem" aria-label="List items pour utilisateur dropdown menu">
+                        <!-- Administrateur uniquement -->
+                        <v-btn v-if="user.isAdmin === true" depressed text color="green" :to="`/admin`" 
+                            type="Button" aria-label="Bouton vers la page d'administrateur"
+                        >
                             <v-icon left aria-hidden="true">$vuetify.icons.admin</v-icon>
                             <span>ADMIN</span>
                         </v-btn>
-                        <!-- ALL USERS -->
-                        <v-btn depressed text :to="`/account/${user.id}`" role="Bouton vers la page du profil"> 
+                        <!-- Tous les utilisateurs -->
+                        <v-btn depressed text :to="`/account/${user.id}`" 
+                            type="Button" aria-label="Bouton vers la page du profil"
+                        > 
                             <v-icon left aria-hidden="true">$vuetify.icons.profil</v-icon>
                             <span>MON PROFIL</span>
                         </v-btn>
-                        <v-btn depressed text @click="logOut" role="Bouton pour se déconnecter">
+                        <v-btn depressed text @click="logOut" 
+                            type="Button" aria-label="Bouton pour se déconnecter"
+                        >
                             <v-icon left aria-hidden="true">$vuetify.icons.logout</v-icon>
                             <span>DÉCONNEXION</span>
                         </v-btn>
                     </v-list-item-content>
                 </v-card>
             </v-menu>
-
         </v-toolbar>
-
-        <v-navigation-drawer temporary app v-model="drawer" v-if="userLoggedIn === true" roll="listitem" aria-label="List items pour navigation dropdown menu">
+        <!-- Navigation menu -->
+        <v-navigation-drawer temporary app v-model="drawer" v-if="userLoggedIn === true" role="listitem" aria-label="List items pour navigation dropdown menu">
             <v-list>
                 <v-list-item v-for="link in links" :key="link.text" router :to="link.route" role="button" :aria-label="link.ariaLabel"> 
                     <v-list-item-action>
@@ -94,7 +97,6 @@ export default {
         }
     },
     computed: {
-        // Vuex: Get login status (true/false)
         userLoggedIn() {
             return this.$store.getters.userLoggedIn
         },
@@ -116,6 +118,5 @@ export default {
 }
 </script>
 
-<style lang="css" scoped>
-
+<style>
 </style>

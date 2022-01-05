@@ -1,46 +1,42 @@
 <template>
     <div class="feed" v-if="userLoggedIn === true">
         <h1 class="text-h6 mb-2">FIL D'ACTUALITÉ</h1>
-        <!-- WRITING AREA -->
+        <!-- COMPOSANT POUR CRÉER UNE NOUVELLE PUBLICATION -->
         <Newpost />
-        <!-- DISPLAY AREA -->
+        <!-- ZONE D'AFFICHAGE DES PUBLICATIONS -->
         <v-container style="max-width: 900px" class="my-3">
-            <!-- FEEDS -->
             <v-row>
                 <v-flex> 
+                    <!-- POST -->
                     <v-card elevation="2" class="mx-auto my-7" v-for="post in posts" :key="post.id" :post="post" :id="post.id"> 
-                        <!-- POST HEADER -->
+                        <!-- Entête -->
                         <div class="d-flex row align-center mx-1 pt-2">
-                            <!-- AUTHOR / DATE -->
+                            <!-- Auteur / Date -->
                             <div class="d-flex row align-center pl-4">
-                                <div>
-                                    <v-avatar size="40" color="grey lighten-2">
-                                        <img v-if="post.User.photo" :src="post.User.photo">
-                                        <span v-if="!post.User.photo" class="font-weight-bold subtitle-2">{{ post.User.firstName.substring(0, 1).toUpperCase() }}{{ post.User.lastName.substring(0, 1).toUpperCase() }} </span>
-                                    </v-avatar>
-                                </div>
-                                <div>
-                                    <v-card-subtitle>
-                                        <span class="font-weight-bold">{{ post.User.firstName }} {{ post.User.lastName }}</span><br> 
-                                        <span class="caption">{{ new Date(post.createdAt).toLocaleDateString("fr-FR") + ' à ' + new Date(post.createdAt).toLocaleTimeString("fr-FR") }}</span>
-                                    </v-card-subtitle>
-                                </div>
+                                <v-avatar size="40" color="grey lighten-2">
+                                    <img v-if="post.User.photo" :src="post.User.photo" alt="Photo de l'auteur">
+                                    <span v-if="!post.User.photo" class="font-weight-bold subtitle-2" title="Initiales de l'auteur">{{ post.User.firstName.substring(0, 1).toUpperCase() }}{{ post.User.lastName.substring(0, 1).toUpperCase() }} </span>
+                                </v-avatar>
+                                <v-card-subtitle>
+                                    <span class="font-weight-bold" title="Prénom et nom de l'auteur">{{ post.User.firstName }} {{ post.User.lastName }}</span><br> 
+                                    <span class="caption" title="Date et l'heure">{{ new Date(post.createdAt).toLocaleDateString("fr-FR") + ' à ' + new Date(post.createdAt).toLocaleTimeString("fr-FR") }}</span>
+                                </v-card-subtitle>    
                             </div>
-                            <!-- EDIT BUTTON : visible only for the author-->
+                            <!-- Boutons : Visible uniquement pour l'auteur ou les administrateurs-->
                             <div v-if="$store.state.user.id == post.User.id || $store.state.user.isAdmin == true">
                                 <v-menu rounded offset-y role="menu" aria-label="Dropdown menu pour modifier la publication. Author or Admin only">
                                     <template v-slot:activator="{ on }">
-                                        <v-btn icon v-on="on">
+                                        <v-btn icon v-on="on" type="button" aria-pressed="true">
                                             <v-icon>$vuetify.icons.more</v-icon>
                                         </v-btn>
                                     </template>
                                     <v-card v-if="userLoggedIn === true">
-                                        <v-list-item-content class="justify-center" roll="listitem" aria-label="List items pour pub modification ou suppression">
-                                            <v-btn depressed text color="grey darken-1" @click="modifyPost(post.id)" role="Bouton pour modifier la publication"> 
+                                        <v-list-item-content class="justify-center" role="listitem" aria-label="List items pour pub modification ou suppression">
+                                            <v-btn depressed text color="grey darken-1" @click="modifyPost(post.id)" type="button" aria-label="Bouton pour modifier la publication"> 
                                                 <v-icon left aria-hidden="true">$vuetify.icons.modifyPost</v-icon>
                                                 <span>Modifier</span>
                                             </v-btn>
-                                            <v-btn depressed text color="grey darken-1" @click="deletePost(post.id)" role="Bouton pour supprimer la publication">
+                                            <v-btn depressed text color="grey darken-1" @click="deletePost(post.id)" type="button" aria-label="Bouton pour supprimer la publication">
                                                 <v-icon left aria-hidden="true">$vuetify.icons.deletePost</v-icon>
                                                 <span>Supprimer</span>
                                             </v-btn>
@@ -49,33 +45,33 @@
                                 </v-menu>
                             </div>
                         </div>
-                        <!-- POST BODY -->
-                        <!-- IMAGE -->
+                        <!-- Corp -->
+                        <!-- Image / Giphy -->
                         <div class="mt-3 py-2" v-if="post.imageUrl !== null">
-                            <img class="image" :src="post.imageUrl" />
+                            <img class="image" :src="post.imageUrl" alt="Image de la publication"/>
                         </div>
                         <div class="mt-3 py-2" v-if="post.giphyUrl !== null">
-                            <img class="image" :src="post.giphyUrl" />
+                            <img class="image" :src="post.giphyUrl" alt="Gif de la publication"/>
                         </div>
-                        <!-- TEXT -->
+                        <!-- Lien / Message -->
                         <v-card-text class="mb-3">
                             <div v-if="post.link !== null" class="mb-2">
                                 <span class="link d-flex align-center">
-                                    <v-icon small class="mr-2">$vuetify.icons.selectedlink</v-icon>
-                                    <span class="linkText" @click="openLink(post.link)">{{ post.link }}</span>
+                                    <v-icon small class="mr-2" aria-hidden="true">$vuetify.icons.selectedlink</v-icon>
+                                    <span class="linkText" @click="openLink(post.link)" title="Lien qui ouvre la page sur un nouvel onglet">{{ post.link }}</span>
                                 </span>            
                             </div>
                             <div v-if="post.message !== null" class="mt-3 py-2">{{ post.message }}</div>
                         </v-card-text>
-                        <!-- LIKE & COMMENT COUNTER -->
+                        <!-- Compteur de likes et de commentaires -->
                         <div class="d-flex mb-2">
                             <v-spacer></v-spacer>
                             <div class="mr-7" v-if="post.Likes.length > 0">
                                 <v-menu width="150px" top :offset-y="offset" dark>
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-badge overlap color="grey" :content="post.Likes.length">
-                                            <v-btn icon v-bind="attrs" v-on="on">
-                                                <v-icon small>$vuetify.icons.like</v-icon>
+                                            <v-btn icon v-bind="attrs" v-on="on" type="button" aria-label="Bouton qui affiche les utilisateurs qui ont aimé la publication">
+                                                <v-icon small aria-hidden="true">$vuetify.icons.like</v-icon>
                                             </v-btn>
                                         </v-badge> 
                                     </template>
@@ -86,68 +82,77 @@
                                                     {{ like.User.firstName }} {{ like.User.lastName }}
                                                 </v-list-item-content>
                                             </v-list>
-                                        
                                         </v-card-text>
                                     </v-card>
                                 </v-menu>
                             </div>
                             <div class="mr-7" v-if="post.Comments.length > 0">
                                 <v-badge overlap color="grey" :content="post.Comments.length">
-                                    <v-btn icon>
-                                        <v-icon small @click="openCommentsContainer(post.id)">$vuetify.icons.comment</v-icon>
+                                    <v-btn icon type="button" aria-label="Bouton qui ouvre le bloc d'affichage des commentaires" @click="openCommentsContainer(post.id)">
+                                        <v-icon small aria-hidden="true">$vuetify.icons.comment</v-icon>
                                     </v-btn>
                                 </v-badge>  
                             </div>
                         </div>
-                        <!-- LIKE & COMMENT BUTTONS -->
+                        <!-- Boutons : Like & Commentaire -->
                         <v-divider></v-divider>
                         <v-card-actions>  
                             <v-row>
-                                <v-col cols="6" >
-                                    <v-btn small text width="100%" :class="likeButtonColor(post.id)" @click="likePost(post.id)">
-                                        <v-icon left>$vuetify.icons.like</v-icon>
+                                <v-col cols="6">
+                                    <v-btn small text width="100%" :class="likeButtonColor(post.id)" @click="likePost(post.id)"
+                                        type="button" aria-label="Bouton pour soumettre un like ou l'annuler"
+                                    >
+                                        <v-icon left aria-hidden="true">$vuetify.icons.like</v-icon>
                                         <span class="caption">J'aime</span>
                                     </v-btn>
                                 </v-col>
-                                <v-col cols="6" >
-                                    <v-btn small text width="100%" @click="openCommentsContainerAndFocusInput(post.id)">
-                                        <v-icon left>$vuetify.icons.comment</v-icon>
+                                <v-col cols="6">
+                                    <v-btn small text width="100%" @click="openCommentsContainerAndFocusInput(post.id)"
+                                        type="button" aria-label="Bouton pour ouvrir le bloc d'affichage des commentaires et pour faire le focus sur le champ de saisie"
+                                    >
+                                        <v-icon left aria-hidden="true">$vuetify.icons.comment</v-icon>
                                         <span class="caption">Commenter</span>
                                     </v-btn>
                                 </v-col>
                             </v-row>   
                         </v-card-actions>
                         <v-divider></v-divider>
-                        <!-- COMMENT DISPLAY & INPUT -->
+                        <!-- Commentaire -->
                         <v-container :id="'commentsContainer'+post.id" style="display: none" class="commentsContainer">
                             <div class="closeCommentsBtn">
-                                <v-btn small plain @click="closeCommentsContainer(post.id)">
-                                    <v-icon>$vuetify.icons.up</v-icon>
+                                <v-btn small plain @click="closeCommentsContainer(post.id)"
+                                    type="button" aria-label="Bouton pour fermer le bloc d'affichage des commentaires"
+                                >
+                                    <v-icon aria-hidden="true">$vuetify.icons.up</v-icon>
                                 </v-btn>
                             </div>
+                            <!-- Commentaire : Zone d'affichage -->
                             <div class="comments mt-8">
                                 <div v-for="comment in post.Comments" :key="comment.id" :comment="comment" class="d-flex align-top mb-3">
-                                    <v-avatar size="34" color="grey lighten-2">
-                                        <img v-if="comment.User.photo" :src="comment.User.photo">
-                                        <span v-if="!comment.User.photo" class="font-weight-bold subtitle-2">{{ comment.User.firstName.substring(0, 1).toUpperCase() }}{{ comment.User.lastName.substring(0, 1).toUpperCase() }} </span>
+                                    <v-avatar size="34" color="grey lighten-2" aria-hidden="true">
+                                        <img v-if="comment.User.photo" :src="comment.User.photo" alt="Photo de l'auteur du commentaire">
+                                        <span v-if="!comment.User.photo" class="font-weight-bold subtitle-2" title="Initiales de l'auteur du commentaire">{{ comment.User.firstName.substring(0, 1).toUpperCase() }}{{ comment.User.lastName.substring(0, 1).toUpperCase() }} </span>
                                     </v-avatar>
                                     <v-spacer></v-spacer>
                                     <div class="grey lighten-4 rounded ml-2 pa-2 commentBox">
-                                        <v-btn icon v-if="$store.state.user.id == comment.User.id || $store.state.user.isAdmin == true" class="commentDeleteButton" @click="deleteComment(comment.id)">
-                                            <v-icon small>$vuetify.icons.delete</v-icon>
+                                        <v-btn icon v-if="$store.state.user.id == comment.User.id || $store.state.user.isAdmin == true" class="commentDeleteButton" @click="deleteComment(comment.id)"
+                                            type="button" aria-label="Bouton pour supprimer le commentaire"
+                                        >
+                                            <v-icon small aria-hidden="true">$vuetify.icons.delete</v-icon>
                                         </v-btn>
                                         <p class="caption font-weight-bold mb-0"> {{ comment.User.firstName }} {{ comment.User.lastName }} </p>
                                         <p class="caption mb-0"> {{ comment.message }} </p>   
                                     </div>
                                 </div>
                             </div>
+                            <!-- Commentaire : Zone d'écriture -->
                             <div class="newComment d-flex align-top row pl-3 mt-4">
                                 <div class="d-flex fullWidth">
-                                    <v-avatar size="34" color="grey lighten-2">
-                                        <span v-if="!user.photo" class="font-weight-black"> {{ userInitials }}</span>
-                                        <img v-if="user.photo" :src="user.photo" >
+                                    <v-avatar size="34" color="grey lighten-2" aria-hidden="true">
+                                        <span v-if="!user.photo" class="font-weight-black" title="Initiales de l'utilisateur"> {{ userInitials }}</span>
+                                        <img v-if="user.photo" :src="user.photo" alt="Photo de l'utilisateur">
                                     </v-avatar>                      
-                                    <v-form>
+                                    <v-form aria-label="Formulaire d'un commentaire">
                                         <v-text-field
                                             filled rounded dense
                                             placeholder="Ecrivez un commentaire ..."
@@ -159,6 +164,7 @@
                                             :id="'commentInput'+post.id"
                                             :append-outer-icon="'$vuetify.icons.send'"
                                             @click:append-outer.prevent="submitComment(post.id)"
+                                            aria-label="Saisie d'un commentaire"
                                         ></v-text-field>
                                     </v-form>
                                 </div>
@@ -170,9 +176,11 @@
                     </v-card>
                 </v-flex>
             </v-row>
-            <!-- SCROLL-TO-TOP BUTTON -->
-            <v-btn fixed bottom right color="grey lighten-4" class="mb-2 mr-2" @click="scrollToTop">
-                <v-icon size="30">$vuetify.icons.up</v-icon>
+            <!-- Bouton pour faire défiler vers le haut -->
+            <v-btn fixed bottom right color="grey lighten-4" class="mb-2 mr-2" @click="scrollToTop"
+                type="button" aria-label="Bouton pour faire défiler vers le haut"
+            >
+                <v-icon size="30" aria-hidden="true">$vuetify.icons.up</v-icon>
             </v-btn>
         </v-container>
     </div>

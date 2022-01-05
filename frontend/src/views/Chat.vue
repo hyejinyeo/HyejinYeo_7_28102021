@@ -4,14 +4,13 @@
         <v-container style="max-width: 900px">
             <v-img
                 alt="Illustration_warning"
+                aria-hidden="true"
                 class="mb-5"
                 :src="require('../assets/illustration_warning.webp')"
-                max-width="1000px"
-                
+                max-width="1000px" 
             />
             <p class="title text-center teal--text text--darken-2">Désolé, cette page n'est pas disponible. <br> Le service est en cours de développement.</p>
-        </v-container>         
-   
+        </v-container> 
     </div>
 </template>
 

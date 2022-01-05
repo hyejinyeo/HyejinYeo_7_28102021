@@ -40,5 +40,13 @@ export default new Vuetify({
     icons: {
         iconfont: 'mdi', 
         values: MY_ICONS
+    },
+    theme: {
+        themes: {
+            light: {
+                primary: '#FFD7D7',
+                secondary: '#005C68'
+            }
+        }  
     }
 })
