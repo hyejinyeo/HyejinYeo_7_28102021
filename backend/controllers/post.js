@@ -8,11 +8,10 @@ const Op = db.Sequelize.Op;
 const fs = require('fs');
 
 
-/* Controller POST */
+/* ------------------------------- Controller POST ------------------------------- */
+
 exports.getAllPosts = async (req, res) => {
-    console.log('gellAllPosts controller starts')
     try {
-        console.log('try finding posts')
         const posts = await Post.findAll({
             attributes: ['id', 'imageUrl', 'giphyUrl', 'link', 'message', 'createdAt', 'updatedAt'],
             include: [
@@ -47,7 +46,6 @@ exports.getAllPosts = async (req, res) => {
                 [Comment, 'createdAt', 'ASC']
             ],    
         });
-        console.log('found posts, return them to frontend')
         res.status(200).send(posts);
     }
     catch (error) {
@@ -75,8 +73,6 @@ exports.getPostById = async (req, res) => {
     }
 };
 
-
-// test message: Bienvenue sur le réseau social de GROUPOMANIA 😘
 
 exports.createPost = async (req, res) => {
     try {
@@ -127,7 +123,6 @@ exports.createPost = async (req, res) => {
 
 exports.updatePost = async (req, res) => {
     try {
-        // let newImageUrl, newGiphyUrl, newLink, newMessage;
         let newImageUrl;
         let post = await Post.findOne({
             where: { id: req.params.id },
@@ -142,22 +137,16 @@ exports.updatePost = async (req, res) => {
         if (post !== null) {
             // imageUrl
             if (req.body.imageUrl == "null") {
-                console.log('imageUrl null')
                 if (post.imageUrl) {
                     const filename = post.imageUrl.split('/uploads')[1]
                     fs.unlinkSync(`uploads/${filename}`)
-                    console.log(`uploads/${filename}`);
                 }
                 post.imageUrl = null;
             }
             if (req.file) {
-                console.log('reqfile rempli')
                 if (post.imageUrl) {
-                    console.log(post.imageUrl)
                     const filename = post.imageUrl.split('/uploads')[1]
                     fs.unlinkSync(`uploads/${filename}`)
-                    console.log(`uploads/${filename}`);
-        
                 }
                 newImageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
                 post.imageUrl = newImageUrl;
@@ -220,7 +209,8 @@ exports.deletePost = async (req, res) => {
 }
 
 
-/* Controller LIKE */
+/* ------------------------------- Controller LIKE ------------------------------- */
+
 exports.likePost = async (req, res) => {
     try {
         const userId = req.body.user_id
@@ -250,17 +240,7 @@ exports.likePost = async (req, res) => {
 }
 
 
-
-// exports.getAllLikes = async (req, res) => {
-//     try {
-//         console.log('get')
-//     }
-//     catch (error) {
-//         return res.status(500).json({ error: 'Erreur du serveur' });
-//     }   
-// }
-
-/* Controller COMMENT */
+/* ------------------------------- Controller COMMENT ------------------------------- */
 
 exports.commentPost = async (req, res) => {
     try {
@@ -278,7 +258,6 @@ exports.commentPost = async (req, res) => {
 
 
 exports.deleteComment = async (req, res) => {
-    console.log('backend deleteComment controller')
     try {
         Comment.destroy(
             { where: { id: req.params.id }}, { truncate: true }

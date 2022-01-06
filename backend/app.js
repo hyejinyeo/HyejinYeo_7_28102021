@@ -1,16 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-
-
-/* Sécurité */
 const helmet = require("helmet");
-
-/* Déclaration des routes */
-// User
-// const userRoutes = require('./routes/user');
-// Post
-// const postRoutes = require('./routes/post');
+const nocache = require('nocache');
+const cookieSession = require('cookie-session');
 
 
 /* Base de données */
@@ -24,13 +17,13 @@ const app = express();
 app.use(cors({
     origin: 'http://localhost:8080'
 }));
-// parse requests of content-type - application/json
+// Parse les requêtes de "content-type: application/json"
 app.use(express.json());
-// parse requests of content-type - application/x-www-form-urlencoded
+// Parse les requêtes de "content-type: application/x-www-form-urlencoded"
 app.use(express.urlencoded({ extended: true }));
 
 
-// prevents cors header errors 
+// Empêche les erreurs d'en-tête cors
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -39,16 +32,27 @@ app.use((req, res, next) => {
 });
 
 
-/* Routes User */
-// app.use('/api/user', userRoutes);
-/* Routes Post */
-// app.use('/api/post', postRoutes);
-
-
 /* Sécurité */
+// Helmet : aide à sécuriser les applications Express en définissant divers en-têtes HTTP
 app.use(helmet());
+// Nocache : désactive la mise en cache du navigateur
+app.use(nocache());
+// Cookie-session : contrôle les cookies et les expire après la durée définie
+const expiryDate = new Date( Date.now() + 24 * 60 * 60 * 1000 ); // 24 heure
+app.use(cookieSession({
+    name: 'session',
+    keys: ['key1', 'key2'],
+    cookie: { 
+        secure: true,                      // le cookie doit être envoyé uniquement via HTTPS
+        httpOnly: true,                    // le cookie doit uniquement être envoyé via HTTP(S) et n'est pas mis à la disposition du client JavaScript
+        domain: 'http://localhost:3000',   // le domaine du cookie
+        expires: expiryDate                // la date d'expiration du cookie
+    }
+}));
+// Dotenv : aide à masquer les informations de connexion à la base de données - variables d'environnement
 
 
+/* Dossier - images: photos des utilisateurs / uploads: fichiers des publications */
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -59,9 +63,7 @@ require('./routes/user')(app)
 require('./routes/post')(app)
 
 
-
-
-// Sequelize - MySQL Database Connection Test  
+// Sequelize - Test de connexion à la base de données MySQL
 const dbTest = async function () {
     try {
         await sequelize.authenticate();

@@ -5,7 +5,6 @@ const Op = db.Sequelize.Op;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
-// const auth = require("../middleware/auth");
 
 const passwordValidator = require('password-validator');
 const user = require('../routes/user');
@@ -17,27 +16,25 @@ passwordSchema
 .has().lowercase()                              
 .has().digits(1)                                
 .has().not().spaces()                           
-.is().not().oneOf(['Passw0rd', 'Password123', 'motdepasse1', 'motdepasse123']); 
+.is().not().oneOf(['Passw0rd', 'Password123', 'motdepasse1', 'motdepasse123', 'Motdepasse123!']); 
 
 
 
-/* Controller USER */
+/* ------------------------------- Controller USER ------------------------------- */
 
-// S'inscrire
 exports.signup = async (req, res) => {
     try {
-        // Check if the email has been already registered
+        // Vérifie si l'e-mail a déjà été enregistré
         const user = await User.findOne({
             where: { email: req.body.email }
         });
-        console.log(user);
-        // If the user email already exists in the database, return an error message
+        // Si l'email de l'utilisateur existe déjà dans la base de données, renvoie un message d'erreur
         if (user !== null) {
             return res.status(400).json({ error: 'Cette adresse mail est déjà utilisé.'});
         }
-        // If the user email does not exist yet, move on to the password validation
+        // Si l'email de l'utilisateur n'existe pas encore, passe à la validation du mot de passe
         else {
-            // If the password is valid, create a new user account and create a new token
+            // Si le mot de passe est valide, crée un nouveau compte utilisateur et un token
             if (passwordSchema.validate(req.body.password)) {
                 const hash = await bcrypt.hash(req.body.password, 10);
                 const newUser = await User.create({
@@ -57,7 +54,7 @@ exports.signup = async (req, res) => {
                     message: 'Votre inscription a bien été prise en compte !'
                 });
             }
-            // If the password is not valid, return an error message
+            // Si le mot de passe n'est pas valide, renvoie un message d'erreur
             else {
                 res.status(400).json({
                     message: 'Le format de votre mot de passe est incorrect.'
@@ -67,7 +64,6 @@ exports.signup = async (req, res) => {
         
     }
     catch (error) {
-        console.log(error);
         res.status(400).json({
             error
         });
@@ -75,23 +71,25 @@ exports.signup = async (req, res) => {
 };
 
 
-// Se connecter
 exports.login = async (req, res) => {
     try {
-        // Check if the email has been already registered
+        // Vérifie si l'e-mail a déjà été enregistré
         const user = await User.findOne({
             where: { email: req.body.email }
         });
-        // If the user email does not exist yet, return an error
+        // Si l'email de l'utilisateur n'existe pas dans la base de données, renvoie un message d'erreur
         if (!user) {
             return res.status(401).json({ error: 'Cette adresse mail n\'est pas encore enregistré !'});
         }
-        // If the user email exists,
+        // Si l'email de l'utilisateur existe déjà dans la base de données,
         else {
+            // Compare les mots de passe d'entrée et de la base de données
             const hash = await bcrypt.compare(req.body.password, user.password);
+            // Si les mots de passe ne correspondent pas, renvoie un message d'erreur
             if (!hash) {
                 return res.status(401).json({ error: 'Mot de passe incorrect !' });
             }
+            // Si les mots de passe correspondent, crée un token
             else {
                 return res.status(200).json({
                     user: user,
@@ -112,7 +110,6 @@ exports.login = async (req, res) => {
 };
 
 
-// Trouver un utilisateur du BDD par son id
 exports.getAccount = async (req, res) => {
     try { 
         const user = await User.findOne({
@@ -126,7 +123,6 @@ exports.getAccount = async (req, res) => {
 };
 
 
-// Modifier son profil
 exports.updateAccount = async (req, res) => {  
     let updatedUser = {};
     req.file ? (
@@ -153,7 +149,6 @@ exports.updateAccount = async (req, res) => {
 };
 
 
-// Supprimer son compte
 exports.deleteAccount = async (req, res) => {
     try {
         const id = req.params.id;
@@ -161,7 +156,6 @@ exports.deleteAccount = async (req, res) => {
         if (user.photo !== null) {
             const filename = user.photo.split('/images')[1]
             fs.unlinkSync(`images/${filename}`)  
-
             User.destroy({ where: { id: id } });
             res.status(200).json({ message: "utilisateur supprimé" });
         } 
@@ -177,6 +171,8 @@ exports.deleteAccount = async (req, res) => {
 
 
 
+/* ------------------------------- Controller ADMIN ------------------------------- */
+
 exports.getAllUsers = async (req, res) => {
     try { 
         const users = await User.findAll()
@@ -190,15 +186,13 @@ exports.getAllUsers = async (req, res) => {
 
 exports.updateAdmin = async (req, res) => {
     let updatedUser = {};
-    
     const user = await User.findOne({ where: { id: req.body.user_id } });
     if (user.isAdmin == false) {
         updatedUser = { isAdmin: true }
     } 
     else if (user.isAdmin == true) {
         updatedUser = { isAdmin: false }
-    }
-        
+    }    
     User.update(updatedUser, { where: { id: req.body.user_id } })
         .then(() => res.status(200).json({ 
             user: updatedUser,
@@ -210,7 +204,6 @@ exports.updateAdmin = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
     const user = await User.findOne({ where: { id: req.params.id } });
-
     if (user.photo !== null) {
         const filename = user.photo.split('/images')[1];
         fs.unlinkSync(`images/${filename}`);  
