@@ -61,7 +61,7 @@
                 <v-divider class="mt-8 mb-3"></v-divider>   
             <v-alert dense text type="error" v-if="errorMessage !== null" >
                 {{ errorMessage }}
-            </v-alert> 
+            </v-alert>
         </v-container>
     </div>
 </template>

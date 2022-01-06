@@ -1,4 +1,14 @@
 // import Api from '@/services/Api';
+// import store from '@/store/index';
+
+// Api.interceptors.request.use(function (config) {
+//     if (store.state.token !== null) {
+//         config.headers = {
+//             Authorization: `Bearer ${store.state.token}`
+//         }
+//     }
+//     return config;
+// })
 
 // export default {
 //     createPost(data) {
@@ -24,21 +34,5 @@
 //     },
 //     deleteComment(id) {
 //         return Api().delete('feed/comment/' + id)
-//     }
-// }
-
-
-// import axios from 'axios';
-
-// const apiPost = axios.create({
-//     baseURL: process.env.PORT || 'http://localhost:3000/',
-//     headers: {
-//         Authorization: 'Bearer ' + this.state.token
-//     }
-// })
-
-// export default {
-//     getAllPosts() {
-//         return apiPost().get('feed');
 //     }
 // }

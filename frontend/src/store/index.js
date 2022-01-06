@@ -2,8 +2,6 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from "axios";
 import createPersistedState from "vuex-persistedstate";
-// import Auth from '../services/AuthenticationService';
-// import PostService from '../services/PostService';
 
 
 Vue.use(Vuex)
@@ -73,6 +71,8 @@ export default new Vuex.Store({
             state.userLoggedIn = false;
             state.token = null;
             state.user = null;
+            state.users = [];
+            state.post = {};
             state.posts = [];
         },
         // -----------------------------------  USER (ADMIN)
@@ -195,7 +195,6 @@ export default new Vuex.Store({
                         });
                 }) 
         },
-
         // -----------------------------------  POST
         getAllPosts({ commit }) {
             axios
@@ -206,11 +205,6 @@ export default new Vuex.Store({
                     const posts = response.data;
                     commit("GET_ALL_POSTS", posts);
                 });
-            // PostService.getAllPosts()
-            //     .then((response) => {
-            //         const posts = response.data;
-            //         commit("GET_ALL_POSTS", posts);
-            //     });
         },
         getPostById({ commit }, id) {
             axios
@@ -229,21 +223,6 @@ export default new Vuex.Store({
             commit("RESET_POSTS");
         },
         createPost({ commit }, post) {
-            // PostService.createPost(post)
-            //     .then((response) => {
-            //         const post = response.data;
-            //         commit("ADD_POST", post);
-            //     })
-            //     .then(() => {
-            //         PostService.getPosts().then((response) => {
-            //             const posts = response.data;
-            //             commit("GET_POSTS", posts);
-            //         });
-            //     })
-            //     .catch((error) => {
-            //         console.log(error)
-            //     })
-
             axios
                 .post(`${process.env.PORT || 'http://localhost:3000/'}feed`, post, {
                     headers: { Authorization: 'Bearer ' + this.state.token }, 
@@ -342,7 +321,7 @@ export default new Vuex.Store({
                         commit("GET_ALL_POSTS", posts);
                     });
                 })
-        }
+        },
     },
     // ***************************************  MODULES  ***************************************
     modules: {
