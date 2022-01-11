@@ -14,16 +14,19 @@
                             <!-- Auteur / Date -->
                             <div class="d-flex row align-center pl-4">
                                 <v-avatar size="40" color="grey lighten-2">
-                                    <img v-if="post.User.photo" :src="post.User.photo" alt="Photo de l'auteur">
-                                    <span v-if="!post.User.photo" class="font-weight-bold subtitle-2" title="Initiales de l'auteur">{{ post.User.firstName.substring(0, 1).toUpperCase() }}{{ post.User.lastName.substring(0, 1).toUpperCase() }} </span>
+                                    <v-icon v-if="post.User == null">$vuetify.icons.account</v-icon>
+                                    <img v-if="post.User !== null && post.User.photo" :src="post.User.photo" alt="Photo de l'auteur">
+                                    <span v-if="post.User !== null && !post.User.photo" class="font-weight-bold subtitle-2" title="Initiales de l'auteur">{{ post.User.firstName.substring(0, 1).toUpperCase() }}{{ post.User.lastName.substring(0, 1).toUpperCase() }} </span>
                                 </v-avatar>
                                 <v-card-subtitle>
-                                    <span class="font-weight-bold" title="Prénom et nom de l'auteur">{{ post.User.firstName }} {{ post.User.lastName }}</span><br> 
+                                    <span v-if="post.User == null" class="font-weight-bold" title="Utilisateur supprimé">Utilisateur Anonyme</span>
+                                    <span v-if="post.User !== null" class="font-weight-bold" title="Prénom et nom de l'auteur">{{ post.User.firstName }} {{ post.User.lastName }}</span>                 
+                                    <br> 
                                     <span class="caption" title="Date et l'heure">{{ new Date(post.createdAt).toLocaleDateString("fr-FR") + ' à ' + new Date(post.createdAt).toLocaleTimeString("fr-FR") }}</span>
                                 </v-card-subtitle>    
                             </div>
                             <!-- Boutons : Visible uniquement pour l'auteur ou les administrateurs-->
-                            <div v-if="$store.state.user.id == post.User.id || $store.state.user.isAdmin == true">
+                            <div v-if="$store.state.user.id == post.user_id || $store.state.user.isAdmin == true">
                                 <v-menu rounded offset-y role="menu" aria-label="Dropdown menu pour modifier la publication. Author or Admin only">
                                     <template v-slot:activator="{ on }">
                                         <v-btn icon v-on="on" type="button" aria-pressed="true">
