@@ -13,7 +13,7 @@ const fs = require('fs');
 exports.getAllPosts = async (req, res) => {
     try {
         const posts = await Post.findAll({
-            attributes: ['id', 'imageUrl', 'giphyUrl', 'link', 'message', 'createdAt', 'updatedAt'],
+            attributes: ['id', 'imageUrl', 'giphyUrl', 'link', 'message', 'createdAt', 'updatedAt', 'user_id'],
             include: [
                 {
                     model: User,
