@@ -117,6 +117,20 @@ export default new Vuex.Store({
         setUser({ commit }, user) {
             commit("SET_USER", user);
         },
+        getAccount({ commit }) {
+            let id = this.state.user.id;
+            axios
+                .get(`${process.env.PORT || 'http://localhost:3000/'}account/${id}`, {
+                    headers: { Authorization: 'Bearer ' + this.state.token },
+                })
+                .then((response) => {
+                    const user = response.data;
+                    commit("SET_USER", user);
+                })
+                .catch((error) => {
+                    console.log(error)
+                })   
+        },
         updateAccount({ commit }, data) {
             let id = this.state.user.id;
             axios

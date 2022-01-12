@@ -133,17 +133,21 @@
                             <div class="comments mt-8">
                                 <div v-for="comment in post.Comments" :key="comment.id" :comment="comment" class="d-flex align-top mb-3">
                                     <v-avatar size="34" color="grey lighten-2" aria-hidden="true">
-                                        <img v-if="comment.User.photo" :src="comment.User.photo" alt="Photo de l'auteur du commentaire">
-                                        <span v-if="!comment.User.photo" class="font-weight-bold subtitle-2" title="Initiales de l'auteur du commentaire">{{ comment.User.firstName.substring(0, 1).toUpperCase() }}{{ comment.User.lastName.substring(0, 1).toUpperCase() }} </span>
+                                        <v-icon v-if="comment.User == null">$vuetify.icons.account</v-icon>
+                                        <img v-if="comment.User !== null && comment.User.photo" :src="comment.User.photo" alt="Photo de l'auteur du commentaire">
+                                        <span v-if="comment.User !== null && !comment.User.photo" class="font-weight-bold subtitle-2" title="Initiales de l'auteur du commentaire">{{ comment.User.firstName.substring(0, 1).toUpperCase() }}{{ comment.User.lastName.substring(0, 1).toUpperCase() }} </span>
                                     </v-avatar>
                                     <v-spacer></v-spacer>
                                     <div class="grey lighten-4 rounded ml-2 pa-2 commentBox">
-                                        <v-btn icon v-if="$store.state.user.id == comment.User.id || $store.state.user.isAdmin == true" class="commentDeleteButton" @click="deleteComment(comment.id)"
+                                        <v-btn icon v-if="$store.state.user.id == comment.user_id || $store.state.user.isAdmin == true" class="commentDeleteButton" @click="deleteComment(comment.id)"
                                             type="button" aria-label="Bouton pour supprimer le commentaire"
                                         >
                                             <v-icon small aria-hidden="true">$vuetify.icons.delete</v-icon>
                                         </v-btn>
-                                        <p class="caption font-weight-bold mb-0"> {{ comment.User.firstName }} {{ comment.User.lastName }} </p>
+                                        <p class="caption font-weight-bold mb-0"> 
+                                            <span v-if="comment.User == null">Utilisateur Anonyme</span>
+                                            <span v-if="comment.User !== null">{{ comment.User.firstName }} {{ comment.User.lastName }}</span>
+                                        </p>
                                         <p class="caption mb-0"> {{ comment.message }} </p>   
                                     </div>
                                 </div>

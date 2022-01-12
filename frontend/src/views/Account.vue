@@ -16,7 +16,7 @@
                                 />
                                 <span v-if="!user.photo" class="text-center"><v-icon large>$vuetify.icons.addphoto</v-icon></span>
                             </v-avatar>
-                            <v-file-input prepend-icon="$vuetify.icons.file" placeholder="Ajouter ou changer votre photo en cliquant ici" aria-label="Téléchargeur de fichiers"
+                            <v-file-input prepend-icon="$vuetify.icons.file" placeholder="Ajouter ou changer votre photo en cliquant ici" color="secondary" aria-label="Téléchargeur de fichiers"
                                 accept="image/*" counter show-size v-model="userPhoto" @change="uploadImage">
                             </v-file-input>
                         </div>
@@ -30,6 +30,7 @@
                                     type="text"
                                     required
                                     :rules="nameRules"
+                                    color="secondary"
                                 ></v-text-field>
                                 <v-text-field
                                     label="prénom"
@@ -37,6 +38,7 @@
                                     type="text"
                                     required
                                     :rules="nameRules"
+                                    color="secondary"
                                 ></v-text-field>
                                 <!-- Email : readonly -->
                                 <v-text-field
@@ -47,6 +49,7 @@
                                     aria-readonly="true"
                                     hint="* ce champ n'est pas modifiable"
                                     persistent-hint
+                                    color="secondary"
                                 ></v-text-field>
                             </v-form>
                             <v-alert dense text type="error" v-if="errorMessage !== null" class="my-2 ">
@@ -80,7 +83,7 @@
                                         <v-card>
                                             <v-card-title class="text-h5"></v-card-title>
                                             <v-card-text>
-                                                ⚠️ Cette action est irréversible. Voulez-vous vraiment supprimer votre compte ?
+                                                Cette action est irréversible. Voulez-vous vraiment supprimer votre compte ?
                                             </v-card-text>
                                             <v-card-actions>
                                                 <v-spacer></v-spacer>
@@ -144,8 +147,9 @@ export default {
                 if (this.selectedFile !== null) {
                     formData.append('image', this.selectedFile);
                 }
-                this.snackbar = true;
                 this.$store.dispatch("updateAccount", formData);
+                this.$store.dispatch("getAccount");
+                this.snackbar = true;
             }
             else {
                 this.errorMessage = 'Oops, votre saisie ne respecte pas le format du formulaire. Veuillez le renseigner 😅';

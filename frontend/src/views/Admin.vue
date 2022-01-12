@@ -98,7 +98,7 @@ export default {
         },
         deleteUser(id) {
             this.$store.dispatch("deleteUser", { userId: id });
-        },
+        }
     }
 }
 </script>

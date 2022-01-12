@@ -17,6 +17,7 @@
                         width="200"
                         max-width="60vw"
                     />
+                    <div class="hidden">groupomania</div>
                 </router-link>
             </v-toolbar-title>
             <v-spacer></v-spacer>
@@ -43,7 +44,7 @@
                     </v-btn>
                 </template>
                 <v-card v-if="userLoggedIn === true">
-                    <v-list-item-content class="justify-center" role="listitem" aria-label="List items pour utilisateur dropdown menu">
+                    <v-list-item-content class="justify-center" role="menuitem" aria-label="List items pour utilisateur dropdown menu">
                         <!-- Administrateur uniquement -->
                         <v-btn v-if="user.isAdmin === true" depressed text color="green" :to="`/admin`" 
                             type="Button" aria-label="Bouton vers la page d'administrateur"
@@ -69,9 +70,9 @@
             </v-menu>
         </v-toolbar>
         <!-- Navigation menu -->
-        <v-navigation-drawer temporary app v-model="drawer" v-if="userLoggedIn === true" role="listitem" aria-label="List items pour navigation dropdown menu">
+        <v-navigation-drawer temporary app v-model="drawer" v-if="userLoggedIn === true" role="menu" aria-label="List items pour navigation dropdown menu">
             <v-list>
-                <v-list-item v-for="link in links" :key="link.text" router :to="link.route" role="button" :aria-label="link.ariaLabel"> 
+                <v-list-item v-for="link in links" :key="link.text" router :to="link.route" role="menuitem" :aria-label="link.ariaLabel"> 
                     <v-list-item-action>
                         <v-icon aria-hidden="true">{{ link.icon }}</v-icon>
                     </v-list-item-action>
@@ -118,5 +119,8 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.hidden {
+    display: none;
+}
 </style>
