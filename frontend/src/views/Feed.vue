@@ -195,7 +195,6 @@
 
 <script>
 import Newpost from '../components/NewPost'
-
 export default {
     components: {
         Newpost

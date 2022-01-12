@@ -1,4 +1,4 @@
-<template>
+ <template>
     <nav>
         <v-toolbar app flat color="grey lighten-4">
             <!-- GAUCHE: DROPDOWN MENU POUR NAVIGATION (Ligne #66-77) -->
