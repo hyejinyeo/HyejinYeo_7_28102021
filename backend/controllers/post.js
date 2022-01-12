@@ -31,7 +31,7 @@ exports.getAllPosts = async (req, res) => {
                 },
                 {
                     model: Comment,
-                    attributes: ['id', 'user_id', 'message', 'createdAt'],
+                    attributes: ['id', 'user_id', 'message', 'createdAt', 'user_id'],
                     include: [
                         {
                             model: User,
