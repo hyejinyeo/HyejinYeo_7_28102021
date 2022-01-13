@@ -58,7 +58,7 @@ exports.getPostById = async (req, res) => {
     try {
         const post = await Post.findOne({
             where: { id: req.params.id },
-            attributes: ['id', 'imageUrl', 'giphyUrl', 'link', 'message', 'createdAt', 'updatedAt'],
+            attributes: ['id', 'imageUrl', 'giphyUrl', 'link', 'message', 'createdAt', 'updatedAt', 'user_id'],
             include: [
                 {
                     model: User,
