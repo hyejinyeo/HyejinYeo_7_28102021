@@ -2,17 +2,16 @@
     <nav>
         <v-toolbar app flat color="grey lighten-4">
             <!-- GAUCHE: DROPDOWN MENU POUR NAVIGATION (Ligne #66-77) -->
-            <v-app-bar-nav-icon @click="drawer = !drawer" role="navigation" aria-label="Dropdown menu pour navigation. Activé uniquement lorsqu'un utilisateur est connecté" aria-pressed="true">
+            <v-app-bar-nav-icon @click="drawer = !drawer" aria-label="Dropdown menu pour navigation. Activé uniquement lorsqu'un utilisateur est connecté">
             </v-app-bar-nav-icon>
             <v-spacer class="d-lg-none"></v-spacer>
             <!-- LOGO -->
-            <v-toolbar-title role="button" aria-label="Bouton vers la page d'accueil">
-                <router-link to="/">
+            <v-toolbar-title>
+                <router-link to="/" role="button" aria-label="Bouton vers la page d'accueil">
                     <v-img
                         alt="Groupomania Logo"
                         class="shrink mr-2"
                         contain
-                        to="/"
                         :src="require('../assets/groupomania_logo_text.webp')"
                         width="200"
                         max-width="60vw"
@@ -22,7 +21,7 @@
             </v-toolbar-title>
             <v-spacer></v-spacer>
             <!-- DROITE : AVATAR + DROPDOWN MENU POUR UTILISATEUR -->
-            <v-menu rounded offset-y role="menu" aria-label="Dropdown menu pour utilisateur. Activé uniquement lorsqu'un utilisateur est connecté" aria-pressed="true">
+            <v-menu rounded offset-y role="menu" aria-label="Dropdown menu pour utilisateur. Activé uniquement lorsqu'un utilisateur est connecté">
                 <template v-slot:activator="{ on }">
                     <v-btn icon v-on="on" type="button" aria-label="Bouton qui affiche les éléments de menu liés à l'utilisateur">
                         <!-- userLoggedIn === false -->
@@ -70,7 +69,7 @@
             </v-menu>
         </v-toolbar>
         <!-- Navigation menu -->
-        <v-navigation-drawer temporary app v-model="drawer" v-if="userLoggedIn === true" role="menu" aria-label="List items pour navigation dropdown menu">
+        <v-navigation-drawer temporary app v-model="drawer" v-if="userLoggedIn === true" role="navigation" aria-label="List items pour navigation dropdown menu">
             <v-list>
                 <v-list-item v-for="link in links" :key="link.text" router :to="link.route" role="menuitem" :aria-label="link.ariaLabel"> 
                     <v-list-item-action>

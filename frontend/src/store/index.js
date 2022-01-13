@@ -98,6 +98,11 @@ export default new Vuex.Store({
         ADD_POST(state, post) {
             state.posts = [post, ...state.posts];
         },
+        UPDATE_POST(state, id, updatedPost) {
+            Object.assign(
+                state.post, updatedPost
+            )
+        },
         DELETE_POST(state) {
             state.post = {};
         },

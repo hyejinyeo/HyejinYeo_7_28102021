@@ -144,7 +144,7 @@ export default {
             imageButtonDisabled: false,
             gifButtonDisabled: false,
             messageRules: [
-                v => !!v || 'Ce champ est obligatoire.',
+                v => !!v || 'Ce champ est obligatoire.'
             ],
             errorMessage: null,            
         }

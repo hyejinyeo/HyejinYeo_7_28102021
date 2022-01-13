@@ -1,5 +1,5 @@
 <template>
-    <div class="account">
+    <div class="account" v-if="userLoggedIn === true">
         <h1 class="text-h6 mb-2">MON PROFIL</h1>
         <v-container style="max-width: 900px">
             <v-layout row wrap align-center>
@@ -66,7 +66,7 @@
                                         METTRE À JOUR
                                     </v-btn>
                                     <v-snackbar v-model="snackbar" :timeout="2000">
-                                        <span>Vos modifications ont bien été prises en compte ! 😊</span>
+                                        <span class="d-flex text-center">Vos modifications ont bien été prises en compte ! 😊</span>
                                     </v-snackbar>     
                                 </template>
                                 <span>Sauvegarder les modifications</span>
@@ -153,7 +153,6 @@ export default {
             }
             else {
                 this.errorMessage = 'Oops, votre saisie ne respecte pas le format du formulaire. Veuillez le renseigner 😅';
-                console.log('error level account vue');
             }
         },
         deleteAccount(id) {

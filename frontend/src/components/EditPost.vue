@@ -1,7 +1,7 @@
 <template>
-    <div class="editpost">
+    <div class="editpost" v-if="userLoggedIn === true">
         <h1 class="text-h6 mb-2">MODIFIER LA PUBLICATION</h1>
-        <v-container style="max-width: 900px" class="mt-5">
+        <v-container style="max-width: 900px" class="mt-5" v-if="this.$store.getters.user.id == this.$store.getters.post.user_id || this.$store.getters.user.isAdmin == true">
             <v-row>
                 <v-flex>
                     <v-card elevation="2" class="mx-auto my-7">
@@ -9,8 +9,8 @@
                             <v-form aria-label="Formulaire de publication">
                             <!-- La date et l'heure -->
                                 <div class="mb-5 text-right">
-                                    <span>Publiée le {{ new Date(this.$store.getters.post.createdAt).toLocaleDateString("fr-FR") + ' à ' + new Date(this.$store.getters.post.createdAt).toLocaleTimeString("fr-FR") + 'h'}}  || </span>
-                                    <span>Modifiée le {{ new Date(this.$store.getters.post.updatedAt).toLocaleDateString("fr-FR") + ' à ' + new Date(this.$store.getters.post.updatedAt).toLocaleTimeString("fr-FR") }} </span>  
+                                    <span class="my-0">Publiée le {{ new Date(this.$store.getters.post.createdAt).toLocaleDateString("fr-FR") + ' à ' + new Date(this.$store.getters.post.createdAt).toLocaleTimeString("fr-FR") + 'h'}} </span> || 
+                                    <span class="my-0">Modifiée le {{ new Date(this.$store.getters.post.updatedAt).toLocaleDateString("fr-FR") + ' à ' + new Date(this.$store.getters.post.updatedAt).toLocaleTimeString("fr-FR") }} </span>  
                                 </div>
                             <!-- Boutons : Image / Giphy / Lien -->
                                 <v-btn depressed rounded class="mr-2" :disabled="imageButtonDisabled" 
@@ -145,6 +145,9 @@
                             >
                                 Modifier
                             </v-btn>
+                            <v-snackbar v-model="snackbar" :timeout="2000">
+                                <span class="d-flex text-center">Vos modifications ont bien été prises en compte ! 😊</span>
+                            </v-snackbar>
                         </v-card-actions>
                     </v-card>
                 </v-flex>
@@ -183,6 +186,7 @@ export default {
             linkButtonDisabled: false,
             textarea: false,
             btnLoading: false,
+            snackbar: false,
             errorMessage: null,               
         }
     },
@@ -194,6 +198,9 @@ export default {
         this.$store.dispatch("resetPost");
     },
     computed: {
+        userLoggedIn() {
+            return this.$store.state.userLoggedIn;
+        },
         user() {
             return this.$store.getters.user;
         },
@@ -306,22 +313,18 @@ export default {
                 }
                 if (this.newMessage !== null && this.postMessageDeleted == true) {
                     if (this.$refs.newMessageInput.validate()) {
-                        console.log('message validation done');
                         formData.append('message', this.newMessage);
                     } else {
                         this.errorMessage = 'Uh-oh 😮 Il semble que vous n\'avez rien écrit. Le champ de message est obligatoire.';
                     }         
                 }
                 this.$store.dispatch("updatePost", formData);
+                this.snackbar = true;
                 this.btnLoading = false;
-                window.location.reload();
             }
             catch (error) {
                 this.errorMessage = error.response.data.error;
             }       
-        },
-        backToFeed(id) {
-            console.log(id);
         }
     }
 }
@@ -369,6 +372,7 @@ export default {
 .linkText {
     font-style: italic;
     text-decoration: underline;
+    width: 80%;
 }
 .messageContainer {
     max-width: 900px;

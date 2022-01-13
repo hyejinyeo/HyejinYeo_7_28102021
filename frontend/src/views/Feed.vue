@@ -29,12 +29,12 @@
                             <div v-if="$store.state.user.id == post.user_id || $store.state.user.isAdmin == true">
                                 <v-menu rounded offset-y role="menu" aria-label="Dropdown menu pour modifier la publication. Author or Admin only">
                                     <template v-slot:activator="{ on }">
-                                        <v-btn icon v-on="on" type="button" aria-pressed="true">
+                                        <v-btn icon v-on="on" type="button" aria-label="Bouton pour ouvrir le menu déroulant">
                                             <v-icon>$vuetify.icons.more</v-icon>
                                         </v-btn>
                                     </template>
                                     <v-card v-if="userLoggedIn === true">
-                                        <v-list-item-content class="justify-center" role="listitem" aria-label="List items pour pub modification ou suppression">
+                                        <v-list-item-content class="justify-center" role="menuitem" aria-label="Menu items pour pub modification ou suppression">
                                             <v-btn depressed text color="grey darken-1" @click="modifyPost(post.id)" type="button" aria-label="Bouton pour modifier la publication"> 
                                                 <v-icon left aria-hidden="true">$vuetify.icons.modifyPost</v-icon>
                                                 <span>Modifier</span>
@@ -269,12 +269,9 @@ export default {
             document.getElementById("commentsContainer"+id).style.display = "none";
         },
         submitComment(id) {
-            console.log(id);
-            console.log(this.commentInput);
             if (this.commentInput == null) {
                 this.errorMessage = 'Uh-oh 😮 Il semble que vous n\'avez rien écrit.';
             } else {
-                console.log('comment contains string')
                 this.$store.dispatch("commentPost", {
                     postId: id,
                     message: this.commentInput
@@ -284,7 +281,6 @@ export default {
             }     
         },
         deleteComment(id) {
-            console.log('commentid: ' + id)
             this.$store.dispatch("deleteComment", id);
         },
         scrollToTop() {

@@ -16,7 +16,7 @@
                 <v-flex xs12 md6>
                     <v-card flat>
                         <v-card-title class=" flat dense dark">
-                            <h4 class="font-weight-regular">CONNEXION</h4>
+                            <h1 class="text-h6 font-weight-regular">CONNEXION</h1>
                         </v-card-title>
                         <v-card-text class="font-weight-light">
                             <v-form ref="loginForm" autocomplete="off" aria-label="Formulaire de connexion">

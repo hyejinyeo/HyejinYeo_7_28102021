@@ -5,7 +5,7 @@
                 <v-flex>
                     <v-card flat>
                         <v-card-title class=" flat dense dark">
-                            <h4 class="font-weight-regular">INSCRIPTION</h4>
+                            <h1 class="text-h6 font-weight-regular">INSCRIPTION</h1>
                         </v-card-title>
                         <v-card-text class="font-weight-light">
                             <v-form ref="signupForm" autocomplete="off" aria-label="Formulaire d'inscription">
@@ -54,7 +54,7 @@
                                 S'INSCRIRE
                             </v-btn>
                             <v-snackbar v-model="snackbar" :timeout="2000">
-                                <span>Votre inscription a bien été prise en compte ! 😉</span>
+                                <span class="d-flex text-center">Votre inscription a bien été prise en compte ! 😉</span>
                             </v-snackbar>     
                         </v-card-actions>
                     </v-card>

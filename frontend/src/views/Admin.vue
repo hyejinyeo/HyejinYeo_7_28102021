@@ -1,5 +1,5 @@
 <template>
-    <div class="admin">
+    <div class="admin" v-if="userLoggedIn === true">
         <h1 class="text-h6 mb-2">ADMIN</h1>
         <!-- USER --> 
         <v-container style="max-width: 900px" v-if="user.isAdmin == false">
@@ -74,6 +74,9 @@ export default {
         }
     },
     computed: {
+        userLoggedIn() {
+            return this.$store.getters.userLoggedIn
+        },
         user() {
             return this.$store.getters.user;
         },
