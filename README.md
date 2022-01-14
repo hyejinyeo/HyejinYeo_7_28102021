@@ -57,21 +57,13 @@ npm install
 ```
 2) Puis exécutez la commande :
 ```bash 
-npx nodemon server
+npm run start ou npx nodemon server
 ```
 Vous aurez un message comme celui-ci sur votre terminal :
 ```bash
 Executing (default): .......
 Listening on port 3000
 ```
-
-?
-```bash
-npx sequelize
-sequelize-cli db:create
-sequelize-cli db:migrate
-```
-?
 
 
 ### Frontend
