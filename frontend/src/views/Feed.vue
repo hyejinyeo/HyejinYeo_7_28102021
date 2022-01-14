@@ -64,7 +64,7 @@
                                     <span class="linkText" @click="openLink(post.link)" title="Lien qui ouvre la page sur un nouvel onglet">{{ post.link }}</span>
                                 </span>            
                             </div>
-                            <div v-if="post.message !== null" class="mt-3 py-2">{{ post.message }}</div>
+                            <div v-if="post.message !== null" class="mt-3 py-2 black--text">{{ post.message }}</div>
                         </v-card-text>
                         <!-- Compteur de likes et de commentaires -->
                         <div class="d-flex mb-2">
