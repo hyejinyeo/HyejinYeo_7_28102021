@@ -1,4 +1,4 @@
-# OpenClassrooms Projet 7 : GROUPOMANIA
+# GROUPOMANIA
 
 Le dernier projet de la formation développeur web d'OpenClassrooms. Le projet consiste à construire un réseau social interne pour les employés de Groupomania. Le but de cet outil est de faciliter les interactions entre collègues. 
 
@@ -82,6 +82,6 @@ App running at:
 - Local:   http://localhost:8080/
 - Network: http://192.168.1.39:8080/ 
 ```
-3) Ouvre zvotre navigateur et allez sur : [http://localhost:8080/](http://localhost:8080/)
+3) Ouvrez votre navigateur et allez sur : [http://localhost:8080/](http://localhost:8080/)
 
 **Utilisateur administrateur**  ```email : admin@groupomania.com```  ```password : Admin123!```
