@@ -44,10 +44,7 @@ const routes = [
         path: '/chat',
         name: 'Chat',
         component: () => import('../views/Chat.vue')
-    },
-    // TO ADD 
-    // USER: Profil modification page (add photo, modify password, delete account)
-    // FEED: Writing area(CRUD), Feed cards looping through the data
+    }
 ]
 
 const router = new VueRouter({
