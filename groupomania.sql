@@ -34,7 +34,7 @@ CREATE TABLE `comments` (
   KEY `post_id` (`post_id`),
   CONSTRAINT `fk_comments_posts` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_comments_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,7 +65,7 @@ CREATE TABLE `likes` (
   KEY `post_id` (`post_id`),
   CONSTRAINT `fk_likes_posts` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_likes_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -97,7 +97,7 @@ CREATE TABLE `posts` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `fk_posts_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -129,7 +129,7 @@ CREATE TABLE `users` (
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,7 +138,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Admin','Groupomania','admin@groupomania.com','$2b$10$rWS1I1CtKi/gkKMDvSAJ6..HL1DDEzsL0svjI1.sX2sRxCcEkLo.m','http://localhost:3000/images/icon-left-font-monochrome-black1639646636230.png',1,'2021-12-14 15:34:30','2021-12-29 13:37:32'),(2,'Yeo','Hyejin','hyejinyeo@mail.com','$2b$10$Fm7VJRXGohhxZbLfqociius5oJhSj9v4scmgKhV8qoZMO.ZPm6nQm','http://localhost:3000/images/hyejinyeo1642004397998.jpg',0,'2021-12-14 15:39:22','2022-01-13 14:29:29'),(3,'Garay','Jordan','j.garay@mail.com','$2b$10$WTAXMkDMdGhWm/IakJc1r.1SUVBOHZKFtqvoONBvvznJ2xhp1vasK',NULL,0,'2021-12-15 10:55:38','2021-12-30 09:45:45'),(4,'Durantay','Quentin','qdmysql@mail.com','$2b$10$njIN5Pmp7Fte2PxwtQQJ7OXtqTDTz6XQpMKK4C7yZKvu8b8rgDhgi','http://localhost:3000/images/quentindurantay1639566683422.jpg',0,'2021-12-15 11:09:46','2021-12-15 11:15:25'),(7,'Toulmet','Alexia','alexia@mail.com','$2b$10$AVFEj3aLL4FlKb2qm.W4cuKQhcaLFM6hLZCEdJGP8OhOEbGmO37BG','http://localhost:3000/images/alexia21641990838199.png',0,'2022-01-03 09:51:41','2022-01-12 12:33:58'),(9,'Hong','Ben','ben.hong@mail.com','$2b$10$1jcmFE3pd6z92EaOKtcL0eL7UfnXetXZwcR/KtNzwkdvtMKFLfwgy','http://localhost:3000/images/benhong1641204614181.jpg',0,'2022-01-03 09:58:28','2022-01-03 10:10:14');
+INSERT INTO `users` VALUES (1,'Admin','Groupomania','admin@groupomania.com','$2b$10$rWS1I1CtKi/gkKMDvSAJ6..HL1DDEzsL0svjI1.sX2sRxCcEkLo.m','http://localhost:3000/images/icon-left-font-monochrome-black1639646636230.png',1,'2021-12-14 15:34:30','2021-12-29 13:37:32'),(2,'Yeo','Hyejin','hyejinyeo@mail.com','$2b$10$Fm7VJRXGohhxZbLfqociius5oJhSj9v4scmgKhV8qoZMO.ZPm6nQm','http://localhost:3000/images/hyejinyeo1642004397998.jpg',0,'2021-12-14 15:39:22','2022-01-19 08:38:57'),(3,'Garay','Jordan','j.garay@mail.com','$2b$10$WTAXMkDMdGhWm/IakJc1r.1SUVBOHZKFtqvoONBvvznJ2xhp1vasK',NULL,0,'2021-12-15 10:55:38','2022-01-19 07:13:06'),(4,'Durantay','Quentin','qdmysql@mail.com','$2b$10$njIN5Pmp7Fte2PxwtQQJ7OXtqTDTz6XQpMKK4C7yZKvu8b8rgDhgi','http://localhost:3000/images/quentindurantay1639566683422.jpg',0,'2021-12-15 11:09:46','2021-12-15 11:15:25'),(7,'Toulmet','Alexia','alexia@mail.com','$2b$10$AVFEj3aLL4FlKb2qm.W4cuKQhcaLFM6hLZCEdJGP8OhOEbGmO37BG','http://localhost:3000/images/alexia21641990838199.png',0,'2022-01-03 09:51:41','2022-01-12 12:33:58'),(9,'Hong','Ben','ben.hong@mail.com','$2b$10$1jcmFE3pd6z92EaOKtcL0eL7UfnXetXZwcR/KtNzwkdvtMKFLfwgy','http://localhost:3000/images/benhong1641204614181.jpg',0,'2022-01-03 09:58:28','2022-01-03 10:10:14');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -151,4 +151,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-13 22:04:04
+-- Dump completed on 2022-01-19 12:08:03
