@@ -68,6 +68,8 @@ Listening on port 3000
 
 ### Frontend
 
+* L'application est créée avec **Vue.js 2** car la dernière version de vuetify ne supporte pas Vue.js 3
+
 1) Ouvrez le dossier "frontend" dans un autre terminal et exécutez la commande :
 ```bash
 npm install
@@ -84,5 +86,4 @@ App running at:
 ```
 3) Ouvrez votre navigateur et allez sur : [http://localhost:8080/](http://localhost:8080/)
 
-**L'application est créée avec Vue.js 2 car la dernière version de vuetify ne supporte pas Vue.js 3**
 **Utilisateur administrateur**  ```email : admin@groupomania.com```  ```password : Admin123!```
