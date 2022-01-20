@@ -8,9 +8,9 @@ Le dernier projet de la formation développeur web d'OpenClassrooms. Le projet c
 ## Technologies utilisées
 
 HTML, CSS, JavaScript\
-Vue.js, Vuex, Vuetify, Axios\
-Node.js, Express, Sequelize\
-MySQL
+Vue.js (v2.6.11), Vuex (v3.4.0), Vuetify (v2.4.0), Axios (v0.24.0)\
+Node.js (v14.18.1), Express (v4.17.1), Sequelize (v6.9.0)\
+MySQL (v8.0.27)
 
 
 ## Instruction
@@ -84,4 +84,5 @@ App running at:
 ```
 3) Ouvrez votre navigateur et allez sur : [http://localhost:8080/](http://localhost:8080/)
 
+**L'application est créée avec Vue.js 2 car la dernière version de vuetify ne supporte pas Vue.js 3**
 **Utilisateur administrateur**  ```email : admin@groupomania.com```  ```password : Admin123!```
